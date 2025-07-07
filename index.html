@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet" />
+    <style>
+        #carousel {
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+
+            /* CSS AJAIB UNTUK MEMPERBAIKI POTONGAN */
+            scroll-padding: 0 1rem;
+        }
+
+        #carousel::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white font-poppins">
+    <!-- Navbar -->
+    <nav class="bg-gray-800 p-4 fixed top-0 w-full z-50 shadow-md transition-transform duration-300">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">My Portfolio</h1>
+            <div class="space-x-4 hidden md:flex">
+                <a href="#projects" class="hover:underline">Projects</a>
+                <a href="#about" class="hover:underline">About</a>
+                <a href="#contact" class="hover:underline">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero"
+        class="h-screen flex flex-col md:flex-row items-center justify-center text-center md:text-left relative parallax-bg">
+        <img src="images/20240315_205649.jpg" alt="profile" class="h-full w-5/12 mx-auto md:mx-0 object-cover shadow-lg" />
+        <div class="w-full md:w-7/12 px-6 md:px-20">
+            <h1 class="text-5xl md:text-6xl font-bold mb-4 leading-tight">
+                Mochamad Rifat Syahman Hambali
+            </h1>
+            <p class="text-xl text-gray-300">
+                Software Developer & Project Manager
+            </p>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-16 px-6 md:px-20 bg-gray-800">
+        <h2 class="text-3xl font-bold text-center mb-8">Projects</h2>
+        <div class="relative overflow-hidden">
+            <div id="carousel" class="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory p-4"></div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-16 px-6 md:px-20">
+        <h2 class="text-3xl font-bold mb-6 text-center">About Me</h2>
+        <div class="flex flex-col md:flex-row">
+            <div class="mx-auto w-full h-full p-4 sm:p-6 lg:p-8">
+                <div class="relative wrap overflow-hidden h-full">
+
+                    <div class="border-2-2 absolute border-white h-full border" style="left: 50%">
+                    </div>
+
+                    <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                        <div class="order-1 w-5/12"></div>
+                        <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
+                            <h1 class="mx-auto font-semibold text-lg text-white">1</h1>
+                        </div>
+                        <div class="order-1 bg-black border-2 border-blue-500 rounded-lg shadow-xl w-5/12 px-6 py-4">
+                            <time class="font-mono italic text-sm text-gray-400">2012</time>
+                            <h3 class="mb-3 font-bold text-white text-xl">Awal Terbentuk</h3>
+                            <p class="text-sm leading-snug tracking-wide text-gray-300 text-opacity-100">
+                                CSC didirikan oleh sekelompok mahasiswa Politeknik Negeri Jakarta yang bersemangat.
+                                Awalnya
+                                berfokus pada teknologi secara umum, klub ini berkembang menjadi wadah luas untuk minat
+                                dan
+                                bakat mahasiswa TIK.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
+                        <div class="order-1 w-5/12"></div>
+                        <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
+                            <h1 class="mx-auto text-white font-semibold text-lg">2</h1>
+                        </div>
+                        <div class="order-1 bg-black border-2 border-green-500 rounded-lg shadow-xl w-5/12 px-6 py-4">
+                            <time class="font-mono italic text-sm text-gray-400">2012/2013</time>
+                            <h3 class="mb-3 font-bold text-white text-xl text-right">Resmi Menjadi KSM</h3>
+                            <p class="text-sm leading-snug tracking-wide text-gray-300 text-opacity-100 text-right">
+                                Pada tahun ajaran 2012/2013, CSC secara resmi diakui sebagai Kelompok Studi Mahasiswa
+                                (KSM)
+                                di bawah naungan Jurusan TIK. Ini menjadi tonggak bersejarah yang menegaskan peran
+                                penting
+                                CSC.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                        <div class="order-1 w-5/12"></div>
+                        <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
+                            <h1 class="mx-auto font-semibold text-lg text-white">3</h1>
+                        </div>
+                        <div class="order-1 bg-black border-2 border-yellow-500 rounded-lg shadow-xl w-5/12 px-6 py-4">
+                            <time class="font-mono italic text-sm text-gray-400">2014</time>
+                            <h3 class="mb-3 font-bold text-white text-xl">Fokus Divisi</h3>
+                            <p class="text-sm leading-snug tracking-wide text-gray-300 text-opacity-100">
+                                CSC membagi fokus menjadi tiga divisi utama: Cyber Security, Soft Dev, dan Explore.
+                                Setiap
+                                divisi mengkhususkan diri dalam bidang seperti keamanan jaringan, pengembangan perangkat
+                                lunak, dan Internet of Things (IoT).
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
+                        <div class="order-1 w-5/12"></div>
+                        <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
+                            <h1 class="mx-auto text-white font-semibold text-lg">4</h1>
+                        </div>
+                        <div class="order-1 bg-black border-2 border-purple-500 rounded-lg shadow-xl w-5/12 px-6 py-4">
+                            <time class="font-mono italic text-sm text-gray-400">2025 - Sekarang</time>
+                            <h3 class="mb-3 font-bold text-white text-xl text-right">Harapan Masa Depan</h3>
+                            <p class="text-sm leading-snug tracking-wide text-gray-300 text-opacity-100 text-right">
+                                CSC terus memberikan dukungan bagi mahasiswa yang ingin mendalami teknologi, menjadi
+                                wadah
+                                untuk eksplorasi, pembelajaran, dan kolaborasi inovatif.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="mx-auto w-full h-full p-4 sm:p-6 lg:p-8 text-white">
+                tes
+            </div>
+        </div>
+
+        <style>
+            /* Untuk layar kecil (mobile), buat timeline menjadi satu sisi */
+            @media (max-width: 768px) {
+
+                .timeline .left-timeline,
+                .timeline .right-timeline {
+                    justify-content: flex-start;
+                    flex-direction: row;
+                }
+
+                .timeline .left-timeline .order-1,
+                .timeline .right-timeline .order-1 {
+                    order: 2;
+                }
+
+                .timeline .left-timeline .w-5\/12,
+                .timeline .right-timeline .w-5\/12 {
+                    width: 100%;
+                }
+
+                .timeline .left-timeline h3,
+                .timeline .left-timeline p {
+                    text-align: left;
+                }
+
+                .timeline .z-20 {
+                    margin-left: -1rem;
+                    margin-right: 1rem;
+                }
+            }
+        </style>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="bg-gray-800 py-16 px-6 md:px-20">
+        <h2 class="text-3xl font-bold text-center mb-8">Skills</h2>
+        <div class="flex flex-wrap justify-center gap-4 text-sm">
+            <span class="bg-gray-700 px-4 py-2 rounded">Flutter</span>
+            <span class="bg-gray-700 px-4 py-2 rounded">Laravel</span>
+            <span class="bg-gray-700 px-4 py-2 rounded">VB.NET</span>
+            <span class="bg-gray-700 px-4 py-2 rounded">SQLite</span>
+            <span class="bg-gray-700 px-4 py-2 rounded">Tailwind CSS</span>
+            <span class="bg-gray-700 px-4 py-2 rounded">Oracle SQL</span>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 px-6 md:px-20 text-center">
+        <h2 class="text-3xl font-bold mb-4">Contact Me</h2>
+        <p class="text-gray-300 mb-6">Reach out via email or social media</p>
+        <div class="flex justify-center gap-4">
+            <a href="mailto:youremail@example.com" class="hover:underline">Email</a>
+            <a href="https://github.com/username" class="hover:underline" target="_blank">GitHub</a>
+            <a href="https://linkedin.com/in/username" class="hover:underline" target="_blank">LinkedIn</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center text-gray-400 py-6 bg-gray-900">
+        &copy; 2025 Rifat. All rights reserved.
+    </footer>
+</body>
+<script>
+    const hero = document.getElementById("hero");
+
+    document.addEventListener("mousemove", (e) => {
+        const { innerWidth: width, innerHeight: height } = window;
+        const x = (e.clientX / width - 0.5) * 20; // range -10 to 10
+        const y = (e.clientY / height - 0.5) * 20;
+
+        hero.style.backgroundPosition = `${50 + x}% ${50 + y}%`;
+    });
+
+    let lastScrollTop = 0;
+    const navbar = document.querySelector("nav");
+
+    window.addEventListener("scroll", () => {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop > lastScrollTop) {
+            // Scroll down → hide navbar
+            navbar.style.transform = "translateY(-100%)";
+        } else {
+            // Scroll up → show navbar
+            navbar.style.transform = "translateY(0)";
+        }
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    });
+
+    // Parallax effect for hero background (optional)
+    document.addEventListener("mousemove", (e) => {
+        const { innerWidth: width, innerHeight: height } = window;
+        const x = (e.clientX / width - 0.5) * 20;
+        const y = (e.clientY / height - 0.5) * 20;
+        hero.style.backgroundPosition = `${50 + x}% ${50 + y}%`;
+    });
+
+    const projects = [
+        {
+            title: "InvenSync - Sistem Inventaris",
+            desc: "A point-of-sale system for a small culinary business using VB.NET & SQLite.",
+            img: "images/invensync.png",
+        },
+        {
+            title: "FinDer - Sistem Pendukung Keputusan",
+            desc: "A web-based app for monitoring COVID-19 survivor data in Indonesia.",
+            img: "images/finder.png",
+        },
+        {
+            title: "MindCourse - Aplikasi Manajemen Tugas",
+            desc: "A Flutter app with SQLite for managing study subjects and schedules.",
+            img: "images/project3.jpg",
+        },
+        {
+            title: "ShareThem - Aplikasi Pengiriman File",
+            desc: "A project tracking dashboard made with Laravel and Tailwind CSS.",
+            img: "images/project4.jpg",
+        },
+        {
+            title: "CSC - Landing Page",
+            desc: "Mobile budget app with Flutter & Hive DB.",
+            img: "images/project5.jpg",
+        },
+    ];
+
+    // Render projects into carousel
+    const carousel = document.getElementById("carousel");
+
+    // Loop per 2 item
+    for (let i = 0; i < projects.length; i += 2) {
+        const group = projects.slice(i, i + 2); // ambil 2 item
+
+        // Buat satu container pair
+        const groupDiv = document.createElement("div");
+        groupDiv.className = "flex flex-col md:flex-row gap-4 snap-start flex-shrink-0 w-full";
+
+        // Render kedua card dalam satu group
+        group.forEach((p) => {
+            const card = document.createElement("div");
+            card.className =
+                "w-full md:w-1/2 bg-gray-700 rounded-lg p-4 hover:scale-105 transition-transform shadow-md";
+            card.innerHTML = `
+            <img src="${p.img}" alt="${p.title}" class="rounded mb-4 w-full h-48 object-cover" />
+            <h3 class="text-xl font-semibold">${p.title}</h3>
+            <p class="text-sm text-gray-300 mt-2">${p.desc}</p>
+        `;
+            groupDiv.appendChild(card);
+        });
+
+        carousel.appendChild(groupDiv);
+    }
+
+    const scrollInterval = 3000;
+    const cardWidth = 300 + 24;
+
+    setInterval(() => {
+        if (
+            carousel.scrollLeft + carousel.clientWidth >=
+            carousel.scrollWidth - 1
+        ) {
+            carousel.scrollTo({ left: 0, behavior: "smooth" });
+        } else {
+            carousel.scrollBy({ left: cardWidth, behavior: "smooth" });
+        }
+    }, scrollInterval);
+</script>
+
+</html>
