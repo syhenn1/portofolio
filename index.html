@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
+<html lang="en" class="scroll-smooth"> <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Portfolio</title>
@@ -14,12 +12,8 @@
     <style>
         #carousel {
             -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
             scrollbar-width: none;
             -ms-overflow-style: none;
-
-
-            scroll-padding: 0 1rem;
         }
 
         #carousel::-webkit-scrollbar {
@@ -28,35 +22,50 @@
 
         .fade-in-section {
             opacity: 0;
-            transform: translateY(50px);
-            transition: opacity 1.5s ease-out, transform 0.8s ease-out;
+            transform: translateY(20px); /* Mengurangi jarak agar lebih subtle */
+            transition: opacity 1.2s ease-out, transform 0.8s ease-out;
         }
 
         .fade-in-section.is-visible {
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* Menambahkan style untuk menu mobile */
+        .mobile-menu {
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
     </style>
 </head>
 
 <body class="bg-gray-900 text-white font-poppins">
-    <!-- Navbar -->
-    <nav class="bg-gray-800 p-4 fixed top-0 w-full z-50 shadow-md transition-transform duration-300">
+    <nav id="navbar" class="bg-gray-800 p-4 fixed top-0 w-full z-50 shadow-md transition-all duration-300">
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-xl font-bold">My Portfolio</h1>
-            <div class="space-x-4 hidden md:flex">
+            <div class="space-x-6 hidden md:flex">
                 <a href="#projects" class="hover:underline">Projects</a>
                 <a href="#about" class="hover:underline">About</a>
                 <a href="#contact" class="hover:underline">Contact</a>
             </div>
+            <div class="md:hidden">
+                <button id="menu-btn" class="focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden mt-4 hidden">
+            <a href="#projects" class="block py-2 px-4 text-sm hover:bg-gray-700 rounded">Projects</a>
+            <a href="#about" class="block py-2 px-4 text-sm hover:bg-gray-700 rounded">About</a>
+            <a href="#contact" class="block py-2 px-4 text-sm hover:bg-gray-700 rounded">Contact</a>
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section id="hero"
         class="h-screen flex flex-col md:flex-row items-center justify-center text-center md:text-left relative parallax-bg">
         <img src="images/20240315_205649.jpg" alt="profile"
-            class="h-full w-5/12 mx-auto md:mx-0 object-cover shadow-lg" />
+            class="md:h-full w-5/12 mx-auto rounded-full md:rounded-none md:mx-0 object-cover shadow-lg" />
         <div class="w-full md:w-7/12 px-6 md:px-20">
             <h1 class="text-5xl md:text-6xl font-bold mb-4 leading-tight">
                 Mochamad Rifat Syahman Hambali
@@ -67,91 +76,77 @@
         </div>
     </section>
 
-    <!-- Projects Section -->
-    <section id="projects" class="py-16 px-6 md:px-20 bg-gray-800">
+    <section id="projects" class="py-16 px-4 sm:px-6 md:px-20 bg-gray-800">
         <h2 class="text-3xl font-bold text-center mb-8 fade-in-section">Projects</h2>
         <div class="relative overflow-hidden fade-in-section">
-            <div id="carousel" class="flex fade-in-section gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory p-4"></div>
+            <div id="carousel" class="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory p-4">
+                 </div>
         </div>
     </section>
 
-    <!-- About Section -->
-    <section id="about" class="py-16 px-6 md:px-20 bg-gray-900 text-white">
-        <div class="text-center mb-8">
+    <section id="about" class="py-16 px-4 sm:px-6 md:px-20 bg-gray-900 text-white">
+        <div class="text-center mb-12">
             <h2 class="text-4xl font-bold">About Me</h2>
             <p class="text-gray-400 mt-2">Perjuangan saya untuk menjadi seorang Software Developer dan Data Analyst.</p>
         </div>
-        <div class="flex flex-col md:flex-row items-start gap-2">
+        <div class="flex flex-col md:flex-row items-start gap-12 md:gap-2">
 
-            <div class="w-full md:w-1/2 p-4 sm:p-6 lg:p-8">
+            <div class="w-full md:w-1/2 p-2 sm:p-4">
                 <div class="relative wrap overflow-hidden h-full fade-in-section">
-                    <div class="border-2-2 mt-16 absolute border-white h-[80%] border" style="left: 50%">
-                    </div>
+                    <div class="border-2-2 absolute border-white h-full border left-5 md:left-1/2"></div>
+                    
                     <div class="mb-8 flex justify-between items-center w-full right-timeline">
-                        <div class="order-1 w-5/12"></div>
+                        <div class="order-1 md:w-5/12"></div>
                         <div class="z-20 flex items-center order-1 bg-blue-500 shadow-xl w-10 h-10 rounded-full">
                             <h1 class="mx-auto font-semibold text-lg">1</h1>
                         </div>
-                        <div class="order-1 bg-gray-800 rounded-lg shadow-xl w-5/12 px-6 py-4">
+                        <div class="order-1 bg-gray-800 rounded-lg shadow-xl w-full md:w-5/12 ml-6 md:ml-0 px-6 py-4">
                             <time class="font-mono italic text-sm text-gray-400">2023</time>
-                            <h3 class="mb-3 font-bold text-xl">Politeknik Negeri Jakarta</h3>
-                            <p class="text-sm leading-snug tracking-wide text-gray-300">
-                                Awal mula saya serius mendalami ilmu teknologi informasi, mengambil program studi D4
-                                Teknik Informatika.
-                            </p>
+                            <h3 class="mb-3 font-bold text-lg md:text-xl">Politeknik Negeri Jakarta</h3>
+                            <p class="text-sm leading-snug tracking-wide text-gray-300">Awal mula saya serius mendalami ilmu teknologi informasi, mengambil program studi D4 Teknik Informatika.</p>
                         </div>
                     </div>
 
-                    <div class="mb-8 flex fade-in-section justify-between flex-row-reverse items-center w-full left-timeline">
-                        <div class="order-1 w-5/12"></div>
+                    <div class="mb-8 flex justify-between md:flex-row-reverse items-center w-full left-timeline">
+                        <div class="order-1 md:w-5/12"></div>
                         <div class="z-20 flex items-center order-1 bg-green-500 shadow-xl w-10 h-10 rounded-full">
                             <h1 class="mx-auto font-semibold text-lg">2</h1>
                         </div>
-                        <div class="order-1 bg-gray-800 rounded-lg shadow-xl w-5/12 px-6 py-4 text-right">
+                        <div class="order-1 bg-gray-800 rounded-lg shadow-xl w-full md:w-5/12 ml-6 md:ml-0 md:text-right px-6 py-4">
                             <time class="font-mono italic text-sm text-gray-400">2024</time>
-                            <h3 class="mb-3 font-bold text-xl">Computer Student Club</h3>
-                            <p class="text-sm leading-snug tracking-wide text-gray-300">
-                                Ketika perkuliahan terasa kurang, saya putuskan untuk mengikuti KSM Club Komputer di
-                                bidang Software Developer.
-                            </p>
+                            <h3 class="mb-3 font-bold text-lg md:text-xl">Computer Student Club</h3>
+                            <p class="text-sm leading-snug tracking-wide text-gray-300">Ketika perkuliahan terasa kurang, saya putuskan untuk mengikuti KSM Club Komputer di bidang Software Developer.</p>
                         </div>
                     </div>
 
-                    <div class="mb-8 flex fade-in-section justify-between items-center w-full right-timeline">
-                        <div class="order-1 w-5/12"></div>
+                    <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                        <div class="order-1 md:w-5/12"></div>
                         <div class="z-20 flex items-center order-1 bg-yellow-500 shadow-xl w-10 h-10 rounded-full">
                             <h1 class="mx-auto font-semibold text-lg">3</h1>
                         </div>
-                        <div class="order-1 bg-gray-800 rounded-lg shadow-xl w-5/12 px-6 py-4">
+                        <div class="order-1 bg-gray-800 rounded-lg shadow-xl w-full md:w-5/12 ml-6 md:ml-0 px-6 py-4">
                             <time class="font-mono italic text-sm text-gray-400">2025</time>
-                            <h3 class="mb-3 font-bold text-xl">Kompetisi Pertama</h3>
-                            <p class="text-sm leading-snug tracking-wide text-gray-300">
-                                Kompetisi pertama saya adalah kompetisi data science di Kaggle yang memperebutkan kursi
-                                Compfest Academy.
-                            </p>
+                            <h3 class="mb-3 font-bold text-lg md:text-xl">Kompetisi Pertama</h3>
+                            <p class="text-sm leading-snug tracking-wide text-gray-300">Kompetisi pertama saya adalah kompetisi data science di Kaggle yang memperebutkan kursi Compfest Academy.</p>
                         </div>
                     </div>
-
-                    <div class="mb-8 flex fade-in-section justify-between flex-row-reverse items-center w-full left-timeline">
-                        <div class="order-1 w-5/12"></div>
+                     <div class="mb-8 flex justify-between md:flex-row-reverse items-center w-full left-timeline">
+                        <div class="order-1 md:w-5/12"></div>
                         <div class="z-20 flex items-center order-1 bg-purple-500 shadow-xl w-10 h-10 rounded-full">
                             <h1 class="mx-auto font-semibold text-lg">4</h1>
                         </div>
-                        <div class="order-1 bg-gray-800 rounded-lg shadow-xl w-5/12 px-6 py-4 text-right">
+                        <div class="order-1 bg-gray-800 rounded-lg shadow-xl w-full md:w-5/12 ml-6 md:ml-0 md:text-right px-6 py-4">
                             <time class="font-mono italic text-sm text-gray-400">2025 - Sekarang</time>
-                            <h3 class="mb-3 font-bold text-xl">Harapan Masa Depan</h3>
-                            <p class="text-sm leading-snug tracking-wide text-gray-300">
-                                Terus belajar dan berkontribusi dalam proyek-proyek inovatif di dunia teknologi.
-                            </p>
+                            <h3 class="mb-3 font-bold text-lg md:text-xl">Harapan Masa Depan</h3>
+                            <p class="text-sm leading-snug tracking-wide text-gray-300">Terus belajar dan berkontribusi dalam proyek-proyek inovatif di dunia teknologi.</p>
                         </div>
                     </div>
-
                 </div>
             </div>
 
-            <div class="w-full md:w-1/2 p-4 sm:p-6 lg:p-8 md:pl-12">
-                <h1 class="text-4xl md:text-5xl font-bold leading-tight fade-in-section">
-                    Hai, Namaku <br />
+            <div class="w-full md:w-1/2 p-4 sm:p-6 lg:p-8 md:pl-12 text-center md:text-left">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight fade-in-section">
+                    Hai, Namaku <br class="md:hidden" />
                     <span class="text-blue-500 fade-in-section">Rifat Syahman</span>
                 </h1>
                 <p class="text-lg mt-4 text-gray-300 fade-in-section">
@@ -164,28 +159,23 @@
                     PHP, Python, serta menggunakan framework mulai dari Laravel hingga Flutter.
                 </p>
                 <div class="mt-8 flex justify-center px-4 fade-in-section">
-                    <img src="https://ghchart.rshah.org/syhenn1?color=dark" alt="Kontribusi GitHub Rifat"
-                        class="w-full" />
+                    <img src="https://ghchart.rshah.org/syhenn1?color=dark" alt="Kontribusi GitHub Rifat" class="w-full" />
                 </div>
                 <div class="mt-10 flex justify-center fade-in-section">
                     <img src="https://github-profile-trophy.vercel.app/?username=syhenn1&theme=tokyonight&row=1&margin-w=15"
                         alt="GitHub Trophies" />
                 </div>
-                <div class="mt-8 flex flex-col sm:flex-row gap-4 fade-in-section">
-                    <a href="https://github.com/syhenn1" target="_blank" rel="noopener noreferrer"
-                        class="flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300">
+                <div class="mt-8 flex flex-col sm:flex-row gap-4 fade-in-section justify-center md:justify-start">
+                    <a href="https://github.com/syhenn1" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300">
                         <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                             <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
                         </svg>
                         GitHub
                     </a>
-                    <a href="/path-to-your-cv.pdf" download
-                        class="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300">
+                    <a href="/path-to-your-cv.pdf" download class="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                         </svg>
                         Download CV
                     </a>
@@ -194,309 +184,207 @@
         </div>
     </section>
 
-    <!-- Skills Section -->
-    <section id="skills" class="bg-gray-800 py-16 px-6 md:px-20">
+    <section id="skills" class="bg-gray-800 py-16 px-4 sm:px-6 md:px-20">
         <h2 class="text-3xl font-bold text-center mb-12 fade-in-section">Technical Skills</h2>
-
-        <div class="max-w-full mx-auto bg-gray-900 p-8 rounded-xl shadow-2xl fade-in-section">
-
-            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-8 gap-x-6 gap-y-8">
-
-                <div class="flex flex-col items-center text-center">
-                    <div class="bg-gray-700 p-3 rounded-lg hover:scale-110 transition-transform duration-300">
-                        <img src="https://cdn.simpleicons.org/html5/E34F26" alt="HTML5 Logo" class="h-10 w-10" />
-                    </div>
-                    <span class="font-semibold text-white mt-2 text-sm">HTML5</span>
+        <div class="max-w-4xl mx-auto bg-gray-900 p-6 sm:p-8 rounded-xl shadow-2xl fade-in-section">
+            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-x-4 gap-y-8">
                 </div>
-
-                <div class="flex flex-col items-center text-center">
-                    <div class="bg-gray-700 p-3 rounded-lg hover:scale-110 transition-transform duration-300">
-                        <img src="https://cdn.simpleicons.org/css3/1572B6" alt="CSS3 Logo" class="h-10 w-10" />
-                    </div>
-                    <span class="font-semibold text-white mt-2 text-sm">CSS3</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center">
-                    <div class="bg-gray-700 p-3 rounded-lg hover:scale-110 transition-transform duration-300">
-                        <img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="JavaScript Logo"
-                            class="h-10 w-10" />
-                    </div>
-                    <span class="font-semibold text-white mt-2 text-sm">JavaScript</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center">
-                    <div class="bg-gray-700 p-3 rounded-lg hover:scale-110 transition-transform duration-300">
-                        <img src="https://cdn.simpleicons.org/python/3776AB" alt="Python Logo" class="h-10 w-10" />
-                    </div>
-                    <span class="font-semibold text-white mt-2 text-sm">Python</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center">
-                    <div class="bg-gray-700 p-3 rounded-lg hover:scale-110 transition-transform duration-300">
-                        <img src="https://cdn.simpleicons.org/nextdotjs/FFFFFF" alt="Next.js Logo" class="h-10 w-10" />
-                    </div>
-                    <span class="font-semibold text-white mt-2 text-sm">Next.js</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center">
-                    <div class="bg-gray-700 p-3 rounded-lg hover:scale-110 transition-transform duration-300">
-                        <img src="https://cdn.simpleicons.org/laravel/FF2D20" alt="Laravel Logo" class="h-10 w-10" />
-                    </div>
-                    <span class="font-semibold text-white mt-2 text-sm">Laravel</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center">
-                    <div class="bg-gray-700 p-3 rounded-lg hover:scale-110 transition-transform duration-300">
-                        <img src="https://cdn.simpleicons.org/codeigniter/EF4223" alt="CodeIgniter 4 Logo"
-                            class="h-10 w-10" />
-                    </div>
-                    <span class="font-semibold text-white mt-2 text-sm">CodeIgniter 4</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center">
-                    <div class="bg-gray-700 p-3 rounded-lg hover:scale-110 transition-transform duration-300">
-                        <img src="https://cdn.simpleicons.org/flutter/40C4FF" alt="Flutter Logo" class="h-10 w-10" />
-                    </div>
-                    <span class="font-semibold text-white mt-2 text-sm">Flutter</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center">
-                    <div class="bg-gray-700 p-3 rounded-lg hover:scale-110 transition-transform duration-300">
-                        <img src="https://cdn.simpleicons.org/tailwindcss/06B6D4" alt="Tailwind CSS Logo"
-                            class="h-10 w-10" />
-                    </div>
-                    <span class="font-semibold text-white mt-2 text-sm">Tailwind CSS</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center">
-                    <div class="bg-gray-700 p-3 rounded-lg hover:scale-110 transition-transform duration-300">
-                        <img src="https://cdn.simpleicons.org/mysql/4479A1" alt="MySQL Logo" class="h-10 w-10" />
-                    </div>
-                    <span class="font-semibold text-white mt-2 text-sm">MySQL</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center">
-                    <div class="bg-gray-700 p-3 rounded-lg hover:scale-110 transition-transform duration-300">
-                        <img src="https://cdn.simpleicons.org/sqlite/003B57" alt="SQLite Logo" class="h-10 w-10" />
-                    </div>
-                    <span class="font-semibold text-white mt-2 text-sm">SQLite</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center">
-                    <div class="bg-gray-700 p-3 rounded-lg hover:scale-110 transition-transform duration-300">
-                        <img src="https://cdn.simpleicons.org/figma/F24E1E" alt="Figma Logo" class="h-10 w-10" />
-                    </div>
-                    <span class="font-semibold text-white mt-2 text-sm">Figma</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center">
-                    <div class="bg-gray-700 p-3 rounded-lg hover:scale-110 transition-transform duration-300">
-                        <img src="https://cdn.simpleicons.org/github/FFFFFF" alt="GitHub Logo" class="h-10 w-10" />
-                    </div>
-                    <span class="font-semibold text-white mt-2 text-sm">GitHub</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center">
-                    <div class="bg-gray-700 p-3 rounded-lg hover:scale-110 transition-transform duration-300">
-                        <img src="https://cdn.simpleicons.org/microsoftexcel/217346" alt="Microsoft Excel Logo"
-                            class="h-10 w-10" />
-                    </div>
-                    <span class="font-semibold text-white mt-2 text-sm">Excel</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center">
-                    <div class="bg-gray-700 p-3 rounded-lg hover:scale-110 transition-transform duration-300">
-                        <img src="https://cdn.simpleicons.org/microsoftword/2B579A" alt="Microsoft Word Logo"
-                            class="h-10 w-10" />
-                    </div>
-                    <span class="font-semibold text-white mt-2 text-sm">Word</span>
-                </div>
-
-            </div>
         </div>
     </section>
-    <!-- Contact Section -->
-    <section id="contact" class="py-16 px-6 md:px-20 text-center">
+
+    <section id="contact" class="py-16 px-4 sm:px-6 md:px-20 text-center">
         <h2 class="text-3xl font-bold mb-4">Contact Me</h2>
-        <p class="text-gray-300 mb-6">Reach out via email or social media</p>
-        <div class="flex justify-center gap-4">
+        <p class="text-gray-300 mb-6">Hubungi saya melalui email atau sosial media</p>
+        <div class="flex justify-center gap-6">
             <a href="mailto:youremail@example.com" class="hover:underline">Email</a>
             <a href="https://github.com/username" class="hover:underline" target="_blank">GitHub</a>
             <a href="https://linkedin.com/in/username" class="hover:underline" target="_blank">LinkedIn</a>
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="text-center text-gray-400 py-6 bg-gray-900">
         &copy; 2025 Rifat. All rights reserved.
     </footer>
 </body>
+
 <script>
-    // Ambil elemen HTML yang diperlukan
-    const hero = document.getElementById("hero");
-    const navbar = document.querySelector("nav");
-    const carousel = document.getElementById("carousel");
+    document.addEventListener('DOMContentLoaded', () => {
+        // Ambil elemen HTML yang diperlukan
+        const navbar = document.getElementById('navbar');
+        const carousel = document.getElementById("carousel");
+        const skillsContainer = document.querySelector("#skills .grid");
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
 
-    // --- Data Keterampilan ---
-    // Objek ini berfungsi sebagai database kecil untuk semua technical skill Anda.
-    // Kunci (misal: 'html5', 'laravel') akan digunakan di dalam array 'projects'.
-    const skillData = {
-        'html5': { name: 'HTML5', src: 'https://cdn.simpleicons.org/html5/E34F26' },
-        'css3': { name: 'CSS3', src: 'https://cdn.simpleicons.org/css3/1572B6' },
-        'javascript': { name: 'JavaScript', src: 'https://cdn.simpleicons.org/javascript/F7DF1E' },
-        'python': { name: 'Python', src: 'https://cdn.simpleicons.org/python/3776AB' },
-        'java': { name: 'Java', src: 'https://cdn.simpleicons.org/java/007396' },
-        'nextjs': { name: 'Next.js', src: 'https://cdn.simpleicons.org/nextdotjs/FFFFFF' },
-        'laravel': { name: 'Laravel', src: 'https://cdn.simpleicons.org/laravel/FF2D20' },
-        'ci4': { name: 'CodeIgniter 4', src: 'https://cdn.simpleicons.org/codeigniter/EF4223' },
-        'flutter': { name: 'Flutter', src: 'https://cdn.simpleicons.org/flutter/40C4FF' },
-        'tailwind': { name: 'Tailwind CSS', src: 'https://cdn.simpleicons.org/tailwindcss/06B6D4' },
-        'mysql': { name: 'MySQL', src: 'https://cdn.simpleicons.org/mysql/4479A1' },
-        'sqlite': { name: 'SQLite', src: 'https://cdn.simpleicons.org/sqlite/003B57' },
-        'figma': { name: 'Figma', src: 'https://cdn.simpleicons.org/figma/F24E1E' },
-        'github': { name: 'GitHub', src: 'https://cdn.simpleicons.org/github/FFFFFF' },
-        'excel': { name: 'Excel', src: 'https://cdn.simpleicons.org/microsoftexcel/217346' },
-        'word': { name: 'Word', src: 'https://cdn.simpleicons.org/microsoftword/2B579A' },
-        'vbnet': { name: 'VB.NET', src: 'https://cdn.simpleicons.org/dot-net/512BD4' } // Menggunakan ikon .NET untuk VB.NET
-    };
-
-    // --- Data Proyek ---
-    // Tambahkan properti 'tech' pada setiap objek proyek.
-    // Isi array 'tech' dengan kunci yang sesuai dari 'skillData'.
-    const projects = [
-        {
-            title: "InvenSync - Sistem Inventaris",
-            desc: " SQLite.A point-of-sale system for a small culinary business using VB.NET & SQLite.A point-of-sale system for a small culinary business using VB.NET & SQLite.A point-of-sale system for a small culinary business using VB.NET & SQLite.A point-of-sale system for a small culinary business using VB.NET & SQLite.",
-            img: "images/invensync.png",
-            tech: ['vbnet', 'sqlite']
-        },
-        {
-            title: "FinDer - Sistem Pendukung Keputusan",
-            desc: "A web-based app for monitoring COVID-19 survivor data in Indonesia.",
-            img: "images/finder.png",
-            tech: ['laravel', 'mysql', 'javascript']
-        },
-        {
-            title: "MindCourse - Aplikasi Manajemen Tugas",
-            desc: "A Flutter app with SQLite for managing study subjects and schedules.",
-            img: "images/project3.jpg",
-            tech: ['flutter', 'sqlite']
-        },
-        {
-            title: "ShareThem - Aplikasi Pengiriman File",
-            desc: "A project tracking dashboard made with Laravel and Tailwind CSS.",
-            img: "images/project4.jpg",
-            tech: ['laravel', 'tailwind']
-        },
-        {
-            title: "CSC - Landing Page",
-            desc: "Mobile budget app with Flutter & Hive DB.",
-            img: "images/project5.jpg",
-            tech: ['flutter', 'figma']
-        },
-    ];
-
-    // --- Logika Animasi & Interaksi (Tidak ada perubahan di sini) ---
-    document.addEventListener("mousemove", (e) => {
-        const { innerWidth: width, innerHeight: height } = window;
-        const x = (e.clientX / width - 0.5) * 20;
-        const y = (e.clientY / height - 0.5) * 20;
-        hero.style.backgroundPosition = `${50 + x}% ${50 + y}%`;
-    });
-
-    let lastScrollTop = 0;
-    window.addEventListener("scroll", () => {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        if (scrollTop > lastScrollTop) {
-            navbar.style.transform = "translateY(-100%)";
-        } else {
-            navbar.style.transform = "translateY(0)";
-        }
-        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-    });
-
-    for (let i = 0; i < projects.length; i += 4) {
-        const group = projects.slice(i, i + 4);
-        const groupDiv = document.createElement("div");
-        groupDiv.className = "flex flex-col md:flex-row gap-4 snap-start flex-shrink-0 w-full";
-
-        group.forEach((p) => {
-            const card = document.createElement("div");
-            card.className = "w-full md:w-1/2 bg-gray-700 rounded-lg p-4 hover:scale-105 transition-transform shadow-md flex flex-col";
-
-            let techStackHTML = '';
-            if (p.tech && p.tech.length > 0) {
-                p.tech.forEach(techKey => {
-                    const skill = skillData[techKey];
-                    if (skill) {
-                        techStackHTML += `
-                        <div class="flex items-center text-xs bg-gray-600 px-2 py-1 rounded-full">
-                            <img src="${skill.src}" alt="${skill.name}" class="h-4 w-4 mr-2" />
-                            <span>${skill.name}</span>
-                        </div>
-                    `;
-                    }
+        // --- Logika Navbar Mobile ---
+        if (menuBtn && mobileMenu) {
+            const navLinks = mobileMenu.getElementsByTagName('a');
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            for (let link of navLinks) {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
                 });
             }
-
-            card.innerHTML = `
-            <div>
-                <img src="${p.img}" alt="${p.title}" class="rounded mb-4 w-full h-48 object-cover" />
-                <h3 class="text-xl font-semibold">${p.title}</h3>
-                <p class="text-m text-gray-300 mt-2">${p.desc}</p>
-            </div>
-            <div class="mt-4 pt-4 border-t border-gray-600 flex flex-wrap gap-2 flex-grow items-end">
-                ${techStackHTML}
-            </div>
-        `;
-            groupDiv.appendChild(card);
-        });
-
-        carousel.appendChild(groupDiv);
-    }
-
-
-    // --- Logika Auto-Scroll Carousel (Tidak ada perubahan di sini) ---
-    const scrollInterval = 3000;
-    const cardWidth = 300 + 24;
-
-    setInterval(() => {
-        if (carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 1) {
-            carousel.scrollTo({ left: 0, behavior: "smooth" });
-        } else {
-            carousel.scrollBy({ left: cardWidth, behavior: "smooth" });
         }
-    }, scrollInterval);
 
-    // --- Logika Animasi Fade-in saat Scroll ---
-    // Opsi untuk Intersection Observer
-    const observerOptions = {
-        root: null, // Menggunakan viewport sebagai root
-        rootMargin: '0px',
-        threshold: 0.1 // Memicu animasi saat 10% elemen terlihat
-    };
+        // --- Data ---
+        const skillData = {
+            'html5': { name: 'HTML5', src: 'https://cdn.simpleicons.org/html5/E34F26' },
+            'css3': { name: 'CSS3', src: 'https://cdn.simpleicons.org/css3/1572B6' },
+            'javascript': { name: 'JavaScript', src: 'https://cdn.simpleicons.org/javascript/F7DF1E' },
+            'python': { name: 'Python', src: 'https://cdn.simpleicons.org/python/3776AB' },
+            'java': { name: 'Java', src: 'https://cdn.simpleicons.org/java/007396' },
+            'nextjs': { name: 'Next.js', src: 'https://cdn.simpleicons.org/nextdotjs/FFFFFF' },
+            'laravel': { name: 'Laravel', src: 'https://cdn.simpleicons.org/laravel/FF2D20' },
+            'ci4': { name: 'CodeIgniter 4', src: 'https://cdn.simpleicons.org/codeigniter/EF4223' },
+            'flutter': { name: 'Flutter', src: 'https://cdn.simpleicons.org/flutter/40C4FF' },
+            'tailwind': { name: 'Tailwind CSS', src: 'https://cdn.simpleicons.org/tailwindcss/06B6D4' },
+            'mysql': { name: 'MySQL', src: 'https://cdn.simpleicons.org/mysql/4479A1' },
+            'sqlite': { name: 'SQLite', src: 'https://cdn.simpleicons.org/sqlite/003B57' },
+            'figma': { name: 'Figma', src: 'https://cdn.simpleicons.org/figma/F24E1E' },
+            'github': { name: 'GitHub', src: 'https://cdn.simpleicons.org/github/FFFFFF' },
+            'excel': { name: 'Excel', src: 'https://cdn.simpleicons.org/microsoftexcel/217346' },
+            'word': { name: 'Word', src: 'https://cdn.simpleicons.org/microsoftword/2B579A' },
+            'vbnet': { name: 'VB.NET', src: 'https://cdn.simpleicons.org/dot-net/512BD4' }
+        };
 
-    // Fungsi callback yang akan dijalankan
-    const observerCallback = (entries, observer) => {
-        entries.forEach(entry => {
-            // Jika elemen masuk ke dalam viewport
-            if (entry.isIntersecting) {
-                // Tambahkan class 'is-visible' untuk memicu transisi
-                entry.target.classList.add('is-visible');
-                // Berhenti mengamati elemen ini setelah animasi berjalan
-                observer.unobserve(entry.target);
+        const projects = [
+            {
+                title: "InvenSync - Sistem Inventaris",
+                desc: "Sistem Point-of-Sale dan inventaris untuk usaha kuliner kecil menggunakan VB.NET & SQLite.",
+                img: "images/invensync.png",
+                tech: ['vbnet', 'sqlite']
+            },
+            {
+                title: "FinDer - Sistem Pendukung Keputusan",
+                desc: "Aplikasi berbasis web untuk membantu pengguna memilih ikan hias yang paling sesuai dengan metode MOORA.",
+                img: "images/finder.png",
+                tech: ['laravel', 'mysql', 'javascript', 'tailwind']
+            },
+            {
+                title: "MindCourse - Aplikasi Manajemen Tugas",
+                desc: "Aplikasi mobile Flutter dengan database lokal SQLite untuk mengelola mata pelajaran dan jadwal studi.",
+                img: "images/mindcourse.png",
+                tech: ['flutter', 'sqlite']
+            },
+            {
+                title: "ShareThem - Aplikasi Pengiriman File",
+                desc: "Aplikasi Flutter untuk berbagi file secara peer-to-peer (P2P) di jaringan lokal.",
+                img: "images/sharethem.png",
+                tech: ['flutter']
+            },
+            {
+                title: "CSC - Landing Page",
+                desc: "Halaman profil dan informasi untuk organisasi mahasiswa Computer Student Club.",
+                img: "images/csc.png",
+                tech: ['html5', 'css3', 'javascript']
+            },
+        ];
+
+        // --- Render Konten Dinamis ---
+        // Render Projects Carousel
+        if (carousel) {
+            projects.forEach((p) => {
+                const card = document.createElement("div");
+                card.className = "flex-shrink-0 w-4/5 sm:w-1/2 md:w-1/3 lg:w-1/4 snap-center bg-gray-700 rounded-lg p-4 hover:scale-105 transition-transform shadow-md flex flex-col";
+                let techStackHTML = '';
+                if (p.tech && p.tech.length > 0) {
+                    p.tech.forEach(techKey => {
+                        const skill = skillData[techKey];
+                        if (skill) {
+                            techStackHTML += `
+                            <div class="flex items-center text-xs bg-gray-600 px-2 py-1 rounded-full">
+                                <img src="${skill.src}" alt="${skill.name}" class="h-4 w-4 mr-2" />
+                                <span>${skill.name}</span>
+                            </div>`;
+                        }
+                    });
+                }
+                card.innerHTML = `
+                <div class="flex-grow">
+                    <img src="${p.img}" alt="${p.title}" class="rounded mb-4 w-full h-48 object-cover" />
+                    <h3 class="text-xl font-semibold">${p.title}</h3>
+                    <p class="text-sm text-gray-300 mt-2 line-clamp-3">${p.desc}</p>
+                </div>
+                <div class="mt-4 pt-4 border-t border-gray-600 flex flex-wrap gap-2">
+                    ${techStackHTML}
+                </div>`;
+                carousel.appendChild(card);
+            });
+        }
+
+        // Render Skills Grid
+        if (skillsContainer) {
+             for (const key in skillData) {
+                const skill = skillData[key];
+                const skillDiv = document.createElement('div');
+                skillDiv.className = "flex flex-col items-center text-center";
+                skillDiv.innerHTML = `
+                    <div class="bg-gray-700 p-3 rounded-lg hover:scale-110 transition-transform duration-300">
+                        <img src="${skill.src}" alt="${skill.name} Logo" class="h-10 w-10" />
+                    </div>
+                    <span class="font-semibold text-white mt-2 text-sm">${skill.name}</span>`;
+                skillsContainer.appendChild(skillDiv);
+             }
+        }
+
+        // --- Logika Auto-Scroll Carousel (DIPERBAIKI) ---
+        if (carousel) {
+            const scrollInterval = 4000; // Interval 4 detik
+
+            setInterval(() => {
+                // Jangan scroll jika pengguna sedang menunjuk carousel dengan mouse
+                if (carousel.matches(':hover')) {
+                    return;
+                }
+                
+                // Ambil lebar yang terlihat dari carousel saat ini secara dinamis
+                const scrollAmount = carousel.clientWidth;
+
+                // Cek apakah scroll sudah mencapai ujung
+                if (carousel.scrollLeft + scrollAmount >= carousel.scrollWidth - 1) {
+                    // Jika sudah, kembali ke awal dengan mulus
+                    carousel.scrollTo({ left: 0, behavior: "smooth" });
+                } else {
+                    // Jika belum, geser ke kanan sejauh lebar carousel yang terlihat
+                    carousel.scrollBy({ left: scrollAmount, behavior: "smooth" });
+                }
+            }, scrollInterval);
+        }
+
+        // --- Logika Animasi ---
+        let lastScrollTop = 0;
+        window.addEventListener("scroll", () => {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > lastScrollTop && scrollTop > navbar.offsetHeight) {
+                navbar.style.transform = "translateY(-100%)";
+            } else {
+                navbar.style.transform = "translateY(0)";
             }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
         });
-    };
+        
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+        const observerCallback = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        };
+        const observer = new IntersectionObserver(observerCallback, observerOptions);
+        const sectionsToAnimate = document.querySelectorAll('.fade-in-section');
+        sectionsToAnimate.forEach(section => {
+            observer.observe(section);
+        });
 
-    // Buat observer baru
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    // Ambil semua section yang ingin dianimasikan dan amati
-    const sectionsToAnimate = document.querySelectorAll('.fade-in-section');
-    sectionsToAnimate.forEach(section => {
-        observer.observe(section);
     });
 </script>
-
 </html>
