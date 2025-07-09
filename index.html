@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth"> <head>
+<html lang="en" class="scroll-smooth">
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Portofolio - Mochamad Rifat Syahman Hambali</title>
@@ -22,7 +24,8 @@
 
         .fade-in-section {
             opacity: 0;
-            transform: translateY(20px); /* Mengurangi jarak agar lebih subtle */
+            transform: translateY(20px);
+            /* Mengurangi jarak agar lebih subtle */
             transition: opacity 1.2s ease-out, transform 0.8s ease-out;
         }
 
@@ -49,8 +52,10 @@
             </div>
             <div class="md:hidden">
                 <button id="menu-btn" class="focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7"></path>
                     </svg>
                 </button>
             </div>
@@ -76,12 +81,20 @@
         </div>
     </section>
 
-    <section id="projects" class="py-16 px-4 sm:px-6 md:px-20 bg-gray-800">
+    <section id="projects" class="py-16 px-4 sm:px-6 md:px-20 bg-gray-800 flex flex-col items-center">
         <h2 class="text-3xl font-bold text-center mb-8 fade-in-section">Projects</h2>
         <div class="relative overflow-hidden fade-in-section">
             <div id="carousel" class="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory p-4">
-                 </div>
+            </div>
         </div>
+        <a href="https://github.com/syhenn1" target="_blank" rel="noopener noreferrer"
+            class="flex mt-10 items-center justify-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 max-w-4xl">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+            </svg>
+            Lihat Proyek Lainnya
+        </a>
     </section>
 
     <section id="about" class="py-16 px-4 sm:px-6 md:px-20 bg-gray-900 text-white">
@@ -94,7 +107,7 @@
             <div class="w-full md:w-1/2 p-2 sm:p-4">
                 <div class="relative wrap overflow-hidden h-full fade-in-section">
                     <div class="border-2-2 absolute border-white h-full border left-5 md:left-1/2"></div>
-                    
+
                     <div class="mb-8 flex justify-between items-center w-full right-timeline">
                         <div class="order-1 md:w-5/12"></div>
                         <div class="z-20 flex items-center order-1 bg-blue-500 shadow-xl w-10 h-10 rounded-full">
@@ -103,7 +116,8 @@
                         <div class="order-1 bg-gray-800 rounded-lg shadow-xl w-full md:w-5/12 ml-6 md:ml-0 px-6 py-4">
                             <time class="font-mono italic text-sm text-gray-400">2023</time>
                             <h3 class="mb-3 font-bold text-lg md:text-xl">Politeknik Negeri Jakarta</h3>
-                            <p class="text-sm leading-snug tracking-wide text-gray-300">Awal mula saya serius mendalami ilmu teknologi informasi, mengambil program studi D4 Teknik Informatika.</p>
+                            <p class="text-sm leading-snug tracking-wide text-gray-300">Awal mula saya serius mendalami
+                                ilmu teknologi informasi, mengambil program studi D4 Teknik Informatika.</p>
                         </div>
                     </div>
 
@@ -112,10 +126,13 @@
                         <div class="z-20 flex items-center order-1 bg-green-500 shadow-xl w-10 h-10 rounded-full">
                             <h1 class="mx-auto font-semibold text-lg">2</h1>
                         </div>
-                        <div class="order-1 bg-gray-800 rounded-lg shadow-xl w-full md:w-5/12 ml-6 md:ml-0 md:text-right px-6 py-4">
+                        <div
+                            class="order-1 bg-gray-800 rounded-lg shadow-xl w-full md:w-5/12 ml-6 md:ml-0 md:text-right px-6 py-4">
                             <time class="font-mono italic text-sm text-gray-400">2024</time>
                             <h3 class="mb-3 font-bold text-lg md:text-xl">Computer Student Club</h3>
-                            <p class="text-sm leading-snug tracking-wide text-gray-300">Ketika perkuliahan terasa kurang, saya putuskan untuk mengikuti KSM Club Komputer di bidang Software Developer.</p>
+                            <p class="text-sm leading-snug tracking-wide text-gray-300">Ketika perkuliahan terasa
+                                kurang, saya putuskan untuk mengikuti KSM Club Komputer di bidang Software Developer.
+                            </p>
                         </div>
                     </div>
 
@@ -127,18 +144,21 @@
                         <div class="order-1 bg-gray-800 rounded-lg shadow-xl w-full md:w-5/12 ml-6 md:ml-0 px-6 py-4">
                             <time class="font-mono italic text-sm text-gray-400">2025</time>
                             <h3 class="mb-3 font-bold text-lg md:text-xl">Kompetisi Pertama</h3>
-                            <p class="text-sm leading-snug tracking-wide text-gray-300">Kompetisi pertama saya adalah kompetisi data science di Kaggle yang memperebutkan kursi Compfest Academy.</p>
+                            <p class="text-sm leading-snug tracking-wide text-gray-300">Kompetisi pertama saya adalah
+                                kompetisi data science di Kaggle yang memperebutkan kursi Compfest Academy.</p>
                         </div>
                     </div>
-                     <div class="mb-8 flex justify-between md:flex-row-reverse items-center w-full left-timeline">
+                    <div class="mb-8 flex justify-between md:flex-row-reverse items-center w-full left-timeline">
                         <div class="order-1 md:w-5/12"></div>
                         <div class="z-20 flex items-center order-1 bg-purple-500 shadow-xl w-10 h-10 rounded-full">
                             <h1 class="mx-auto font-semibold text-lg">4</h1>
                         </div>
-                        <div class="order-1 bg-gray-800 rounded-lg shadow-xl w-full md:w-5/12 ml-6 md:ml-0 md:text-right px-6 py-4">
+                        <div
+                            class="order-1 bg-gray-800 rounded-lg shadow-xl w-full md:w-5/12 ml-6 md:ml-0 md:text-right px-6 py-4">
                             <time class="font-mono italic text-sm text-gray-400">2025 - Sekarang</time>
                             <h3 class="mb-3 font-bold text-lg md:text-xl">Harapan Masa Depan</h3>
-                            <p class="text-sm leading-snug tracking-wide text-gray-300">Terus belajar dan berkontribusi dalam proyek-proyek inovatif di dunia teknologi.</p>
+                            <p class="text-sm leading-snug tracking-wide text-gray-300">Terus belajar dan berkontribusi
+                                dalam proyek-proyek inovatif di dunia teknologi.</p>
                         </div>
                     </div>
                 </div>
@@ -159,23 +179,28 @@
                     PHP, Python, serta menggunakan framework mulai dari Laravel hingga Flutter.
                 </p>
                 <div class="mt-8 flex justify-center px-4 fade-in-section">
-                    <img src="https://ghchart.rshah.org/syhenn1?color=dark" alt="Kontribusi GitHub Rifat" class="w-full" />
+                    <img src="https://ghchart.rshah.org/syhenn1?color=dark" alt="Kontribusi GitHub Rifat"
+                        class="w-full" />
                 </div>
                 <div class="mt-10 flex justify-center fade-in-section">
                     <img src="https://github-profile-trophy.vercel.app/?username=syhenn1&theme=tokyonight&row=1&margin-w=15"
                         alt="GitHub Trophies" />
                 </div>
                 <div class="mt-8 flex flex-col sm:flex-row gap-4 fade-in-section justify-center md:justify-start">
-                    <a href="https://github.com/syhenn1" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300">
+                    <a href="https://github.com/syhenn1" target="_blank" rel="noopener noreferrer"
+                        class="flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300">
                         <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                             <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                            <path
+                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
                         </svg>
                         GitHub
                     </a>
-                    <a href="/path-to-your-cv.pdf" download class="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300">
+                    <a href="/path-to-your-cv.pdf" download
+                        class="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                         </svg>
                         Download CV
                     </a>
@@ -186,9 +211,7 @@
 
     <section id="skills" class="bg-gray-800 py-16 px-4 sm:px-6 md:px-20">
         <h2 class="text-3xl font-bold text-center mb-12 fade-in-section">Technical Skills</h2>
-        <div class="max-w-4xl mx-auto bg-gray-900 p-6 sm:p-8 rounded-xl shadow-2xl fade-in-section">
-            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-x-4 gap-y-8">
-                </div>
+        <div id="skills-wrapper" class="max-w-4xl mx-auto space-y-10 fade-in-section">
         </div>
     </section>
 
@@ -212,7 +235,7 @@
         // Ambil elemen HTML yang diperlukan
         const navbar = document.getElementById('navbar');
         const carousel = document.getElementById("carousel");
-        const skillsContainer = document.querySelector("#skills .grid");
+        const skillsWrapper = document.getElementById("skills-wrapper"); // Target baru untuk skills
         const menuBtn = document.getElementById('menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
 
@@ -229,61 +252,89 @@
             }
         }
 
-        // --- Data ---
-        const skillData = {
-            'html5': { name: 'HTML5', src: 'https://cdn.simpleicons.org/html5/E34F26' },
-            'css3': { name: 'CSS3', src: 'https://cdn.simpleicons.org/css3/1572B6' },
-            'javascript': { name: 'JavaScript', src: 'https://cdn.simpleicons.org/javascript/F7DF1E' },
-            'python': { name: 'Python', src: 'https://cdn.simpleicons.org/python/3776AB' },
-            'java': { name: 'Java', src: 'https://cdn.simpleicons.org/java/007396' },
-            'nextjs': { name: 'Next.js', src: 'https://cdn.simpleicons.org/nextdotjs/FFFFFF' },
-            'laravel': { name: 'Laravel', src: 'https://cdn.simpleicons.org/laravel/FF2D20' },
-            'ci4': { name: 'CodeIgniter 4', src: 'https://cdn.simpleicons.org/codeigniter/EF4223' },
-            'flutter': { name: 'Flutter', src: 'https://cdn.simpleicons.org/flutter/40C4FF' },
-            'tailwind': { name: 'Tailwind CSS', src: 'https://cdn.simpleicons.org/tailwindcss/06B6D4' },
-            'mysql': { name: 'MySQL', src: 'https://cdn.simpleicons.org/mysql/4479A1' },
-            'sqlite': { name: 'SQLite', src: 'https://cdn.simpleicons.org/sqlite/003B57' },
-            'figma': { name: 'Figma', src: 'https://cdn.simpleicons.org/figma/F24E1E' },
-            'github': { name: 'GitHub', src: 'https://cdn.simpleicons.org/github/FFFFFF' },
-            'excel': { name: 'Excel', src: 'https://cdn.simpleicons.org/microsoftexcel/217346' },
-            'word': { name: 'Word', src: 'https://cdn.simpleicons.org/microsoftword/2B579A' },
-            'vbnet': { name: 'VB.NET', src: 'https://cdn.simpleicons.org/dot-net/512BD4' }
+        // --- Data (DENGAN KATEGORI) ---
+        const skillsByCategory = {
+            "Programming Languages": {
+                'html': { name: 'HTML5', src: 'https://cdn.simpleicons.org/html5/E34F26' },
+                'css': { name: 'CSS3', src: 'https://cdn.simpleicons.org/css3/1572B6' },
+                'javascript': { name: 'JavaScript', src: 'https://cdn.simpleicons.org/javascript/F7DF1E' },
+                'php': { name: 'PHP', src: 'https://cdn.simpleicons.org/php/777BB4' },
+                'python': { name: 'Python', src: 'https://cdn.simpleicons.org/python/3776AB' },
+            },
+            "Frameworks & Technologies": {
+                'nextjs': { name: 'Next.js', src: 'https://cdn.simpleicons.org/nextdotjs/FFFFFF' },
+                'laravel': { name: 'Laravel', src: 'https://cdn.simpleicons.org/laravel/FF2D20' },
+                'ci4': { name: 'CodeIgniter 4', src: 'https://cdn.simpleicons.org/codeigniter/EF4223' },
+                'flutter': { name: 'Flutter', src: 'https://cdn.simpleicons.org/flutter/40C4FF' },
+                'tailwind': { name: 'Tailwind CSS', src: 'https://cdn.simpleicons.org/tailwindcss/06B6D4' },
+                'firebase': { name: 'Firebase', src: 'https://cdn.simpleicons.org/firebase/FFCA28' },
+            },
+            "Databases": {
+                'mysql': { name: 'MySQL', src: 'https://cdn.simpleicons.org/mysql/4479A1' },
+                'sqlite': { name: 'SQLite', src: 'https://cdn.simpleicons.org/sqlite/003B57' },
+                'oracle': { name: 'Oracle', src: 'images/Oracle-Symbol.png' },
+            },
+            "Tools & Platforms": {
+                'figma': { name: 'Figma', src: 'https://cdn.simpleicons.org/figma/F24E1E' },
+                'github': { name: 'GitHub', src: 'https://cdn.simpleicons.org/github/FFFFFF' },
+                'notion': { name: 'Notion', src: 'https://cdn.simpleicons.org/notion/000000' },
+                'jira': { name: 'Jira', src: 'https://cdn.simpleicons.org/jira/0052CC' },
+                'excel': { name: 'Excel', src: 'images/icons8-excel-480.png' },
+                'word': { name: 'Word', src: 'images/icons8-word-480.png' },
+                'powerpoint': { name: 'PowerPoint', src: 'images/icons8-powerpoint-480.png' },
+
+            },
+            "IDE": {
+                'visualstudio': { name: 'Visual Studio', src: 'images/icons8-visual-studio-480.png' },
+                'visualstudiocode': { name: 'Visual Studio Code', src: 'images/icons8-visual-studio-code-2019-480.png' },
+            }
         };
 
         const projects = [
             {
                 title: "InvenSync - Sistem Inventaris",
-                desc: "Sistem Point-of-Sale dan inventaris untuk usaha kuliner kecil menggunakan VB.NET & SQLite.",
+                desc: "Sistem Kasir dan Inventaris yang disinkronkan dalam satu sistem untuk usaha kecil terutama UMKM dengan berbagai pengelola yang memiliki batasan tertentu.",
                 img: "images/invensync.png",
-                tech: ['vbnet', 'sqlite']
+                tech: ['html', 'css', 'javascript', 'tailwind', 'php', 'oracle', 'figma', 'jira', 'visualstudiocode'] // Kunci harus cocok dengan yang di 'skillsByCategory'
             },
             {
                 title: "FinDer - Sistem Pendukung Keputusan",
                 desc: "Aplikasi berbasis web untuk membantu pengguna memilih ikan hias yang paling sesuai dengan metode MOORA.",
                 img: "images/finder.png",
-                tech: ['laravel', 'mysql', 'javascript', 'tailwind']
+                tech: ['html', 'css', 'javascript', 'tailwind', 'php', 'laravel', 'mysql', 'figma', 'notion', 'visualstudiocode']
             },
             {
                 title: "MindCourse - Aplikasi Manajemen Tugas",
                 desc: "Aplikasi mobile Flutter dengan database lokal SQLite untuk mengelola mata pelajaran dan jadwal studi.",
                 img: "images/mindcourse.png",
-                tech: ['flutter', 'sqlite']
+                tech: ['flutter', 'sqlite', 'visualstudiocode']
             },
             {
                 title: "ShareThem - Aplikasi Pengiriman File",
-                desc: "Aplikasi Flutter untuk berbagi file secara peer-to-peer (P2P) di jaringan lokal.",
+                desc: "Aplikasi Flutter untuk berbagi file secara peer-to-peer (P2P) di jaringan lokal tanpa penggunaan internet dalam pengirimannya.",
                 img: "images/sharethem.png",
-                tech: ['flutter']
+                tech: ['flutter', 'firebase', 'figma', 'notion', 'visualstudiocode']
             },
             {
                 title: "CSC - Landing Page",
-                desc: "Halaman profil dan informasi untuk organisasi mahasiswa Computer Student Club.",
+                desc: "Halaman profil dan informasi untuk KSM yang bernama Computer Student Club di Politeknik Negeri Jakarta.",
                 img: "images/csc.png",
-                tech: ['html5', 'css3', 'javascript']
+                tech: ['html', 'css', 'javascript', 'nextjs', 'tailwind', 'figma', 'visualstudiocode']
             },
         ];
 
         // --- Render Konten Dinamis ---
+
+        // Fungsi untuk mengambil skill berdasarkan kunci dari semua kategori
+        const getSkillByKey = (key) => {
+            for (const category in skillsByCategory) {
+                if (skillsByCategory[category][key]) {
+                    return skillsByCategory[category][key];
+                }
+            }
+            return null; // Jika tidak ditemukan
+        };
+
         // Render Projects Carousel
         if (carousel) {
             projects.forEach((p) => {
@@ -292,7 +343,7 @@
                 let techStackHTML = '';
                 if (p.tech && p.tech.length > 0) {
                     p.tech.forEach(techKey => {
-                        const skill = skillData[techKey];
+                        const skill = getSkillByKey(techKey); // Gunakan fungsi helper
                         if (skill) {
                             techStackHTML += `
                             <div class="flex items-center text-xs bg-gray-600 px-2 py-1 rounded-full">
@@ -315,46 +366,58 @@
             });
         }
 
-        // Render Skills Grid
-        if (skillsContainer) {
-             for (const key in skillData) {
-                const skill = skillData[key];
-                const skillDiv = document.createElement('div');
-                skillDiv.className = "flex flex-col items-center text-center";
-                skillDiv.innerHTML = `
-                    <div class="bg-gray-700 p-3 rounded-lg hover:scale-110 transition-transform duration-300">
-                        <img src="${skill.src}" alt="${skill.name} Logo" class="h-10 w-10" />
-                    </div>
-                    <span class="font-semibold text-white mt-2 text-sm">${skill.name}</span>`;
-                skillsContainer.appendChild(skillDiv);
-             }
+        // Render Skills Grid (DENGAN KATEGORI)
+        if (skillsWrapper) {
+            for (const categoryName in skillsByCategory) {
+                const categorySkills = skillsByCategory[categoryName];
+
+                // Buat kontainer untuk setiap kategori
+                const categoryContainer = document.createElement('div');
+                categoryContainer.className = 'bg-gray-900 p-6 sm:p-8 rounded-xl shadow-2xl';
+
+                // Buat judul kategori
+                const categoryTitle = document.createElement('h4');
+                categoryTitle.className = 'text-lg font-bold text-blue-400 mb-6';
+                categoryTitle.textContent = categoryName;
+                categoryContainer.appendChild(categoryTitle);
+
+                // Buat grid untuk ikon-ikon di dalam kategori
+                const gridContainer = document.createElement('div');
+                gridContainer.className = 'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-x-4 gap-y-8';
+
+                for (const key in categorySkills) {
+                    const skill = categorySkills[key];
+                    const skillDiv = document.createElement('div');
+                    skillDiv.className = "flex flex-col items-center text-center";
+                    skillDiv.innerHTML = `
+                        <div class="bg-gray-700 p-3 rounded-lg hover:scale-110 transition-transform duration-300">
+                            <img src="${skill.src}" alt="${skill.name} Logo" class="h-10 w-10" />
+                        </div>
+                        <span class="font-semibold text-white mt-2 text-sm">${skill.name}</span>`;
+                    gridContainer.appendChild(skillDiv);
+                }
+
+                categoryContainer.appendChild(gridContainer);
+                skillsWrapper.appendChild(categoryContainer);
+            }
         }
 
-        // --- Logika Auto-Scroll Carousel (DIPERBAIKI) ---
+        // --- Logika Interaksi & Animasi ---
+        // Auto-Scroll Carousel
         if (carousel) {
-            const scrollInterval = 4000; // Interval 4 detik
-
+            const scrollInterval = 4000;
             setInterval(() => {
-                // Jangan scroll jika pengguna sedang menunjuk carousel dengan mouse
-                if (carousel.matches(':hover')) {
-                    return;
-                }
-                
-                // Ambil lebar yang terlihat dari carousel saat ini secara dinamis
+                if (carousel.matches(':hover')) return;
                 const scrollAmount = carousel.clientWidth;
-
-                // Cek apakah scroll sudah mencapai ujung
                 if (carousel.scrollLeft + scrollAmount >= carousel.scrollWidth - 1) {
-                    // Jika sudah, kembali ke awal dengan mulus
                     carousel.scrollTo({ left: 0, behavior: "smooth" });
                 } else {
-                    // Jika belum, geser ke kanan sejauh lebar carousel yang terlihat
                     carousel.scrollBy({ left: scrollAmount, behavior: "smooth" });
                 }
             }, scrollInterval);
         }
 
-        // --- Logika Animasi ---
+        // Navbar Hide/Show on Scroll
         let lastScrollTop = 0;
         window.addEventListener("scroll", () => {
             let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -365,7 +428,8 @@
             }
             lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
         });
-        
+
+        // Fade-in Animation on Scroll
         const observerOptions = {
             root: null,
             rootMargin: '0px',
@@ -387,4 +451,5 @@
 
     });
 </script>
+
 </html>
