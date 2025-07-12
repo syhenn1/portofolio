@@ -68,14 +68,14 @@
     </nav>
 
     <section id="hero"
-        class="h-screen flex flex-col md:flex-row items-center justify-center text-center md:text-left relative parallax-bg">
-        <img src="images/20240315_205649.jpg" alt="profile"
-            class="md:h-full w-6/12 mx-auto rounded-full md:rounded-none md:mx-0 object-cover shadow-lg" />
+        class="h-screen flex flex-col md:flex-row md:bg-white md:bg-opacity-100 bg-opacity-0 items-center justify-center text-center md:text-left relative parallax-bg">
+        <img src="images/20240315_205649-removebg-preview (1).png" alt="profile"
+            class="md:h-full w-6/12 mx-auto rounded-full md:rounded-none md:mx-0 object-cover" />
         <div class="w-full md:w-7/12 px-6 md:px-20">
-            <h1 class="text-3xl md:text-6xl font-bold mb-4 leading-tight">
+            <h1 class="text-3xl mt-6 md:text-6xl font-bold mb-4 leading-tight text-white md:text-gray-800">
                 Mochamad Rifat Syahman Hambali
             </h1>
-            <p class="text-xl text-gray-300">
+            <p class="text-xl text-gray-200 md:text-gray-600">
                 Software Developer & Data Analyst Enthusiast
             </p>
         </div>
@@ -85,7 +85,7 @@
         <h2 class="text-4xl font-bold text-center mb-12 fade-in-section">Projects</h2>
         <div class="relative w-full overflow-hidden fade-in-section">
             <div id="carousel" class="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory p-4 -mx-4">
-                </div>
+            </div>
         </div>
         <a href="https://github.com/syhenn1" target="_blank" rel="noopener noreferrer"
             class="flex mt-10 items-center justify-center gap-2 bg-gray-900 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 max-w-sm">
@@ -215,18 +215,54 @@
         </div>
     </section>
 
-    <section id="contact" class="py-16 px-4 sm:px-6 md:px-20 text-center">
+    <section id="contactEmail" class="bg-gray-900 py-16 px-4 sm:px-6 md:px-20">
+        <h2 class="text-3xl font-bold text-center mb-14 fade-in-section">Contact</h2>
+        <form action="https://api.web3forms.com/submit" method="POST" class="space-y-4 max-w-md mx-auto">
+
+            <!-- Access Key dari Web3Forms -->
+            <input type="hidden" name="access_key" value="0503ec93-8b8b-47c6-acef-bd52edb53213">
+
+            <label class="block">
+                Nama:
+                <input type="text" name="name" placeholder="Nama Anda" required class="border p-2 w-full text-black">
+            </label>
+
+            <label class="block">
+                Email:
+                <input type="email" name="email" placeholder="email@example.com" required class="border p-2 w-full text-black">
+            </label>
+
+            <label class="block">
+                Pesan:
+                <textarea name="message" rows="5" placeholder="Tulis pesan Anda..." required
+                    class="border p-2 w-full text-black"></textarea>
+            </label>
+
+            <!-- Anti Bot -->
+            <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
+            <!-- Halaman redirect setelah submit -->
+            <input type="hidden" name="redirect" value="http://localhost/portofolio/index.html">
+
+            <button type="submit" class="flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300">
+                Kirim
+            </button>
+        </form>
+
+    </section>
+
+    <section id="contact" class="py-16 px-4 sm:px-6 md:px-20 text-center bg-gray-800">
         <h2 class="text-3xl font-bold mb-4">Contact Me</h2>
         <p class="text-gray-300 mb-6">Hubungi saya melalui email atau sosial media</p>
         <div class="flex justify-center gap-6">
-            <a href="mailto:youremail@example.com" class="hover:underline">Email</a>
-            <a href="https://github.com/username" class="hover:underline" target="_blank">GitHub</a>
-            <a href="https://linkedin.com/in/username" class="hover:underline" target="_blank">LinkedIn</a>
+            <a href="mailto:rifatsyahman@gmail.com" class="hover:underline">Email</a>
+            <a href="https://github.com/syhenn1" class="hover:underline" target="_blank">GitHub</a>
+            <a href="https://linkedin.com/in/rifatsyahman/" class="hover:underline" target="_blank">LinkedIn</a>
         </div>
     </section>
 
-    <footer class="text-center text-gray-400 py-6 bg-gray-900">
-        &copy; 2025 Rifat. All rights reserved.
+    <footer class="text-center text-gray-400 py-6 bg-gray-800">
+        &copy; 2025 Rifat Syahman. All rights reserved.
     </footer>
 </body>
 
