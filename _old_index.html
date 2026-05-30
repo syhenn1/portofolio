@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rifat Syahman — Software Developer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --bg:      #0f172a;
+            --surf:    #1e293b;
+            --surf2:   #273549;
+            --em:      #10b981;
+            --em2:     #34d399;
+            --em-glow: rgba(16,185,129,0.35);
+            --tx:      #f8fafc;
+            --muted:   #64748b;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        html { font-family: 'Inter', sans-serif; }
+        body  { background: var(--bg); color: var(--tx); overflow-x: hidden; margin: 0; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--em); border-radius: 2px; }
+
+        /* Progress */
+        #pb { position:fixed; top:0; left:0; height:2px; z-index:300;
+              background:linear-gradient(to right, var(--em), #06b6d4);
+              width:0%; transition:width .08s linear; pointer-events:none; }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(30,41,59,.7);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(16,185,129,.12);
+        }
+
+        /* Gradient text */
+        .gtx { background: linear-gradient(135deg, var(--em2), #06b6d4);
+               -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+               background-clip:text; }
+
+        /* Buttons */
+        .btn-em {
+            display:inline-flex; align-items:center; gap:8px;
+            background: var(--em); color: #052e16;
+            font-weight:700; font-size:14px; padding:12px 24px;
+            border-radius:10px; border:none; cursor:pointer;
+            transition:all .3s; position:relative; overflow:hidden;
+        }
+        .btn-em::after { content:''; position:absolute; inset:0; background:rgba(0,0,0,.15); opacity:0; transition:opacity .3s; }
+        .btn-em:hover::after { opacity:1; }
+        .btn-em:hover { transform:translateY(-2px); box-shadow:0 10px 30px var(--em-glow); }
+
+        .btn-ghost {
+            display:inline-flex; align-items:center; gap:8px;
+            border:1px solid rgba(16,185,129,.35); color: var(--em2);
+            font-weight:600; font-size:14px; padding:12px 24px;
+            border-radius:10px; background:rgba(16,185,129,.05); cursor:pointer;
+            transition:all .3s;
+        }
+        .btn-ghost:hover { background:rgba(16,185,129,.12); border-color:var(--em);
+                           transform:translateY(-2px); box-shadow:0 8px 24px rgba(16,185,129,.15); }
+
+        /* Navbar */
+        #nav { position:fixed; top:0; width:100%; z-index:100;
+               transition:transform .4s ease, background .3s; }
+        .nav-link { font-size:14px; font-weight:500; color:var(--muted);
+                    position:relative; padding-bottom:3px; transition:color .25s; }
+        .nav-link::after { content:''; position:absolute; bottom:0; left:0;
+                           height:1px; width:0; background:var(--em); transition:width .3s; }
+        .nav-link:hover, .nav-link.active { color:var(--em2); }
+        .nav-link:hover::after, .nav-link.active::after { width:100%; }
+        .mob-panel { max-height:0; overflow:hidden; transition:max-height .4s cubic-bezier(.16,1,.3,1); }
+        .mob-panel.open { max-height:320px; }
+
+        /* Typewriter cursor */
+        .cur { display:inline-block; width:2px; height:.95em; background:var(--em);
+               margin-left:3px; animation:blink 1s step-end infinite; vertical-align:-.05em; }
+        @keyframes blink { 50% { opacity:0; } }
+
+        /* ======= HERO ======= */
+        #hero { position:relative; height:100vh; min-height:600px;
+                background: linear-gradient(160deg, #0b1623 0%, #0f172a 40%, #0a1f14 100%);
+                display:flex; align-items:flex-end; overflow:hidden; }
+
+        /* Dot grid */
+        #hero::before { content:''; position:absolute; inset:0; z-index:0;
+            background-image: radial-gradient(rgba(16,185,129,.07) 1px, transparent 1px);
+            background-size: 32px 32px; }
+
+        /* Ambient glow blobs */
+        .blob { position:absolute; border-radius:50%; pointer-events:none; z-index:0;
+                filter:blur(100px); }
+
+        /* Photo wrap — right side full-height cinematic */
+        .hero-photo-wrap {
+            position:absolute; right:-2%; top:0; bottom:0;
+            width:58%; z-index:1; pointer-events:none;
+        }
+        .hero-photo-wrap img {
+            width:100%; height:100%;
+            object-fit:contain; object-position:bottom right;
+            display:block;
+        }
+        /* Seamless fades */
+        .hero-fade-left {
+            position:absolute; top:0; left:0; bottom:0; width:55%;
+            background: linear-gradient(to right, #0f172a 20%, rgba(15,23,42,.7) 60%, transparent 100%);
+            z-index:2;
+        }
+        .hero-fade-bottom {
+            position:absolute; bottom:0; left:0; right:0; height:45%;
+            background: linear-gradient(to top, #0f172a 0%, rgba(15,23,42,.6) 50%, transparent 100%);
+            z-index:2;
+        }
+
+        /* Hero text */
+        .hero-content {
+            position:relative; z-index:3;
+            padding: 0 5% 8% 5%;
+            max-width:640px;
+        }
+        @media(min-width:768px) { .hero-content { padding:0 0 7% 7%; } }
+
+        /* Scroll indicator */
+        @keyframes sdrop { 0%,100%{transform:translateY(0);opacity:1} 50%{transform:translateY(6px);opacity:.3} }
+        .sdrop { animation:sdrop 1.8s ease infinite; }
+
+        /* ======= STATS ======= */
+        .stat-card { background:var(--surf); border:1px solid rgba(16,185,129,.1);
+                     border-radius:16px; padding:20px 24px; text-align:center;
+                     transition:all .3s; }
+        .stat-card:hover { border-color:rgba(16,185,129,.35); transform:translateY(-4px);
+                           box-shadow:0 12px 32px rgba(16,185,129,.1); }
+
+        /* ======= SECTION LABEL ======= */
+        .slabel { font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700;
+                  color:var(--em); letter-spacing:.1em; text-transform:uppercase;
+                  display:flex; align-items:center; gap:8px; }
+        .slabel::before { content:'//'; color: #475569; }
+
+        /* Divider line */
+        .divline { height:1px; background:linear-gradient(to right, transparent, rgba(16,185,129,.25), transparent); }
+
+        /* ======= PROJECT CARD ======= */
+        .pcard { background:var(--surf); border:1px solid rgba(255,255,255,.06);
+                 border-radius:20px; overflow:hidden; flex-shrink:0;
+                 transition:all .35s cubic-bezier(.16,1,.3,1); }
+        .pcard:hover { border-color:rgba(16,185,129,.3); transform:translateY(-7px);
+                       box-shadow:0 24px 48px rgba(0,0,0,.4), 0 0 0 1px rgba(16,185,129,.15); }
+        .pcard:hover .pimg { transform:scale(1.06); }
+        .pimg { transition:transform .5s ease; }
+        #carousel { scrollbar-width:none; -ms-overflow-style:none; -webkit-overflow-scrolling:touch; }
+        #carousel::-webkit-scrollbar { display:none; }
+        .cdot { height:4px; border-radius:2px; background:#1e3a2f;
+                transition:all .3s; cursor:pointer; border:none; }
+        .cdot.on { width:22px !important; background:var(--em); }
+        .cdot:not(.on) { width:4px; }
+
+        /* Tech tag */
+        .ttag { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:500;
+                color:#6ee7b7; background:rgba(16,185,129,.07); border:1px solid rgba(16,185,129,.18);
+                padding:2px 8px; border-radius:999px; }
+
+        /* ======= TIMELINE ======= */
+        .tl-item { position:relative; margin-bottom:28px; }
+        .tl-dot { position:absolute; left:-5px; top:7px; width:10px; height:10px;
+                  border-radius:50%; border:2px solid var(--bg); }
+
+        /* ======= BENTO SKILL ======= */
+        .bcard { background:var(--surf); border:1px solid rgba(255,255,255,.06);
+                 border-radius:20px; padding:24px; transition:all .3s; }
+        .bcard:hover { border-color:rgba(16,185,129,.22);
+                       box-shadow:0 8px 32px rgba(16,185,129,.06); }
+        .sicon { transition:all .3s cubic-bezier(.16,1,.3,1); cursor:default; }
+        .sicon:hover { transform:translateY(-5px) scale(1.08); }
+        .sicon:hover .sibg { border-color:rgba(16,185,129,.5) !important;
+                             box-shadow:0 6px 20px rgba(16,185,129,.25); }
+
+        /* ======= CONTACT ======= */
+        .cl { background:var(--surf); border:1px solid rgba(255,255,255,.06);
+              border-radius:16px; padding:18px 20px;
+              display:flex; align-items:center; gap:14px; transition:all .3s; }
+        .cl:hover { border-color:rgba(16,185,129,.3); transform:translateX(6px);
+                    box-shadow:0 4px 20px rgba(16,185,129,.08); }
+        .ff { background:var(--surf2); border:1px solid rgba(255,255,255,.08);
+              border-radius:12px; padding:12px 15px; color:var(--tx); font-size:14px;
+              width:100%; outline:none; font-family:'Inter',sans-serif; transition:all .3s; }
+        .ff:focus { border-color:var(--em); box-shadow:0 0 0 3px rgba(16,185,129,.12); }
+        .ff::placeholder { color: #334155; }
+
+        /* ======= BACK TO TOP ======= */
+        #btt { position:fixed; bottom:28px; right:28px; z-index:50;
+               width:42px; height:42px; background:var(--surf);
+               border:1px solid rgba(16,185,129,.25); border-radius:12px;
+               color:var(--em); display:flex; align-items:center; justify-content:center;
+               opacity:0; pointer-events:none; transition:all .3s; cursor:pointer; }
+        #btt.on { opacity:1; pointer-events:auto; }
+        #btt:hover { background:rgba(16,185,129,.12); transform:translateY(-3px);
+                     box-shadow:0 8px 24px rgba(16,185,129,.2); }
+
+        /* Fade-up animation */
+        .fu { opacity:0; transform:translateY(24px);
+              transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1); }
+        .fu.vis { opacity:1; transform:none; }
+
+        /* Floating cards in hero */
+        @keyframes fl { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
+        .fl  { animation:fl 5s ease-in-out infinite; }
+        .fl2 { animation:fl 6s ease-in-out 1.2s infinite; }
+
+        /* Social icon button */
+        .soc { width:36px; height:36px; border-radius:9px; display:flex;
+               align-items:center; justify-content:center; color:var(--muted);
+               background:rgba(16,185,129,.06); border:1px solid rgba(16,185,129,.14);
+               transition:all .25s; }
+        .soc:hover { color:var(--em2); background:rgba(16,185,129,.14);
+                     border-color:rgba(16,185,129,.4); transform:scale(1.1); }
+
+        /* Status pulse */
+        @keyframes pulse-g { 0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.5)} 50%{box-shadow:0 0 0 5px rgba(74,222,128,0)} }
+        .pg { animation:pulse-g 2.2s ease infinite; }
+
+        /* Code decoration */
+        .code-deco { font-family:'JetBrains Mono',monospace; font-size:12px;
+                     line-height:1.7; white-space:nowrap; }
+    </style>
+</head>
+<body>
+    <div id="pb"></div>
+    <button id="btt" aria-label="Back to top">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"/>
+        </svg>
+    </button>
+
+    <!-- ===== NAV ===== -->
+    <nav id="nav" class="glass">
+        <div class="max-w-6xl mx-auto px-5 sm:px-8 py-4 flex justify-between items-center">
+            <a href="#hero" class="flex items-center gap-1 mono text-sm font-bold">
+                <span style="color:#475569;">&lt;</span>
+                <span class="text-white">rifat</span>
+                <span style="color:var(--em);">/&gt;</span>
+            </a>
+            <div class="hidden md:flex items-center gap-7">
+                <a href="#projects" class="nav-link" data-s="projects">Projects</a>
+                <a href="#about"    class="nav-link" data-s="about">About</a>
+                <a href="#skills"   class="nav-link" data-s="skills">Skills</a>
+                <a href="#contact"  class="nav-link" data-s="contact">Contact</a>
+                <a href="assets/CV_Mochamad-Rifat-Syahman-Hambali.pdf" download class="btn-em py-2 px-4 text-xs">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    Resume
+                </a>
+            </div>
+            <button id="mbtn" class="md:hidden w-8 h-8 flex flex-col gap-[5px] items-center justify-center rounded-lg hover:bg-white/5" aria-label="Menu">
+                <span id="ml1" class="block w-5 h-0.5 bg-white rounded transition-all duration-300 origin-center"></span>
+                <span id="ml2" class="block w-5 h-0.5 bg-white rounded transition-all duration-300"></span>
+                <span id="ml3" class="block w-3 h-0.5 bg-white rounded transition-all duration-300 origin-center"></span>
+            </button>
+        </div>
+        <div id="mmenu" class="mob-panel md:hidden border-t border-white/5">
+            <div class="max-w-6xl mx-auto px-5 py-3 flex flex-col gap-1">
+                <a href="#projects" class="mln py-2.5 px-3 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 font-medium transition-all">Projects</a>
+                <a href="#about"    class="mln py-2.5 px-3 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 font-medium transition-all">About</a>
+                <a href="#skills"   class="mln py-2.5 px-3 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 font-medium transition-all">Skills</a>
+                <a href="#contact"  class="mln py-2.5 px-3 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 font-medium transition-all">Contact</a>
+                <a href="assets/CV_Mochamad-Rifat-Syahman-Hambali.pdf" download class="btn-em justify-center mt-2 py-3">Download Resume</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== HERO (CINEMATIC) ===== -->
+    <section id="hero">
+        <!-- Ambient blobs -->
+        <div class="blob" style="width:600px;height:600px;top:-200px;right:-100px;background:radial-gradient(circle,rgba(16,185,129,.08),transparent 70%);"></div>
+        <div class="blob" style="width:400px;height:400px;bottom:0;left:0;background:radial-gradient(circle,rgba(6,182,212,.06),transparent 70%);"></div>
+
+        <!-- CINEMATIC PHOTO — right side, full height -->
+        <div class="hero-photo-wrap">
+            <img src="images/20240315_205649-removebg-preview (1).png" alt="Rifat Syahman" />
+            <div class="hero-fade-left"></div>
+            <div class="hero-fade-bottom"></div>
+        </div>
+
+        <!-- Floating code card -->
+        <div class="fl glass absolute z-10 rounded-2xl p-4 hidden lg:block"
+             style="right:3%;top:22%;border-color:rgba(16,185,129,.2);">
+            <div class="code-deco">
+                <span style="color:#475569;">while</span>
+                <span style="color:rgba(255,255,255,.3);"> (</span><span style="color:var(--em);">alive</span><span style="color:rgba(255,255,255,.3);">) {</span><br>
+                &nbsp;&nbsp;<span style="color:#fbbf24;">learn</span><span style="color:rgba(255,255,255,.3);">();</span><br>
+                &nbsp;&nbsp;<span style="color:#fbbf24;">build</span><span style="color:rgba(255,255,255,.3);">();</span><br>
+                <span style="color:rgba(255,255,255,.3);">}</span>
+            </div>
+        </div>
+
+        <!-- Status floating badge -->
+        <div class="fl2 glass absolute z-10 rounded-2xl px-4 py-2.5 hidden md:flex items-center gap-2"
+             style="right:30%;bottom:18%;border-color:rgba(74,222,128,.2);">
+            <div class="relative w-2.5 h-2.5 flex-shrink-0">
+                <div class="absolute inset-0 rounded-full bg-green-400 pg"></div>
+                <div class="relative w-full h-full rounded-full bg-green-400 z-10"></div>
+            </div>
+            <span class="text-xs font-semibold text-green-400 mono">open_to_work = true</span>
+        </div>
+
+        <!-- Text content -->
+        <div class="hero-content">
+            <div class="mono text-xs mb-5" style="color:var(--muted);">
+                <span style="color:#475569;">const</span>
+                <span style="color:var(--em2);"> developer</span>
+                <span style="color:#475569;"> = {</span>
+            </div>
+
+            <h1 class="font-black leading-[1.0] mb-3 text-white"
+                style="font-size:clamp(2.8rem,8vw,5.5rem);">
+                Rifat<br><span class="gtx">Syahman</span>
+            </h1>
+
+            <div class="flex items-center gap-2 mb-4 mono text-sm" style="color:rgba(255,255,255,.35);">
+                <span style="color:var(--muted);">role:</span>
+                <span style="color:var(--tx);" id="tw"></span><span class="cur"></span>
+            </div>
+
+            <p class="text-gray-400 mb-8 leading-relaxed max-w-sm" style="font-size:15px;">
+                Mahasiswa D4 Teknik Informatika di PNJ. Suka membangun hal-hal
+                yang <span style="color:var(--em);" class="font-semibold">bermanfaat</span> —
+                dari web, mobile, sampai analisis data.
+            </p>
+
+            <div class="flex flex-wrap gap-3 mb-7">
+                <a href="#projects" class="btn-em">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                    View Projects
+                </a>
+                <a href="#contact" class="btn-ghost">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    Get In Touch
+                </a>
+            </div>
+
+            <div class="flex gap-2.5">
+                <a href="https://github.com/syhenn1" target="_blank" rel="noopener" class="soc" aria-label="GitHub">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                </a>
+                <a href="https://linkedin.com/in/rifatsyahman/" target="_blank" rel="noopener" class="soc" aria-label="LinkedIn">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+                <a href="mailto:rifatsyahman@gmail.com" class="soc" aria-label="Email">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                </a>
+            </div>
+
+            <div class="mono text-xs mt-5" style="color:#475569;">}</div>
+        </div>
+
+        <!-- Scroll hint -->
+        <a href="#stats" class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
+           style="color:#334155;">
+            <span class="mono text-xs tracking-widest" style="font-size:10px;">SCROLL</span>
+            <div class="w-4 h-6 rounded-full border border-current flex items-start justify-center pt-1">
+                <div class="sdrop w-0.5 h-1.5 bg-current rounded-full"></div>
+            </div>
+        </a>
+    </section>
+
+    <!-- ===== STATS ===== -->
+    <section id="stats" style="background:var(--surf);border-top:1px solid rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.04);">
+        <div class="max-w-6xl mx-auto px-5 sm:px-8 py-10">
+            <div id="stats-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+        </div>
+    </section>
+
+    <!-- ===== PROJECTS ===== -->
+    <section id="projects" class="py-24 px-5 sm:px-8" style="background:var(--bg);">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-12 fu">
+                <div>
+                    <div class="slabel mb-3">featured work</div>
+                    <h2 class="text-3xl sm:text-4xl font-bold">
+                        Projects <span class="gtx">Unggulan</span>
+                    </h2>
+                    <p class="text-gray-500 mt-2 text-sm">Dari web, mobile, hingga data — dibangun dengan sungguh-sungguh.</p>
+                </div>
+                <a href="https://github.com/syhenn1" target="_blank" rel="noopener" class="btn-ghost mt-5 sm:mt-0 self-start text-sm">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    All on GitHub
+                </a>
+            </div>
+
+            <div class="relative fu">
+                <button id="cprev" class="hidden md:flex absolute -left-6 top-1/2 -translate-y-1/2 z-10 w-10 h-10 glass rounded-full items-center justify-center" style="color:var(--em2);">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                </button>
+                <button id="cnext" class="hidden md:flex absolute -right-6 top-1/2 -translate-y-1/2 z-10 w-10 h-10 glass rounded-full items-center justify-center" style="color:var(--em2);">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                </button>
+                <div id="carousel" class="flex gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory py-2 px-1"></div>
+                <div id="cdots" class="flex justify-center gap-2 mt-6"></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divline"></div>
+
+    <!-- ===== ABOUT ===== -->
+    <section id="about" class="py-24 px-5 sm:px-8" style="background:var(--bg);">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-14 fu">
+                <div class="slabel mb-3 justify-center">about me</div>
+                <h2 class="text-3xl sm:text-4xl font-bold">Kenalan <span class="gtx">Dulu</span></h2>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+                <!-- Bio -->
+                <div class="fu">
+                    <h3 class="text-2xl sm:text-3xl font-black text-white mb-5 leading-tight">
+                        Hai! Saya <span class="gtx">Rifat Syahman</span>,<br>
+                        <span class="text-xl font-semibold text-gray-400">Software Developer dari Jakarta.</span>
+                    </h3>
+                    <p class="text-gray-400 leading-relaxed mb-4 text-sm sm:text-base">
+                        Seorang <span class="text-white font-semibold">Programmer</span> dengan pengalaman matang di bidang
+                        <span style="color:var(--em)" class="font-semibold">software developing</span>. Fokus membangun
+                        aplikasi yang fungsional dan berdampak, baik dari sisi code quality maupun user experience.
+                    </p>
+                    <p class="text-gray-400 leading-relaxed mb-8 text-sm sm:text-base">
+                        Berpengalaman sebagai <span class="text-white font-semibold">ketua tim</span> di berbagai project.
+                        Terampil dengan Dart, PHP, Python, Laravel, dan Flutter. Juga antusias di bidang
+                        <span style="color:#06b6d4" class="font-semibold">data analytics</span>.
+                    </p>
+
+                    <div class="space-y-4 mb-8">
+                        <div class="bcard" style="border-color:rgba(16,185,129,.1);">
+                            <p class="mono text-xs mb-3" style="color:var(--em);">// github.contributions</p>
+                            <img src="https://ghchart.rshah.org/syhenn1?color=dark" alt="GitHub Contributions" class="w-full rounded-lg">
+                        </div>
+                        <div class="bcard" style="border-color:rgba(16,185,129,.1);">
+                            <p class="mono text-xs mb-3" style="color:var(--em);">// github.trophies</p>
+                            <img src="https://github-profile-trophy.vercel.app/?username=syhenn1&theme=tokyonight&row=1&margin-w=8&no-bg=true" alt="Trophies" class="w-full">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3">
+                        <a href="https://github.com/syhenn1" target="_blank" rel="noopener" class="btn-ghost text-sm py-2.5 px-5">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                            GitHub
+                        </a>
+                        <a href="assets/CV_Mochamad-Rifat-Syahman-Hambali.pdf" download class="btn-em text-sm py-2.5 px-5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            Download CV
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="fu">
+                    <p class="mono text-xs mb-8" style="color:var(--em);">// my_journey[]</p>
+                    <div id="tl" class="relative pl-7"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divline"></div>
+
+    <!-- ===== SKILLS ===== -->
+    <section id="skills" class="py-24 px-5 sm:px-8" style="background:var(--bg);">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-14 fu">
+                <div class="slabel mb-3 justify-center">tech stack</div>
+                <h2 class="text-3xl sm:text-4xl font-bold">Tools & <span class="gtx">Teknologi</span></h2>
+                <p class="text-gray-500 mt-2 text-sm">Senjata yang saya pakai untuk membangun produk.</p>
+            </div>
+            <div id="skills-bento" class="grid md:grid-cols-2 gap-5"></div>
+        </div>
+    </section>
+
+    <div class="divline"></div>
+
+    <!-- ===== CONTACT ===== -->
+    <section id="contact" class="py-24 px-5 sm:px-8" style="background:var(--bg);">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-14 fu">
+                <div class="slabel mb-3 justify-center">contact</div>
+                <h2 class="text-3xl sm:text-4xl font-bold">Let's <span class="gtx">Connect</span></h2>
+                <p class="text-gray-500 mt-2 text-sm">Ada project seru atau mau ngobrol? Jangan ragu, reach out!</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto grid md:grid-cols-5 gap-6 fu">
+                <div class="md:col-span-2 flex flex-col gap-4">
+                    <a href="mailto:rifatsyahman@gmail.com" class="cl">
+                        <div style="width:42px;height:42px;background:rgba(16,185,129,.1);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color:var(--em);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        </div>
+                        <div>
+                            <p class="mono text-xs mb-0.5" style="color:var(--em);">email</p>
+                            <p class="text-sm text-gray-300 font-medium">rifatsyahman@gmail.com</p>
+                        </div>
+                    </a>
+                    <a href="https://github.com/syhenn1" target="_blank" rel="noopener" class="cl">
+                        <div style="width:42px;height:42px;background:rgba(16,185,129,.1);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" style="color:var(--em);"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        </div>
+                        <div>
+                            <p class="mono text-xs mb-0.5" style="color:var(--em);">github</p>
+                            <p class="text-sm text-gray-300 font-medium">github.com/syhenn1</p>
+                        </div>
+                    </a>
+                    <a href="https://linkedin.com/in/rifatsyahman/" target="_blank" rel="noopener" class="cl">
+                        <div style="width:42px;height:42px;background:rgba(6,182,212,.1);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" style="color:#06b6d4;"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        </div>
+                        <div>
+                            <p class="mono text-xs mb-0.5" style="color:#06b6d4;">linkedin</p>
+                            <p class="text-sm text-gray-300 font-medium">linkedin.com/in/rifatsyahman</p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="md:col-span-3">
+                    <div class="bcard" style="border-color:rgba(16,185,129,.14);">
+                        <p class="mono text-xs mb-5" style="color:var(--em);">// send_message()</p>
+                        <form id="cform" action="https://api.web3forms.com/submit" method="POST" class="space-y-4">
+                            <input type="hidden" name="access_key" value="0503ec93-8b8b-47c6-acef-bd52edb53213">
+                            <input type="checkbox" name="botcheck" style="display:none">
+                            <input type="hidden" name="redirect" id="fredir" value="">
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block mono text-xs mb-1.5" style="color:var(--muted);">nama</label>
+                                    <input type="text" name="name" placeholder="Nama Anda" required class="ff">
+                                </div>
+                                <div>
+                                    <label class="block mono text-xs mb-1.5" style="color:var(--muted);">email</label>
+                                    <input type="email" name="email" placeholder="email@example.com" required class="ff">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block mono text-xs mb-1.5" style="color:var(--muted);">pesan</label>
+                                <textarea name="message" rows="5" placeholder="Tulis pesan kamu..." required class="ff" style="resize:none;"></textarea>
+                            </div>
+                            <button type="submit" id="sbtn" class="btn-em w-full justify-center">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                                Kirim Pesan
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer style="background:var(--surf);border-top:1px solid rgba(255,255,255,.04);">
+        <div class="max-w-6xl mx-auto px-5 sm:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <span class="mono text-sm font-bold">
+                <span style="color:#475569;">&lt;</span><span class="text-white">rifat</span><span style="color:var(--em);">/&gt;</span>
+            </span>
+            <p class="text-xs" style="color:#334155;">&copy; 2025 Mochamad Rifat Syahman Hambali. All rights reserved.</p>
+            <div class="flex gap-3">
+                <a href="https://github.com/syhenn1" target="_blank" rel="noopener" class="soc"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                <a href="https://linkedin.com/in/rifatsyahman/" target="_blank" rel="noopener" class="soc"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+            </div>
+        </div>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Set form redirect
+    document.getElementById('fredir').value = window.location.href;
+
+    // ===== DATA =====
+    const statsData = [
+        { n:'5+',  label:'Projects Built',  icon:'🚀' },
+        { n:'5+',  label:'Languages',        icon:'💻' },
+        { n:'3+',  label:'Years Learning',   icon:'📚' },
+        { n:'1',   label:'Kompetisi',        icon:'🏆' },
+    ];
+
+    const tlData = [
+        { year:'2023', color:'#10b981', title:'Politeknik Negeri Jakarta',
+          desc:'Mulai mendalami ilmu teknologi informasi di program D4 Teknik Informatika.' },
+        { year:'2024', color:'#06b6d4', title:'Computer Student Club',
+          desc:'Bergabung KSM Club Komputer sebagai Software Developer, memimpin berbagai project.' },
+        { year:'2025', color:'#f59e0b', title:'Kompetisi Data Science',
+          desc:'Mengikuti kompetisi data science di Kaggle memperebutkan kursi Compfest Academy.' },
+        { year:'Now',  color:'#a78bfa', title:'Open to Opportunities',
+          desc:'Terus belajar, membangun, dan siap berkontribusi dalam proyek-proyek inovatif.' },
+    ];
+
+    const skills = {
+        'Programming Languages': {
+            html:    { name:'HTML5',      src:'https://cdn.simpleicons.org/html5/E34F26' },
+            css:     { name:'CSS3',       src:'images/icons8-css-480.png' },
+            js:      { name:'JavaScript', src:'https://cdn.simpleicons.org/javascript/F7DF1E' },
+            php:     { name:'PHP',        src:'https://cdn.simpleicons.org/php/777BB4' },
+            python:  { name:'Python',     src:'https://cdn.simpleicons.org/python/3776AB' },
+        },
+        'Frameworks & Technologies': {
+            nextjs:   { name:'Next.js',      src:'https://cdn.simpleicons.org/nextdotjs/FFFFFF' },
+            laravel:  { name:'Laravel',      src:'https://cdn.simpleicons.org/laravel/FF2D20' },
+            ci4:      { name:'CodeIgniter 4',src:'https://cdn.simpleicons.org/codeigniter/EF4223' },
+            flutter:  { name:'Flutter',      src:'https://cdn.simpleicons.org/flutter/40C4FF' },
+            tailwind: { name:'Tailwind CSS', src:'https://cdn.simpleicons.org/tailwindcss/06B6D4' },
+            firebase: { name:'Firebase',     src:'https://cdn.simpleicons.org/firebase/FFCA28' },
+        },
+        'Databases': {
+            mysql:  { name:'MySQL',  src:'https://cdn.simpleicons.org/mysql/4479A1' },
+            sqlite: { name:'SQLite', src:'https://cdn.simpleicons.org/sqlite/003B57' },
+            oracle: { name:'Oracle', src:'images/Oracle-Symbol.png' },
+        },
+        'Tools & Platforms': {
+            figma:  { name:'Figma',      src:'https://cdn.simpleicons.org/figma/F24E1E' },
+            github: { name:'GitHub',     src:'https://cdn.simpleicons.org/github/FFFFFF' },
+            notion: { name:'Notion',     src:'https://cdn.simpleicons.org/notion/FFFFFF' },
+            jira:   { name:'Jira',       src:'https://cdn.simpleicons.org/jira/0052CC' },
+            excel:  { name:'Excel',      src:'images/icons8-excel-480.png' },
+            word:   { name:'Word',       src:'images/icons8-word-480.png' },
+            ppt:    { name:'PowerPoint', src:'images/icons8-powerpoint-480.png' },
+        },
+        'IDE': {
+            vs:  { name:'Visual Studio', src:'images/icons8-visual-studio-480.png' },
+            vsc: { name:'VS Code',       src:'images/icons8-visual-studio-code-2019-480.png' },
+        },
+    };
+
+    const projects = [
+        { title:'InvenSync',   sub:'Web App · Inventory System',
+          desc:'Sistem Kasir dan Inventaris terintegrasi untuk UMKM. Multi-role, multi-user dengan batasan akses per pengelola.',
+          img:'images/invensync.png', color:'#10b981',
+          tech:['html','css','js','tailwind','php','oracle','figma','jira'] },
+        { title:'FinDer',      sub:'Web App · Decision Support',
+          desc:'Sistem Pendukung Keputusan pemilihan ikan hias menggunakan metode MOORA berbasis web dengan Laravel.',
+          img:'images/finder.png', color:'#06b6d4',
+          tech:['php','laravel','mysql','tailwind','figma','notion'] },
+        { title:'MindCourse',  sub:'Mobile · Task Manager',
+          desc:'Flutter app manajemen tugas dan jadwal studi dengan SQLite lokal, offline-first dan clean UI.',
+          img:'images/mindcourse.png', color:'#f59e0b',
+          tech:['flutter','sqlite'] },
+        { title:'ShareThem',   sub:'Mobile · P2P File Share',
+          desc:'Flutter app berbagi file peer-to-peer di jaringan lokal tanpa koneksi internet.',
+          img:'images/sharethem.png', color:'#a78bfa',
+          tech:['flutter','firebase','figma'] },
+        { title:'CSC Website', sub:'Web · Landing Page',
+          desc:'Landing page profil Computer Student Club PNJ, dibangun dengan Next.js + Tailwind CSS.',
+          img:'images/csc.png', color:'#f97316',
+          tech:['nextjs','tailwind','figma'] },
+    ];
+
+    const getSkill = k => {
+        for (const c in skills) if (skills[c][k]) return skills[c][k];
+        return null;
+    };
+
+    // ===== TYPEWRITER =====
+    const twEl = document.getElementById('tw');
+    const roles = ['"Software Developer"','"Flutter Developer"','"Web Developer"','"Data Analyst"'];
+    let ri=0, ci=0, del=false;
+    const type = () => {
+        const cur = roles[ri];
+        twEl.textContent = cur.slice(0, ci + (del?0:1));
+        if (!del) { ci++; if (ci===cur.length){del=true;setTimeout(type,2000);return;} }
+        else { ci--; if (ci<0){ci=0;del=false;ri=(ri+1)%roles.length;} }
+        setTimeout(type, del?50:70);
+    };
+    setTimeout(type, 900);
+
+    // ===== MOBILE MENU =====
+    const mbtn=document.getElementById('mbtn'), mmenu=document.getElementById('mmenu');
+    const ml1=document.getElementById('ml1'),   ml2=document.getElementById('ml2'), ml3=document.getElementById('ml3');
+    let mopen=false;
+    mbtn.addEventListener('click',()=>{
+        mopen=!mopen; mmenu.classList.toggle('open',mopen);
+        ml1.style.transform=mopen?'translateY(7px) rotate(45deg)':'';
+        ml2.style.opacity=mopen?'0':'1';
+        ml3.style.transform=mopen?'translateY(-7px) rotate(-45deg)':'';
+        ml3.style.width=mopen?'20px':'';
+    });
+    document.querySelectorAll('.mln').forEach(l=>l.addEventListener('click',()=>{
+        mopen=false; mmenu.classList.remove('open');
+        ml1.style.transform=''; ml2.style.opacity='1'; ml3.style.transform=''; ml3.style.width='';
+    }));
+
+    // ===== STATS =====
+    const sg = document.getElementById('stats-grid');
+    statsData.forEach(s=>{
+        const el=document.createElement('div'); el.className='stat-card fu';
+        el.innerHTML=`<div style="font-size:22px;margin-bottom:6px;">${s.icon}</div>
+            <div style="font-size:28px;font-weight:900;color:#f8fafc;margin-bottom:4px;">${s.n}</div>
+            <div class="mono" style="font-size:11px;color:#475569;">${s.label}</div>`;
+        sg.appendChild(el);
+    });
+
+    // ===== PROJECTS =====
+    const carousel=document.getElementById('carousel'), cdots=document.getElementById('cdots');
+    const pcards=[];
+    projects.forEach((p,i)=>{
+        const techHtml = p.tech.slice(0,5).map(k=>{
+            const s=getSkill(k); return s?`<span class="ttag"><img src="${s.src}" style="height:11px;width:11px;object-fit:contain;">${s.name}</span>`:'';
+        }).join('') + (p.tech.length>5?`<span class="ttag">+${p.tech.length-5}</span>`:'');
+
+        const card=document.createElement('div');
+        card.className='pcard snap-center flex-shrink-0 w-4/5 sm:w-2/5 lg:w-1/3';
+        card.innerHTML=`
+            <div style="height:200px;overflow:hidden;position:relative;">
+                <img src="${p.img}" alt="${p.title}" class="pimg w-full h-full object-cover">
+                <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(15,23,42,.9) 0%,transparent 55%);"></div>
+                <div style="position:absolute;bottom:12px;left:14px;">
+                    <span class="mono" style="font-size:10px;color:${p.color};background:rgba(0,0,0,.6);padding:2px 10px;border-radius:999px;border:1px solid ${p.color}45;">${p.sub}</span>
+                </div>
+            </div>
+            <div style="padding:18px;">
+                <h3 style="font-size:17px;font-weight:700;color:#f8fafc;margin-bottom:7px;">${p.title}</h3>
+                <p style="font-size:13px;color:#64748b;line-height:1.65;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${p.desc}</p>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;">${techHtml}</div>
+            </div>`;
+        carousel.appendChild(card); pcards.push(card);
+    });
+
+    // Dots
+    projects.forEach((_,i)=>{
+        const d=document.createElement('button');
+        d.className='cdot'+(i===0?' on':''); d.style.width=i===0?'22px':'4px';
+        d.addEventListener('click',()=>pcards[i]&&carousel.scrollTo({left:pcards[i].offsetLeft-4,behavior:'smooth'}));
+        cdots.appendChild(d);
+    });
+    const updateDots=()=>{
+        const w=(pcards[0]?.offsetWidth||280)+20, idx=Math.round(carousel.scrollLeft/w);
+        cdots.querySelectorAll('.cdot').forEach((d,i)=>{d.classList.toggle('on',i===idx);d.style.width=i===idx?'22px':'4px';});
+    };
+    carousel.addEventListener('scroll',updateDots,{passive:true});
+    document.getElementById('cprev')?.addEventListener('click',()=>carousel.scrollBy({left:-((pcards[0]?.offsetWidth||280)+20),behavior:'smooth'}));
+    document.getElementById('cnext')?.addEventListener('click',()=>carousel.scrollBy({left:((pcards[0]?.offsetWidth||280)+20),behavior:'smooth'}));
+    setInterval(()=>{
+        if(carousel.matches(':hover'))return;
+        const w=(pcards[0]?.offsetWidth||280)+20;
+        if(carousel.scrollLeft+carousel.clientWidth>=carousel.scrollWidth-10) carousel.scrollTo({left:0,behavior:'smooth'});
+        else carousel.scrollBy({left:w,behavior:'smooth'});
+    },4500);
+
+    // ===== TIMELINE =====
+    const tlEl=document.getElementById('tl');
+    const lineEl=document.createElement('div');
+    lineEl.style.cssText='position:absolute;left:0;top:6px;bottom:6px;width:1px;background:linear-gradient(to bottom,#10b981,#06b6d4,#a78bfa);';
+    tlEl.appendChild(lineEl);
+    tlData.forEach(t=>{
+        const item=document.createElement('div'); item.className='tl-item';
+        item.innerHTML=`
+            <div class="tl-dot" style="background:${t.color};box-shadow:0 0 10px ${t.color}80;"></div>
+            <div style="background:var(--surf);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px 18px;
+                        transition:all .3s;cursor:default;"
+                 onmouseover="this.style.borderColor='${t.color}40';this.style.transform='translateX(5px)';"
+                 onmouseout="this.style.borderColor='rgba(255,255,255,.06)';this.style.transform='';">
+                <span class="mono" style="font-size:10px;color:${t.color};font-weight:700;letter-spacing:.1em;">${t.year}</span>
+                <h4 style="font-size:15px;font-weight:700;color:#f8fafc;margin:3px 0 5px;">${t.title}</h4>
+                <p style="font-size:13px;color:#64748b;line-height:1.6;">${t.desc}</p>
+            </div>`;
+        tlEl.appendChild(item);
+    });
+
+    // ===== SKILLS BENTO =====
+    const bento=document.getElementById('skills-bento');
+    const catColors={'Programming Languages':'#10b981','Frameworks & Technologies':'#06b6d4','Databases':'#f59e0b','Tools & Platforms':'#a78bfa','IDE':'#f97316'};
+    for(const cat in skills){
+        const color=catColors[cat]||'#10b981';
+        const card=document.createElement('div'); card.className='bcard fu';
+        const icons=Object.entries(skills[cat]).map(([k,s])=>`
+            <div class="sicon flex flex-col items-center gap-1.5" title="${s.name}">
+                <div class="sibg w-12 h-12 rounded-xl flex items-center justify-center" style="background:rgba(15,23,42,.9);border:1px solid rgba(255,255,255,.07);transition:all .3s;">
+                    <img src="${s.src}" alt="${s.name}" style="height:26px;width:26px;object-fit:contain;">
+                </div>
+                <span style="font-size:10px;color:#475569;font-weight:500;text-align:center;line-height:1.2;">${s.name}</span>
+            </div>`).join('');
+        card.innerHTML=`
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+                <div style="width:3px;height:18px;border-radius:2px;background:${color};"></div>
+                <span class="mono" style="font-size:11px;font-weight:700;color:${color};letter-spacing:.07em;">${cat}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:12px;">${icons}</div>`;
+        bento.appendChild(card);
+    }
+
+    // ===== SCROLL =====
+    const nav=document.getElementById('nav'), pb=document.getElementById('pb'), btt=document.getElementById('btt');
+    let lastSt=0;
+    window.addEventListener('scroll',()=>{
+        const st=window.pageYOffset, dh=document.documentElement.scrollHeight-window.innerHeight;
+        pb.style.width=(st/dh*100)+'%';
+        btt.classList.toggle('on',st>400);
+        if(st>lastSt+5&&st>80) nav.style.transform='translateY(-100%)';
+        else if(st<lastSt-5||st<=80) nav.style.transform='translateY(0)';
+        lastSt=st;
+        ['projects','about','skills','contact'].forEach(id=>{
+            const sec=document.getElementById(id), link=document.querySelector(`.nav-link[data-s="${id}"]`);
+            if(!sec||!link)return;
+            const r=sec.getBoundingClientRect();
+            link.classList.toggle('active',r.top<=100&&r.bottom>100);
+        });
+    },{passive:true});
+    btt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+    // ===== FADE-UP OBSERVER =====
+    const obs=new IntersectionObserver((entries,o)=>{
+        entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');o.unobserve(e.target);}});
+    },{threshold:.08});
+    document.querySelectorAll('.fu').forEach(el=>obs.observe(el));
+
+    // ===== FORM =====
+    const sbtn=document.getElementById('sbtn');
+    document.getElementById('cform')?.addEventListener('submit',()=>{
+        sbtn.disabled=true;
+        sbtn.innerHTML=`<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25"/>
+            <path fill="currentColor" class="opacity-75" d="M4 12a8 8 0 018-8v8z"/></svg> Mengirim...`;
+    });
+});
+</script>
+</html>
