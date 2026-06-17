@@ -13,9 +13,9 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Rifat Syahman — Portfolio On Progress",
+  title: "Rifat Syahman — Software Developer",
   description:
-    "Portfolio Rifat Syahman sedang dalam pengembangan. Dibangun dengan Next.js, Tailwind CSS, dan Framer Motion.",
+    "Portfolio Rifat Syahman, Software Developer dari Jakarta. Web, mobile, dan data — dibangun dengan Next.js, Tailwind CSS, dan Framer Motion.",
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${mono.variable}`}>
+    <html lang="en" className={`${inter.variable} ${mono.variable} scroll-smooth`}>
       <body style={{ fontFamily: "var(--font-inter, Inter, sans-serif)" }}>
         {children}
       </body>
