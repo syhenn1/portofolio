@@ -1,9 +1,9 @@
-import { MeshLineGeometry, MeshLineMaterial } from "meshline";
-import type { ThreeElement } from "@react-three/fiber";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import '@react-three/fiber';
 
-declare module "@react-three/fiber" {
+declare module '@react-three/fiber' {
   interface ThreeElements {
-    meshLineGeometry: ThreeElement<typeof MeshLineGeometry>;
-    meshLineMaterial: ThreeElement<typeof MeshLineMaterial>;
+    meshLineGeometry: any;
+    meshLineMaterial: any;
   }
 }

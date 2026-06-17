@@ -18,13 +18,6 @@ import { basePath } from '@/lib/basePath';
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
-declare module '@react-three/fiber' {
-  interface ThreeElements {
-    meshLineGeometry: object;
-    meshLineMaterial: object;
-  }
-}
-
 const BLANK =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
 
@@ -225,15 +218,16 @@ function Band({
     return composite;
   }, [frontImage, backImage, imageFit, frontTex, backTex, materials.base.map]);
 
-  const [curve] = useState(
-    () =>
-      new THREE.CatmullRomCurve3([
-        new THREE.Vector3(),
-        new THREE.Vector3(),
-        new THREE.Vector3(),
-        new THREE.Vector3(),
-      ])
-  );
+  const [curve] = useState(() => {
+    const c = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(),
+      new THREE.Vector3(),
+      new THREE.Vector3(),
+      new THREE.Vector3(),
+    ]);
+    c.curveType = 'chordal';
+    return c;
+  });
   const [dragged, drag]   = useState<false | THREE.Vector3>(false);
   const [hovered, hover]  = useState(false);
 
@@ -278,8 +272,6 @@ function Band({
       card.current.setAngvel({ x: ang.x, y: ang.y - rot.y * 0.25, z: ang.z });
     }
   });
-
-  curve.curveType = 'chordal';
 
   return (
     <>
