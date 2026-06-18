@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
+import MobileHeroCard from "@/components/MobileHeroCard";
 import {
   SiReact,
   SiNextdotjs,
@@ -68,12 +69,13 @@ const heroSocials = [
   { href: `mailto:${socialLinks.email}`, Icon: FiMail, label: "Email" },
 ];
 
-const MARQUEE_TEXT = "FULLSTACK DEVELOPER · PROJECT MANAGER · FULLSTACK DEVELOPER · PROJECT MANAGER ·";
+const MARQUEE_TEXT = "FULLSTACK DEVELOPER · PROJECT MANAGER · FULLSTACK DEVELOPER · PROJECT MANAGER · FULLSTACK DEVELOPER · PROJECT MANAGER · FULLSTACK DEVELOPER · PROJECT MANAGER · FULLSTACK DEVELOPER · PROJECT MANAGER ·";
 
 export default function Hero() {
   const { scrollY } = useScroll();
-  const textX1 = useTransform(scrollY, [0, 600], [0, -320]);
-  const textX2 = useTransform(scrollY, [0, 600], [-120, 240]);
+  const textX1 = useTransform(scrollY, [0, 600], [0, -800]);
+  const textX2 = useTransform(scrollY, [0, 600], [-200, 600]);
+  const textX3 = useTransform(scrollY, [0, 600], [100, -700]);
 
   return (
     <section
@@ -284,14 +286,16 @@ export default function Hero() {
         >
           {"}"}
         </motion.div>
+
+        <MobileHeroCard />
       </div>
 
-      {/* Scroll-reactive marquee */}
-      <div className="absolute bottom-0 left-0 right-0 z-2 pointer-events-none select-none overflow-hidden">
+      {/* Scroll-reactive marquee — 3 rows */}
+      <div className="absolute left-0 right-0 z-2 pointer-events-none select-none overflow-hidden" style={{ bottom: 80 }}>
         <motion.div style={{ x: textX1 }} className="whitespace-nowrap leading-none">
           <span
             style={{
-              fontSize: "clamp(3.5rem, 8.5vw, 7.5rem)",
+              fontSize: "clamp(2.2rem, 5.5vw, 4.5rem)",
               fontWeight: 900,
               color: "transparent",
               WebkitTextStroke: "1.5px rgba(204, 0, 0, 0.35)",
@@ -305,10 +309,24 @@ export default function Hero() {
         <motion.div style={{ x: textX2 }} className="whitespace-nowrap leading-none">
           <span
             style={{
-              fontSize: "clamp(3.5rem, 8.5vw, 7.5rem)",
+              fontSize: "clamp(2.2rem, 5.5vw, 4.5rem)",
               fontWeight: 900,
               color: "transparent",
-              WebkitTextStroke: "1.5px rgba(204, 0, 0, 0.22)",
+              WebkitTextStroke: "1.5px rgba(204, 0, 0, 0.25)",
+              letterSpacing: "0.06em",
+              display: "block",
+            }}
+          >
+            {MARQUEE_TEXT}
+          </span>
+        </motion.div>
+        <motion.div style={{ x: textX3 }} className="whitespace-nowrap leading-none">
+          <span
+            style={{
+              fontSize: "clamp(2.2rem, 5.5vw, 4.5rem)",
+              fontWeight: 900,
+              color: "transparent",
+              WebkitTextStroke: "1.5px rgba(204, 0, 0, 0.15)",
               letterSpacing: "0.06em",
               display: "block",
             }}

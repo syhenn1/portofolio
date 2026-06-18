@@ -11,7 +11,7 @@ const navLinks = [
 
 export default function Footer() {
   return (
-    <footer style={{ background: "var(--surf)", borderTop: "1px solid rgba(255,255,255,.04)" }}>
+    <footer className="relative z-2" style={{ background: "var(--surf)", borderTop: "1px solid rgba(255,255,255,.04)" }}>
       <div className="max-w-7xl mx-auto px-3 sm:px-5 py-12 flex flex-col sm:flex-row sm:items-start justify-between gap-10">
         <div>
           <span className="mono text-sm font-bold">

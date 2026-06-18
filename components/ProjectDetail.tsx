@@ -1,10 +1,12 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { FiArrowLeft, FiArrowRight, FiCheck, FiGithub, FiMail } from "react-icons/fi";
 import { getAdjacentProjects, getSkill, socialLinks, type Project } from "@/lib/data";
+import ImageLightbox from "@/components/ImageLightbox";
 
 const heroBadgeStyle = {
   background: "rgba(27,37,54,.55)",
@@ -15,46 +17,33 @@ const heroBadgeStyle = {
 export default function ProjectDetail({ project }: { project: Project }) {
   const { prev, next } = getAdjacentProjects(project.slug);
   const techs = project.tech.map((k) => getSkill(k)).filter(Boolean);
+  const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
+  const screenshots = project.screenshots ?? [];
+
+  const closeLightbox = useCallback(() => setLightboxIdx(null), []);
+  const prevImg = useCallback(() => setLightboxIdx((i) => (i !== null ? (i - 1 + screenshots.length) % screenshots.length : null)), [screenshots.length]);
+  const nextImg = useCallback(() => setLightboxIdx((i) => (i !== null ? (i + 1) % screenshots.length : null)), [screenshots.length]);
 
   return (
     <main style={{ background: "var(--bg)" }}>
-      {/* Hero */}
-      <section className="relative w-full overflow-hidden" style={{ height: "min(88vh, 760px)", minHeight: 480 }}>
-        <Image src={project.img} alt={project.title} fill className="object-cover" priority />
-        {/* Bottom fade — warm dark, matches var(--bg) */}
-        <div
-          className="absolute inset-0"
-          style={{ background: "linear-gradient(to top, var(--bg) 0%, rgba(14,9,5,.72) 38%, rgba(14,9,5,.1) 70%, transparent 100%)" }}
-        />
-        {/* Left vignette */}
-        <div
-          className="absolute inset-0"
-          style={{ background: "linear-gradient(to right, rgba(12,6,3,.75) 0%, transparent 60%)" }}
-        />
-        {/* Red color tint */}
-        <div
-          className="absolute inset-0"
-          style={{ background: "radial-gradient(ellipse at 30% 80%, rgba(204,0,0,.22) 0%, transparent 55%), linear-gradient(160deg, rgba(204,0,0,.1) 0%, transparent 45%)" }}
-        />
+      {/* Sticky background image */}
+      <div className="sticky top-0 w-full overflow-hidden" style={{ height: "min(88vh, 760px)", minHeight: 480, zIndex: 0 }}>
+        <Image src={project.img} alt={project.title} fill className="object-cover object-top" priority />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to top, var(--bg) 0%, rgba(14,9,5,.72) 38%, rgba(14,9,5,.1) 70%, transparent 100%)" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(12,6,3,.75) 0%, transparent 60%)" }} />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 80%, rgba(204,0,0,.22) 0%, transparent 55%), linear-gradient(160deg, rgba(204,0,0,.1) 0%, transparent 45%)" }} />
+      </div>
 
-        {/* Back link */}
-        <motion.div
-          className="absolute top-0 inset-x-0 px-3 sm:px-5 pt-24 sm:pt-28 z-10"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+      {/* Title block — scrolls over the sticky image */}
+      <div className="relative z-1" style={{ marginTop: "min(-32vh, -260px)" }}>
+        <div className="px-3 sm:px-5 pb-12 sm:pb-16">
           <div className="max-w-5xl mx-auto">
-            <Link href="/#projects" className="inline-flex items-center gap-2 mono text-xs" style={{ color: "var(--muted)" }}>
-              <FiArrowLeft size={14} />
-              Kembali ke Projects
-            </Link>
-          </div>
-        </motion.div>
-
-        {/* Title block */}
-        <div className="absolute bottom-0 inset-x-0 px-3 sm:px-5 pb-12 sm:pb-16 z-10">
-          <div className="max-w-5xl mx-auto">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+              <Link href="/#projects" className="inline-flex items-center gap-2 mono text-xs mb-8" style={{ color: "var(--muted)" }}>
+                <FiArrowLeft size={14} />
+                Kembali ke Projects
+              </Link>
+            </motion.div>
             <motion.div
               className="flex flex-wrap items-center gap-2 mb-5"
               initial={{ opacity: 0, y: 20 }}
@@ -86,107 +75,154 @@ export default function ProjectDetail({ project }: { project: Project }) {
             </motion.p>
           </div>
         </div>
-      </section>
+      </div>
 
-      <div className="max-w-5xl mx-auto px-3 sm:px-5 py-16 sm:py-20">
-        {/* Content grid */}
-        <div className="grid lg:grid-cols-3 gap-10">
-          <motion.div
-            className="lg:col-span-2 space-y-10"
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.6 }}
-          >
-            <div>
-              <div className="slabel mb-3">the problem</div>
-              <p className="text-gray-300 leading-relaxed">{project.problem}</p>
-            </div>
-            <div>
-              <div className="slabel mb-3">the solution</div>
-              <p className="text-gray-300 leading-relaxed">{project.solution}</p>
-            </div>
-            <div>
-              <div className="slabel mb-3">key features</div>
-              <div className="space-y-3">
-                {project.features.map((f) => (
-                  <div key={f} className="feature-item">
-                    <FiCheck size={16} />
-                    <span>{f}</span>
-                  </div>
-                ))}
+      {/* Content */}
+      <div className="relative z-10" style={{ background: "var(--bg)" }}>
+        <div className="max-w-5xl mx-auto px-3 sm:px-5 py-16 sm:py-20">
+          <div className="grid lg:grid-cols-3 gap-10">
+            <motion.div
+              className="lg:col-span-2 space-y-10"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6 }}
+            >
+              <div>
+                <div className="slabel mb-3">the problem</div>
+                <p className="text-gray-300 leading-relaxed">{project.problem}</p>
               </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="space-y-5"
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <div className="meta-card">
-              <div className="meta-row" style={{ marginTop: 0, paddingTop: 0, borderTop: "none" }}>
-                <p className="mono text-xs mb-1" style={{ color: "var(--em)" }}>role</p>
-                <p className="text-sm text-gray-300 font-medium">{project.role}</p>
+              <div>
+                <div className="slabel mb-3">the solution</div>
+                <p className="text-gray-300 leading-relaxed">{project.solution}</p>
               </div>
-              <div className="meta-row">
-                <p className="mono text-xs mb-1" style={{ color: "var(--em)" }}>year</p>
-                <p className="text-sm text-gray-300 font-medium">{project.year}</p>
-              </div>
-              <div className="meta-row">
-                <p className="mono text-xs mb-1" style={{ color: "var(--em)" }}>category</p>
-                <p className="text-sm text-gray-300 font-medium">{project.category}</p>
-              </div>
-              <div className="meta-row">
-                <p className="mono text-xs mb-2" style={{ color: "var(--em)" }}>tech stack</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {techs.map((s, idx) => {
-                    const skill = s!;
-                    const SkillIcon = skill.Icon;
-                    return (
-                      <span key={idx} className="ttag">
-                        {SkillIcon ? (
-                          <SkillIcon size={11} />
-                        ) : (
-                          <Image src={skill.src!} alt={skill.name} width={11} height={11} style={{ objectFit: "contain" }} />
-                        )}
-                        {skill.name}
-                      </span>
-                    );
-                  })}
+              <div>
+                <div className="slabel mb-3">key features</div>
+                <div className="space-y-3">
+                  {project.features.map((f) => (
+                    <div key={f} className="feature-item">
+                      <FiCheck size={16} />
+                      <span>{f}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="btn-ghost w-full justify-center">
-              <FiGithub size={16} />
-              Lihat Profil GitHub
-            </a>
-            <Link href="/#contact" className="btn-em w-full justify-center">
-              <FiMail size={16} />
-              Diskusikan Project
+            <motion.div
+              className="space-y-5"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <div className="meta-card">
+                <div className="meta-row" style={{ marginTop: 0, paddingTop: 0, borderTop: "none" }}>
+                  <p className="mono text-xs mb-1" style={{ color: "var(--em)" }}>role</p>
+                  <p className="text-sm text-gray-300 font-medium">{project.role}</p>
+                </div>
+                <div className="meta-row">
+                  <p className="mono text-xs mb-1" style={{ color: "var(--em)" }}>year</p>
+                  <p className="text-sm text-gray-300 font-medium">{project.year}</p>
+                </div>
+                <div className="meta-row">
+                  <p className="mono text-xs mb-1" style={{ color: "var(--em)" }}>category</p>
+                  <p className="text-sm text-gray-300 font-medium">{project.category}</p>
+                </div>
+                <div className="meta-row">
+                  <p className="mono text-xs mb-2" style={{ color: "var(--em)" }}>tech stack</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {techs.map((s, idx) => {
+                      const skill = s!;
+                      const SkillIcon = skill.Icon;
+                      return (
+                        <span key={idx} className="ttag">
+                          {SkillIcon ? (
+                            <SkillIcon size={11} />
+                          ) : (
+                            <Image src={skill.src!} alt={skill.name} width={11} height={11} style={{ objectFit: "contain" }} />
+                          )}
+                          {skill.name}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="btn-ghost w-full justify-center">
+                <FiGithub size={16} />
+                Lihat Profil GitHub
+              </a>
+              <Link href="/#contact" className="btn-em w-full justify-center">
+                <FiMail size={16} />
+                Diskusikan Project
+              </Link>
+            </motion.div>
+          </div>
+
+          {screenshots.length > 0 && (
+            <motion.div
+              className="mt-16"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="slabel mb-5">screenshots</div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {screenshots.map((src, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setLightboxIdx(i)}
+                    className="relative group rounded-xl overflow-hidden cursor-zoom-in"
+                    style={{ border: "1px solid rgba(255,255,255,0.06)" }}
+                  >
+                    <Image
+                      src={src}
+                      alt={`${project.title} screenshot ${i + 1}`}
+                      width={600}
+                      height={400}
+                      className="w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
+                      style={{ background: "rgba(0,0,0,0.4)" }}
+                    >
+                      <span className="mono text-xs text-white/80">Click to zoom</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {lightboxIdx !== null && (
+            <ImageLightbox
+              images={screenshots}
+              index={lightboxIdx}
+              onClose={closeLightbox}
+              onPrev={prevImg}
+              onNext={nextImg}
+            />
+          )}
+
+          <div className="grid sm:grid-cols-2 gap-5 mt-20">
+            <Link href={`/projects/${prev.slug}`} className="nav-card">
+              <span className="mono text-xs" style={{ color: "var(--muted)" }}>
+                <FiArrowLeft size={12} style={{ display: "inline", marginRight: 6 }} />
+                previous
+              </span>
+              <span className="text-lg font-bold text-white">{prev.title}</span>
             </Link>
-          </motion.div>
-        </div>
-
-        {/* Prev/next nav */}
-        <div className="grid sm:grid-cols-2 gap-5 mt-20">
-          <Link href={`/projects/${prev.slug}`} className="nav-card">
-            <span className="mono text-xs" style={{ color: "var(--muted)" }}>
-              <FiArrowLeft size={12} style={{ display: "inline", marginRight: 6 }} />
-              previous
-            </span>
-            <span className="text-lg font-bold text-white">{prev.title}</span>
-          </Link>
-          <Link href={`/projects/${next.slug}`} className="nav-card sm:items-end sm:text-right">
-            <span className="mono text-xs" style={{ color: "var(--muted)" }}>
-              next
-              <FiArrowRight size={12} style={{ display: "inline", marginLeft: 6 }} />
-            </span>
-            <span className="text-lg font-bold text-white">{next.title}</span>
-          </Link>
+            <Link href={`/projects/${next.slug}`} className="nav-card sm:items-end sm:text-right">
+              <span className="mono text-xs" style={{ color: "var(--muted)" }}>
+                next
+                <FiArrowRight size={12} style={{ display: "inline", marginLeft: 6 }} />
+              </span>
+              <span className="text-lg font-bold text-white">{next.title}</span>
+            </Link>
+          </div>
         </div>
       </div>
     </main>

@@ -8,13 +8,13 @@ const spans = ["sm:col-span-3", "sm:col-span-3", "sm:col-span-2", "sm:col-span-4
 
 export default function Skills() {
   return (
-    <section id="skills" className="py-14 px-3 sm:px-5" style={{ background: "var(--bg)" }}>
+    <section id="skills" className="relative z-2 py-14 px-3 sm:px-5">
       <div className="max-w-7xl mx-auto">
         <motion.div
           className="mb-12"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: false, margin: "-50px" }}
           transition={{ duration: 0.6 }}
         >
           <div className="slabel mb-3">tech stack</div>
@@ -33,7 +33,7 @@ export default function Skills() {
                 className={`bcard ${spans[i]}`}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
+                viewport={{ once: false, margin: "-50px" }}
                 transition={{ duration: 0.6, delay: i * 0.08 }}
               >
                 <div className="flex items-center gap-2 mb-5">

@@ -28,6 +28,7 @@ import {
   SiJira,
 } from "react-icons/si";
 import type { IconType } from "react-icons";
+import { basePath } from "@/lib/basePath";
 
 export const statsData = [
   { n: "5+", label: "Projects Built", icon: "🚀" },
@@ -98,7 +99,7 @@ export const skills: Record<string, Record<string, Skill>> = {
     postgresql: { name: "PostgreSQL", Icon: SiPostgresql },
     mongodb: { name: "MongoDB", Icon: SiMongodb },
     sqlite: { name: "SQLite", Icon: SiSqlite },
-    oracle: { name: "Oracle", src: "/images/Oracle-Symbol.png" },
+    oracle: { name: "Oracle", src: `${basePath}/images/Oracle-Symbol.png` },
   },
   "Tools & Platforms": {
     figma: { name: "Figma", Icon: SiFigma },
@@ -107,13 +108,13 @@ export const skills: Record<string, Record<string, Skill>> = {
     docker: { name: "Docker", Icon: SiDocker },
     notion: { name: "Notion", Icon: SiNotion },
     jira: { name: "Jira", Icon: SiJira },
-    excel: { name: "Excel", src: "/images/icons8-excel-480.png" },
-    word: { name: "Word", src: "/images/icons8-word-480.png" },
-    ppt: { name: "PowerPoint", src: "/images/icons8-powerpoint-480.png" },
+    excel: { name: "Excel", src: `${basePath}/images/icons8-excel-480.png` },
+    word: { name: "Word", src: `${basePath}/images/icons8-word-480.png` },
+    ppt: { name: "PowerPoint", src: `${basePath}/images/icons8-powerpoint-480.png` },
   },
   IDE: {
-    vs: { name: "Visual Studio", src: "/images/icons8-visual-studio-480.png" },
-    vsc: { name: "VS Code", src: "/images/icons8-visual-studio-code-2019-480.png" },
+    vs: { name: "Visual Studio", src: `${basePath}/images/icons8-visual-studio-480.png` },
+    vsc: { name: "VS Code", src: `${basePath}/images/icons8-visual-studio-code-2019-480.png` },
   },
 };
 
@@ -146,30 +147,92 @@ export type Project = {
   problem: string;
   solution: string;
   features: string[];
+  screenshots?: string[];
 };
 
 export const projects: Project[] = [
   {
-    slug: "invensync",
-    title: "InvenSync",
-    sub: "Web App · Inventory System",
+    slug: "kira",
+    title: "KIRA",
+    sub: "Web App · Predictive Maintenance",
     category: "Web Application",
-    year: "2024",
-    role: "Lead Developer",
-    desc: "Sistem Kasir dan Inventaris terintegrasi untuk UMKM. Multi-role, multi-user dengan batasan akses per pengelola.",
-    img: "/images/invensync.png",
-    color: "#10b981",
-    tech: ["html", "css", "js", "tailwind", "php", "oracle", "figma", "jira"],
+    year: "2025",
+    role: "Full-Stack Developer",
+    desc: "Sistem prediksi Remaining Useful Life (RUL) aset perusahaan berbasis histori maintenance dengan fitur NLP untuk summarize dashboard.",
+    img: `${basePath}/images/kira-landing.png`,
+    color: "#06b6d4",
+    tech: ["python", "nextjs", "tailwind", "postgresql"],
     problem:
-      "UMKM sering mengelola kasir dan stok barang secara terpisah, sehingga data penjualan dan inventaris mudah tidak sinkron dan rawan kesalahan pencatatan manual.",
+      "Perusahaan kesulitan memprediksi kapan aset mereka akan mengalami kerusakan, sehingga sering terjadi downtime tidak terencana yang mengganggu operasional dan meningkatkan biaya maintenance.",
     solution:
-      "InvenSync menyatukan sistem kasir (POS) dan manajemen inventaris dalam satu platform web, dengan kontrol akses multi-role agar pemilik dan karyawan punya hak akses sesuai tanggung jawab masing-masing.",
+      "KIRA menganalisis histori maintenance untuk memprediksi Remaining Useful Life (RUL) setiap aset, dilengkapi fitur NLP yang secara otomatis merangkum insight dari dashboard prediksi ke dalam narasi yang mudah dipahami.",
     features: [
-      "Transaksi kasir real-time dengan cetak struk",
-      "Stok otomatis tersinkron setiap transaksi",
-      "Multi-role: Owner, Admin, dan Kasir dengan batasan akses",
-      "Laporan penjualan & stok harian/bulanan",
-      "Desain responsif untuk tablet & desktop",
+      "Prediksi RUL berbasis histori maintenance",
+      "Dashboard analitik interaktif",
+      "NLP auto-summarization dashboard",
+      "Manajemen aset multi-kategori",
+      "Notifikasi prediksi kerusakan",
+    ],
+    screenshots: [
+      `${basePath}/images/kira-page1.png`,
+      `${basePath}/images/kira-page2.png`,
+      `${basePath}/images/kira-page3.png`,
+    ],
+  },
+  {
+    slug: "delisa",
+    title: "DELISA",
+    sub: "Web App · Health System",
+    category: "Web Application",
+    year: "2025",
+    role: "Full-Stack Developer",
+    desc: "Sistem informasi Dinas Kesehatan Depok dengan 4 role: Dinkes, Rumah Sakit, Bidan, dan Pasien untuk alur screening dan rujukan.",
+    img: `${basePath}/images/delisa-landing.png`,
+    color: "#10b981",
+    tech: ["php", "laravel", "mysql", "tailwind", "figma"],
+    problem:
+      "Alur screening kesehatan di Kota Depok masih dilakukan secara manual dan terpisah antar instansi, menyebabkan data pasien tidak terintegrasi dan proses rujukan menjadi lambat.",
+    solution:
+      "DELISA mengintegrasikan seluruh alur kesehatan dalam satu platform: pasien melakukan screening, bidan memberikan rujukan, rumah sakit memberikan tindakan, dan Dinkes menganalisis data secara real-time.",
+    features: [
+      "Multi-role: Dinkes, Rumah Sakit, Bidan, Pasien",
+      "Screening kesehatan online oleh pasien",
+      "Sistem rujukan otomatis oleh bidan",
+      "Pencatatan tindakan oleh rumah sakit",
+      "Dashboard analisis data oleh Dinkes",
+    ],
+    screenshots: [
+      `${basePath}/images/delisa-page1.png`,
+      `${basePath}/images/delisa-page2.png`,
+      `${basePath}/images/delisa-page3.png`,
+    ],
+  },
+  {
+    slug: "sniv",
+    title: "SNIV",
+    sub: "Computer Vision · Monitoring",
+    category: "Computer Vision",
+    year: "2025",
+    role: "ML Engineer",
+    desc: "Sistem monitoring berbasis computer vision untuk Seminar Nasional Inovasi Vokasi yang mendeteksi gerak-gerik siswa di kelas menggunakan YOLO.",
+    img: `${basePath}/images/sniv-landing.png`,
+    color: "#a78bfa",
+    tech: ["python", "nextjs", "tailwind"],
+    problem:
+      "Pemantauan aktivitas siswa di dalam kelas masih dilakukan secara manual oleh pengajar, sehingga sulit mendeteksi siswa yang tidak fokus atau melakukan aktivitas di luar konteks pembelajaran.",
+    solution:
+      "SNIV memanfaatkan YOLO sebagai pretrained model untuk mendeteksi dan mengklasifikasikan gerak-gerik siswa secara real-time melalui kamera, memberikan insight kepada pengajar tentang tingkat fokus dan partisipasi kelas.",
+    features: [
+      "Deteksi gerak-gerik siswa real-time",
+      "YOLO sebagai pretrained model",
+      "Dashboard monitoring aktivitas kelas",
+      "Klasifikasi perilaku siswa",
+      "Laporan analisis partisipasi",
+    ],
+    screenshots: [
+      `${basePath}/images/sniv-page1.png`,
+      `${basePath}/images/sniv-page2.png`,
+      `${basePath}/images/sniv-page3.png`,
     ],
   },
   {
@@ -180,7 +243,7 @@ export const projects: Project[] = [
     year: "2024",
     role: "Full-Stack Developer",
     desc: "Sistem Pendukung Keputusan pemilihan ikan hias menggunakan metode MOORA berbasis web dengan Laravel.",
-    img: "/images/finder.png",
+    img: `${basePath}/images/finder.png`,
     color: "#06b6d4",
     tech: ["php", "laravel", "mysql", "tailwind", "figma", "notion"],
     problem:
@@ -203,7 +266,7 @@ export const projects: Project[] = [
     year: "2025",
     role: "Mobile Developer",
     desc: "Flutter app manajemen tugas dan jadwal studi dengan SQLite lokal, offline-first dan clean UI.",
-    img: "/images/mindcourse.png",
+    img: `${basePath}/images/mindcourse.png`,
     color: "#f59e0b",
     tech: ["flutter", "sqlite"],
     problem:
@@ -226,7 +289,7 @@ export const projects: Project[] = [
     year: "2025",
     role: "Mobile Developer",
     desc: "Flutter app berbagi file peer-to-peer di jaringan lokal tanpa koneksi internet.",
-    img: "/images/sharethem.png",
+    img: `${basePath}/images/sharethem.png`,
     color: "#a78bfa",
     tech: ["flutter", "firebase", "figma"],
     problem:
@@ -242,6 +305,29 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: "invensync",
+    title: "InvenSync",
+    sub: "Web App · Inventory System",
+    category: "Web Application",
+    year: "2024",
+    role: "Lead Developer",
+    desc: "Sistem Kasir dan Inventaris terintegrasi untuk UMKM. Multi-role, multi-user dengan batasan akses per pengelola.",
+    img: `${basePath}/images/invensync.png`,
+    color: "#10b981",
+    tech: ["html", "css", "js", "tailwind", "php", "oracle", "figma", "jira"],
+    problem:
+      "UMKM sering mengelola kasir dan stok barang secara terpisah, sehingga data penjualan dan inventaris mudah tidak sinkron dan rawan kesalahan pencatatan manual.",
+    solution:
+      "InvenSync menyatukan sistem kasir (POS) dan manajemen inventaris dalam satu platform web, dengan kontrol akses multi-role agar pemilik dan karyawan punya hak akses sesuai tanggung jawab masing-masing.",
+    features: [
+      "Transaksi kasir real-time dengan cetak struk",
+      "Stok otomatis tersinkron setiap transaksi",
+      "Multi-role: Owner, Admin, dan Kasir dengan batasan akses",
+      "Laporan penjualan & stok harian/bulanan",
+      "Desain responsif untuk tablet & desktop",
+    ],
+  },
+  {
     slug: "csc-website",
     title: "CSC Website",
     sub: "Web · Landing Page",
@@ -249,7 +335,7 @@ export const projects: Project[] = [
     year: "2024",
     role: "Frontend Developer",
     desc: "Landing page profil Computer Student Club PNJ, dibangun dengan Next.js + Tailwind CSS.",
-    img: "/images/csc.png",
+    img: `${basePath}/images/csc.png`,
     color: "#f97316",
     tech: ["nextjs", "tailwind", "figma"],
     problem:

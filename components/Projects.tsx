@@ -10,8 +10,11 @@ const spans = [
   "sm:col-span-4",
   "sm:col-span-2",
   "sm:col-span-2",
+  "sm:col-span-4",
+  "sm:col-span-3",
+  "sm:col-span-3",
   "sm:col-span-2",
-  "sm:col-span-2",
+  "sm:col-span-4",
 ];
 
 function ProjectCard({ project, featured, span, i }: { project: Project; featured: boolean; span: string; i: number }) {
@@ -22,7 +25,7 @@ function ProjectCard({ project, featured, span, i }: { project: Project; feature
       className={span}
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
+      viewport={{ once: false, margin: "-50px" }}
       transition={{ duration: 0.6, delay: i * 0.07 }}
     >
       <Link href={`/projects/${project.slug}`} className="proj-card group">
@@ -100,13 +103,13 @@ function ProjectCard({ project, featured, span, i }: { project: Project; feature
 
 export default function Projects() {
   return (
-    <section id="projects" className="py-14 px-3 sm:px-5" style={{ background: "var(--bg)" }}>
+    <section id="projects" className="relative z-2 py-14 px-3 sm:px-5">
       <div className="max-w-7xl mx-auto">
         <motion.div
           className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-12"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: false, margin: "-50px" }}
           transition={{ duration: 0.6 }}
         >
           <div>
@@ -130,9 +133,11 @@ export default function Projects() {
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-6 gap-5">
-          {projects.map((p, i) => (
-            <ProjectCard key={p.slug} project={p} featured={i === 0} span={spans[i]} i={i} />
-          ))}
+          {projects.map((p, i) => {
+            const span = spans[i] ?? "sm:col-span-3";
+            const featured = span === "sm:col-span-4";
+            return <ProjectCard key={p.slug} project={p} featured={featured} span={span} i={i} />;
+          })}
         </div>
       </div>
     </section>

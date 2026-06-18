@@ -37,13 +37,13 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="py-14 px-3 sm:px-5" style={{ background: "var(--bg)" }}>
+    <section id="contact" className="relative z-2 py-14 px-3 sm:px-5">
       <div className="max-w-7xl mx-auto">
         <motion.div
           className="text-center mb-14"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: false, margin: "-50px" }}
           transition={{ duration: 0.6 }}
         >
           <div className="slabel mb-3 justify-center">contact</div>
@@ -57,7 +57,7 @@ export default function Contact() {
           className="max-w-4xl mx-auto grid md:grid-cols-5 gap-6"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: false, margin: "-50px" }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
           <div className="md:col-span-2 flex flex-col gap-4">

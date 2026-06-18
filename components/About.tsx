@@ -13,13 +13,13 @@ export default function About() {
   const [cvOpen, setCvOpen] = useState(false);
 
   return (
-    <section id="about" className="py-14 px-3 sm:px-5" style={{ background: "var(--bg)" }}>
+    <section id="about" className="relative z-2 py-14 px-3 sm:px-5">
       <div className="max-w-7xl mx-auto">
         <motion.div
           className="mb-12"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: false, margin: "-50px" }}
           transition={{ duration: 0.6 }}
         >
           <div className="slabel mb-3">about me</div>
@@ -34,7 +34,7 @@ export default function About() {
             className="lg:col-span-2 bcard"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
+            viewport={{ once: false, margin: "-50px" }}
             transition={{ duration: 0.6, delay: 0.05 }}
           >
             <h3 className="text-2xl sm:text-3xl font-black text-white mb-5 leading-tight">
@@ -80,7 +80,7 @@ export default function About() {
             className="bcard"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
+            viewport={{ once: false, margin: "-50px" }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
             <p className="mono text-xs mb-8" style={{ color: "var(--em)" }}>
