@@ -10,6 +10,7 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import ScrollProgress from "@/components/ScrollProgress";
 import BackToTop from "@/components/BackToTop";
+import MobileSwipeDots from "@/components/MobileSwipeDots";
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
       <WaveBackground />
       <ScrollProgress />
       <Navbar />
+      <MobileSwipeDots />
       <main>
         <div className="relative">
           <Hero />

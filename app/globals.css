@@ -47,10 +47,12 @@ body {
 }
 
 .gtx {
-  background: linear-gradient(135deg, #ff6b35, #f7c948);
+  background: linear-gradient(90deg, #ff6b35 0%, #f7c948 35%, #ffaa44 65%, #ff6b35 100%);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  animation: gtx-shimmer 4s linear infinite;
 }
 
 .slabel {
@@ -506,4 +508,126 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 22px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+/* ===== SHIMMER ANIMATION ===== */
+@keyframes gtx-shimmer {
+  to { background-position: 200% center; }
+}
+
+/* ===== MOBILE: SWIPE / SNAP NAVIGATION ===== */
+@media (max-width: 767px) {
+  html {
+    scroll-snap-type: y proximity;
+    overscroll-behavior-y: none;
+  }
+
+  section[id] {
+    scroll-snap-align: start;
+    min-height: 100dvh;
+  }
+
+  #hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  /* Stats: remove hero-overlap offset, add navbar clearance */
+  #stats {
+    margin-top: 0;
+    padding-top: 4.5rem;
+    scroll-snap-align: start;
+  }
+
+  /* Other sections: navbar clearance */
+  #projects,
+  #about,
+  #skills,
+  #contact {
+    padding-top: 4.5rem;
+  }
+
+  /* Hide section dividers (sections separated by snap) */
+  .divline {
+    display: none;
+  }
+  footer .divline {
+    display: block;
+  }
+
+  /* Horizontal snap carousel for projects / skills */
+  .snap-carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  .snap-carousel::-webkit-scrollbar {
+    display: none;
+  }
+  .snap-carousel-item {
+    flex: 0 0 82vw;
+    scroll-snap-align: start;
+  }
+}
+
+/* ===== TOUCH FEEDBACK (touch-only devices) ===== */
+@media (hover: none) {
+  .btn-em:active,
+  .btn-ghost:active {
+    transform: scale(0.93) !important;
+    transition: transform 0.1s ease !important;
+  }
+  .soc:active {
+    transform: scale(0.87) !important;
+    color: var(--em2) !important;
+    background: rgba(204, 0, 0, 0.14) !important;
+    transition: all 0.1s ease !important;
+  }
+  .proj-card:active {
+    transform: scale(0.97) !important;
+    border-color: rgba(204, 0, 0, 0.35) !important;
+    transition: all 0.12s ease !important;
+  }
+  .cl:active {
+    transform: translateX(4px) !important;
+    border-color: rgba(204, 0, 0, 0.32) !important;
+    transition: all 0.1s ease !important;
+  }
+  .bcard:active {
+    border-color: rgba(204, 0, 0, 0.22) !important;
+    transition: border-color 0.1s ease !important;
+  }
+  .social-pill:active {
+    color: var(--em2) !important;
+    background: rgba(204, 0, 0, 0.12) !important;
+    transition: all 0.1s ease !important;
+  }
+}
+
+/* Performance hint for animated elements */
+.btn-em,
+.btn-ghost,
+.soc,
+.proj-card,
+.cl,
+.bcard {
+  will-change: transform;
+}
+
+/* ===== MOBILE: SWIPE HINT ANIMATION ===== */
+@keyframes swipe-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.55; }
+  50%       { transform: translateY(-7px); opacity: 1; }
+}
+.swipe-hint {
+  animation: swipe-bounce 2s ease-in-out infinite;
 }

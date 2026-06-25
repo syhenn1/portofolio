@@ -8,7 +8,7 @@ const ghUser = socialLinks.github.split("/").pop()!;
 
 export default function Stats() {
   return (
-    <section id="stats" className="relative z-10 px-3 sm:px-5" style={{ marginTop: "-48px" }}>
+    <section id="stats" className="relative z-10 px-3 sm:px-5 md:-mt-12">
       <div className="max-w-7xl mx-auto flex flex-col items-center gap-4">
         {/* Stats (left) + Trophies (right) in one container */}
         <motion.div

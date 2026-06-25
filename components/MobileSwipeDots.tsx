@@ -1,0 +1,78 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+
+const SECTIONS = [
+  { id: "hero", label: "Home" },
+  { id: "stats", label: "Stats" },
+  { id: "projects", label: "Projects" },
+  { id: "about", label: "About" },
+  { id: "skills", label: "Skills" },
+  { id: "contact", label: "Contact" },
+];
+
+export default function MobileSwipeDots() {
+  const [active, setActive] = useState("hero");
+
+  useEffect(() => {
+    const ratios: Record<string, number> = {};
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          ratios[entry.target.id] = entry.intersectionRatio;
+        }
+        const best = Object.entries(ratios).reduce(
+          (a, b) => (b[1] > a[1] ? b : a),
+          ["hero", 0]
+        );
+        if (best[1] > 0.1) setActive(best[0]);
+      },
+      { threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] }
+    );
+
+    SECTIONS.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      className="fixed right-3 top-1/2 -translate-y-1/2 z-[60] md:hidden flex flex-col gap-2 items-center"
+      role="navigation"
+      aria-label="Section navigation"
+    >
+      {SECTIONS.map(({ id, label }) => {
+        const isActive = active === id;
+        return (
+          <motion.button
+            key={id}
+            onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })}
+            aria-label={`Go to ${label}`}
+            title={label}
+            animate={{
+              height: isActive ? 22 : 6,
+              backgroundColor: isActive ? "#cc0000" : "rgba(255,255,255,0.18)",
+              boxShadow: isActive ? "0 0 10px rgba(204,0,0,0.6)" : "none",
+            }}
+            whileTap={{ scale: 0.75 }}
+            transition={{ type: "spring", stiffness: 400, damping: 28 }}
+            style={{
+              width: 5,
+              borderRadius: 999,
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+              outline: "none",
+              display: "block",
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}

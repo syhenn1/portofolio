@@ -342,14 +342,17 @@ export default function Hero() {
         style={{ height: 200, zIndex: 25, background: "linear-gradient(to top, var(--bg) 0%, rgba(14,9,5,.8) 30%, transparent 100%)" }}
       />
 
-      {/* Scroll hint */}
+      {/* Scroll / Swipe hint */}
       <a
         href="#stats"
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2 swipe-hint"
         style={{ color: "#4a2a1a" }}
       >
-        <span className="mono text-xs tracking-widest" style={{ fontSize: "10px" }}>
+        <span className="mono text-xs tracking-widest hidden sm:block" style={{ fontSize: "10px" }}>
           SCROLL
+        </span>
+        <span className="mono text-xs tracking-widest sm:hidden" style={{ fontSize: "10px" }}>
+          SWIPE
         </span>
         <div className="w-4 h-6 rounded-full border border-current flex items-start justify-center pt-1">
           <motion.div
