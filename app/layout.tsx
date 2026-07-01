@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import PageTransition from "@/components/PageTransition";
+import WaveBackground from "@/components/WaveBackground";
+import ScrollProgress from "@/components/ScrollProgress";
+import BackToTop from "@/components/BackToTop";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,7 +30,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${mono.variable} scroll-smooth`}>
       <body style={{ fontFamily: "var(--font-inter, Inter, sans-serif)" }}>
-        {children}
+        {/* Fixed-position elements live outside PageTransition to avoid being
+            trapped inside the motion.div containing block (CSS transform caveat) */}
+        <WaveBackground />
+        <ScrollProgress />
+        <BackToTop />
+        <PageTransition>{children}</PageTransition>
       </body>
     </html>
   );

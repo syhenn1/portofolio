@@ -53,8 +53,6 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="divline" />
-
       <div className="max-w-7xl mx-auto px-3 sm:px-5 py-5">
         <p className="text-xs text-center sm:text-left" style={{ color: "#334155" }}>
           &copy; 2025 Mochamad Rifat Syahman Hambali. All rights reserved.

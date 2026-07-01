@@ -83,15 +83,6 @@ export default function Hero() {
       className="relative z-0 min-h-screen flex items-end overflow-hidden"
       style={{ background: "linear-gradient(160deg, #0d0705 0%, #150905 50%, #1c0800 100%)" }}
     >
-      {/* Dot grid */}
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: "radial-gradient(rgba(204,0,0,.07) 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-        }}
-      />
-
       {/* Lighting: main red spotlight top-right */}
       <div
         className="absolute pointer-events-none z-0"
@@ -209,7 +200,7 @@ export default function Hero() {
         </motion.div>
 
         <motion.h1
-          className="font-black leading-[1.0] mb-3 text-white"
+          className="font-black leading-none mb-3 text-white"
           style={{ fontSize: "clamp(3rem, 9vw, 6.5rem)" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

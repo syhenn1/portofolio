@@ -37,7 +37,7 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="relative z-2 py-14 px-3 sm:px-5">
+    <section id="contact" className="relative z-3 py-14 px-3 sm:px-5">
       <div className="max-w-7xl mx-auto">
         <motion.div
           className="text-center mb-14"

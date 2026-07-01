@@ -28,10 +28,10 @@ export default function About() {
           </h2>
         </motion.div>
 
-        <div className="grid lg:grid-cols-3 gap-5 items-start">
+        <div className="grid lg:grid-cols-3 gap-5 items-stretch">
           {/* Bio */}
           <motion.div
-            className="lg:col-span-2 bcard"
+            className="lg:col-span-2 bcard h-full flex flex-col"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, margin: "-50px" }}
@@ -77,7 +77,7 @@ export default function About() {
 
           {/* Timeline */}
           <motion.div
-            className="bcard"
+            className="bcard h-full"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, margin: "-50px" }}

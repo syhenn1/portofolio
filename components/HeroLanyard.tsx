@@ -9,14 +9,17 @@ export default function HeroLanyard() {
   return (
     <div
       className="absolute inset-0 z-10 hidden lg:block pointer-events-none"
-      style={{ height: "100vh" }}
+      style={{
+        WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%)",
+        maskImage: "linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%)",
+      }}
     >
       <Lanyard
         frontImage={`${basePath}/images/ripat.png`}
-        imageFit="contain"
+        imageFit="cover"
         position={[0, 0, 20]}
         fov={16}
-        lanyardWidth={1.6}
+        lanyardWidth={2.2}
       />
     </div>
   );

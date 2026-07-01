@@ -56,9 +56,9 @@ export default function Lanyard({
   }, []);
 
   return (
-    <div className="relative z-0 w-full h-full flex justify-center items-center pointer-events-none">
+    <div className="relative z-0 w-full h-full pointer-events-none">
       <Canvas
-        style={{ pointerEvents: 'auto' }}
+        style={{ pointerEvents: 'auto', width: '100%', height: '100%' }}
         camera={{ position, fov }}
         dpr={[1, 1]}
         gl={{ alpha: transparent, antialias: false, powerPreference: 'high-performance' }}
@@ -129,40 +129,56 @@ function Band({
 
   const { nodes, materials } = useGLTF(`${basePath}/card.glb`) as any;
 
-  // AMD-colored lanyard texture generated from canvas (no file import needed)
+  // Text lanyard texture: repeating role labels along the cord
   const lanyardTex = useMemo(() => {
+    const W = 512;
+    const H = 40;
     const canvas = document.createElement('canvas');
-    canvas.width = 64;
-    canvas.height = 64;
+    canvas.width = W;
+    canvas.height = H;
     const ctx = canvas.getContext('2d')!;
-    const stripes: Array<[string, number]> = [
-      ['#100704', 3],
-      ['#CC0000', 9],
-      ['#FF6B35', 6],
-      ['#F7C948', 3],
-      ['#FF6B35', 6],
-      ['#CC0000', 9],
-      ['#100704', 3],
-      ['#CC0000', 9],
-      ['#FF6B35', 6],
-      ['#F7C948', 3],
-      ['#FF6B35', 6],
-      ['#CC0000', 7],
-    ];
-    let y = 0;
-    for (const [color, h] of stripes) {
-      ctx.fillStyle = color;
-      ctx.fillRect(0, y, 64, h);
-      y += h;
+
+    ctx.fillStyle = '#111111';
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.font = 'bold 11px monospace';
+    ctx.textBaseline = 'middle';
+    const midY = H / 2;
+
+    const SEP = '  ×  ';
+    const A = 'FULLSTACK DEVELOPER';
+    const B = 'PROJECT MANAGER';
+    const chunk = A + SEP + B + SEP;
+    const chunkW = ctx.measureText(chunk).width;
+
+    let x = 0;
+    while (x < W + chunkW) {
+      ctx.fillStyle = '#e0e0e0';
+      ctx.fillText(A, x, midY);
+      const wA = ctx.measureText(A).width;
+
+      ctx.fillStyle = '#ff6b35';
+      ctx.fillText(SEP, x + wA, midY);
+      const wSep = ctx.measureText(SEP).width;
+
+      ctx.fillStyle = '#e0e0e0';
+      ctx.fillText(B, x + wA + wSep, midY);
+      const wB = ctx.measureText(B).width;
+
+      ctx.fillStyle = '#ff6b35';
+      ctx.fillText(SEP, x + wA + wSep + wB, midY);
+
+      x += chunkW;
     }
-    // Edge shadows
-    const g = ctx.createLinearGradient(0, 0, 64, 0);
-    g.addColorStop(0,    'rgba(0,0,0,0.5)');
-    g.addColorStop(0.18, 'rgba(0,0,0,0)');
-    g.addColorStop(0.82, 'rgba(0,0,0,0)');
-    g.addColorStop(1,    'rgba(0,0,0,0.5)');
+
+    // Edge shadow for depth
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0,   'rgba(0,0,0,0.75)');
+    g.addColorStop(0.2, 'rgba(0,0,0,0)');
+    g.addColorStop(0.8, 'rgba(0,0,0,0)');
+    g.addColorStop(1,   'rgba(0,0,0,0.75)');
     ctx.fillStyle = g;
-    ctx.fillRect(0, 0, 64, 64);
+    ctx.fillRect(0, 0, W, H);
 
     const tex = new THREE.CanvasTexture(canvas);
     tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
@@ -186,7 +202,13 @@ function Band({
     canvas.height = H;
     const ctx = canvas.getContext('2d');
     if (!ctx) return baseMap;
+
+    // Neutral dark base so card edges are not white (no color tint)
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'multiply';
     ctx.drawImage(baseImg, 0, 0, W, H);
+    ctx.globalCompositeOperation = 'source-over';
 
     const drawFitted = (img: HTMLImageElement, rect: typeof FRONT_UV) => {
       const rx = rect.x * W;
@@ -329,7 +351,7 @@ function Band({
           resolution={isMobile ? [1000, 2000] : [1000, 1000]}
           useMap
           map={lanyardTex}
-          repeat={[-4, 1]}
+          repeat={[3, 1]}
           lineWidth={lanyardWidth}
         />
       </mesh>
