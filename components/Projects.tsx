@@ -82,14 +82,14 @@ function StackCard({
     return 1;
   });
 
-  // Multi-layer shadow: card edge (thickness illusion) + lanyard-style drop shadow
-  const EDGE = "0 2px 0 rgba(0,0,0,0.98), 0 4px 0 rgba(0,0,0,0.80), 0 6px 0 rgba(0,0,0,0.50)";
+  // Multi-layer edge shadow: thick card-edge illusion + ambient drop shadow
+  const EDGE = "0 2px 0 #1a1510, 0 4px 0 #130f0a, 0 6px 0 #0e0a06, 0 8px 0 rgba(0,0,0,0.85), 0 10px 0 rgba(0,0,0,0.60), 0 12px 0 rgba(0,0,0,0.35)";
   const shadow = useTransform(progress, (p) => {
-    if (p <= s0) return `${EDGE}, 0 16px 48px rgba(0,0,0,0.65), 0 40px 90px rgba(0,0,0,0.45)`;
+    if (p <= s0) return `${EDGE}, 0 20px 60px rgba(0,0,0,0.70), 0 50px 100px rgba(0,0,0,0.50)`;
     const t = (p - s0) / seg;
     if (t >= P_ARRIVE && t < 1)
-      return `${EDGE}, 0 0 0 1px ${c}30, 0 16px 60px rgba(0,0,0,0.75), 0 0 80px ${c}44, 0 50px 120px rgba(0,0,0,0.60)`;
-    return `${EDGE}, 0 16px 48px rgba(0,0,0,0.65), 0 40px 90px rgba(0,0,0,0.45)`;
+      return `${EDGE}, 0 0 0 1px ${c}35, 0 20px 70px rgba(0,0,0,0.80), 0 0 100px ${c}50, 0 60px 140px rgba(0,0,0,0.65)`;
+    return `${EDGE}, 0 20px 60px rgba(0,0,0,0.70), 0 50px 100px rgba(0,0,0,0.50)`;
   });
 
   // Slight tilt in right deck, straightens as it animates to center, settles to pile tilt
@@ -107,7 +107,54 @@ function StackCard({
     return N - i;                            // right deck: card 0 on top
   });
 
+  // Info panel fades in when card reaches center (P_ARRIVE) and fades out before leaving
+  const infoOpacity = useTransform(progress, (p) => {
+    if (p <= s0) return 0;
+    const t = (p - s0) / seg;
+    if (t < P_ARRIVE) return 0;
+    if (t < P_ARRIVE + 0.08) return (t - P_ARRIVE) / 0.08;
+    if (t > 0.85) return Math.max(0, (1 - t) / 0.15);
+    return 1;
+  });
+
   return (
+    <>
+    {/* Hero-style info panel — floating text, no background box */}
+    <motion.div
+      style={{
+        position: "absolute",
+        left: 40,
+        top: "50%",
+        translateY: "-50%",
+        width: 300,
+        opacity: infoOpacity,
+        zIndex: N + 5,
+        pointerEvents: "none",
+      }}
+    >
+      <div className="slabel" style={{ marginBottom: 8, color: c, textShadow: `0 0 20px ${c}99, 0 2px 14px rgba(0,0,0,0.98)` }}>{project.sub}</div>
+      <h2 style={{
+        fontSize: "clamp(24px, 2.6vw, 38px)",
+        fontWeight: 900,
+        color: "#f4ede0",
+        margin: "0 0 12px",
+        lineHeight: 1.05,
+        letterSpacing: "-0.02em",
+        textShadow: "0 2px 28px rgba(0,0,0,0.99), 0 0 60px rgba(0,0,0,0.95)",
+      }}>
+        {project.title}
+      </h2>
+      <div style={{
+        width: 40, height: 2, borderRadius: 1,
+        background: `linear-gradient(90deg, ${c}, transparent)`,
+        marginBottom: 14,
+        filter: `drop-shadow(0 0 6px ${c})`,
+      }} />
+      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", lineHeight: 1.75, margin: 0, textShadow: "0 1px 12px rgba(0,0,0,0.99)" }}>
+        {project.desc}
+      </p>
+    </motion.div>
+
     <motion.div
       style={{
         position: "absolute",
@@ -117,7 +164,7 @@ function StackCard({
         height: CARD_H,
         x,
         y: "-50%",
-        rotateX: -6,
+        rotateX: -14,
         scale,
         rotate,
         zIndex,
@@ -125,12 +172,23 @@ function StackCard({
         boxShadow: shadow,
         borderRadius: 24,
         transformOrigin: "center center",
+        transformStyle: "preserve-3d",
         willChange: "transform, box-shadow",
       }}
     >
-      {/* Perspective context for the 3D flip — must be a plain div, not motion.div,
-          so that `perspective` maps to the CSS property (not a transform function) */}
-      <div style={{ perspective: "1200px", width: "100%", height: "100%" }}>
+      {/* Spine layers — literal card thickness, visible at edges when tilted */}
+      {([4, 8, 12, 16, 20, 24] as const).map((z, idx) => (
+        <div key={idx} style={{
+          position: "absolute",
+          inset: 0,
+          borderRadius: 24,
+          background: (["#1c1610","#17120d","#130e09","#0f0b06","#0c0804","#090603"] as const)[idx],
+          transform: `translateZ(-${z}px)`,
+        }} />
+      ))}
+
+      {/* Perspective context for the 3D flip */}
+      <div style={{ position: "absolute", inset: 0, perspective: "1200px" }}>
         <motion.div
           style={{
             width: "100%",
@@ -275,6 +333,7 @@ function StackCard({
         </motion.div>
       </div>
     </motion.div>
+    </>
   );
 }
 
@@ -379,6 +438,21 @@ export default function Projects() {
   const progressW   = useTransform(progress, [0, 1], ["0%", "100%"]);
   const hintOpacity = useTransform(progress, [0, 0.04], [1, 0]);
 
+  // 10% dark overlay for the entire sticky panel — fades in when any card is at center
+  const overlayOpacity = useTransform(progress, (p) => {
+    const seg = 1 / N;
+    for (let i = 0; i < N; i++) {
+      const s0 = i * seg;
+      if (p < s0 || p > s0 + seg) continue;
+      const t = (p - s0) / seg;
+      if (t < P_ARRIVE - 0.08) return 0;
+      if (t < P_ARRIVE) return ((t - (P_ARRIVE - 0.08)) / 0.08) * 0.10;
+      if (t > 0.87) return Math.max(0, (0.90 - t) / 0.03) * 0.10;
+      return 0.10;
+    }
+    return 0;
+  });
+
   return (
     <section id="projects" className="relative z-2">
 
@@ -425,8 +499,20 @@ export default function Projects() {
             </a>
           </motion.div>
 
+          {/* 10% dark overlay — covers entire sticky panel when a card is at center */}
+          <motion.div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "rgba(0,0,0,0.10)",
+              opacity: overlayOpacity,
+              pointerEvents: "none",
+              zIndex: 0,
+            }}
+          />
+
           {/* Card arena — perspective here gives cards their rotateX 3D depth */}
-          <div style={{ position: "relative", height: "calc(100vh - 156px)", overflow: "hidden", perspective: "2200px", perspectiveOrigin: "50% 50%" }}>
+          <div style={{ position: "relative", height: "calc(100vh - 156px)", overflow: "hidden", perspective: "1400px", perspectiveOrigin: "50% 50%" }}>
             {projects.map((project, i) => (
               <StackCard
                 key={project.slug}

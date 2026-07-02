@@ -17,8 +17,8 @@ export default function HeroLanyard() {
       <Lanyard
         frontImage={`${basePath}/images/ripat.png`}
         imageFit="cover"
-        position={[0, 0, 20]}
-        fov={16}
+        position={[0, 1.0, 20]}
+        fov={13}
         lanyardWidth={0.9}
       />
     </div>

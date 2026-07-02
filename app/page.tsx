@@ -15,7 +15,7 @@ export default function Home() {
       <Navbar />
       <MobileSwipeDots />
       <main>
-        <div className="relative z-2">
+        <div className="relative">
           <Hero />
           <HeroLanyard />
         </div>

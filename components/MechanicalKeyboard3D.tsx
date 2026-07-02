@@ -273,7 +273,9 @@ function KeyboardScene({ onHover, introRotY }: { onHover: (k: K | null) => void;
     const totalDepth = ROWS.length * KH3 + (ROWS.length - 1) * GH3;
     const positions: { def: K; pos: [number, number, number] }[] = [];
 
-    let zPos = totalDepth / 2 - KH3 / 2; // front row at +z
+    // rotation.x = 0.90 maps +Z to bottom, -Z to top in camera view.
+    // Start ESC row at -Z (top) and increment toward +Z so spacebar is at bottom.
+    let zPos = -(totalDepth / 2 - KH3 / 2);
 
     ROWS.forEach((row) => {
       const rowWidth = row.reduce((s, k) => s + kw3(k.w ?? 1), 0) + (row.length - 1) * GH3;
@@ -285,7 +287,7 @@ function KeyboardScene({ onHover, introRotY }: { onHover: (k: K | null) => void;
         cumX += w + GH3;
       });
 
-      zPos -= KH3 + GH3;
+      zPos += KH3 + GH3;
     });
 
     // chassis is 1u wider & deeper than the reference row (numbers row)

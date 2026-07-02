@@ -186,7 +186,7 @@ export default function Hero() {
       </motion.div>
 
       {/* Text content */}
-      <div className="relative z-30 px-3 sm:px-5 pb-24 sm:pb-28 lg:pb-[9%] lg:pl-[7%] max-w-xl w-full">
+      <div className="relative z-30 w-full max-w-7xl mx-auto px-3 sm:px-5 pb-24 sm:pb-28 lg:pb-[9%] lg:px-8">
         <motion.div
           className="mono text-xs mb-5"
           style={{ color: "var(--muted)" }}

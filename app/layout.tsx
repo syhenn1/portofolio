@@ -5,6 +5,7 @@ import PageTransition from "@/components/PageTransition";
 import WaveBackground from "@/components/WaveBackground";
 import ScrollProgress from "@/components/ScrollProgress";
 import BackToTop from "@/components/BackToTop";
+import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -35,7 +36,9 @@ export default function RootLayout({
         <WaveBackground />
         <ScrollProgress />
         <BackToTop />
-        <PageTransition>{children}</PageTransition>
+        <SmoothScrollProvider>
+          <PageTransition>{children}</PageTransition>
+        </SmoothScrollProvider>
       </body>
     </html>
   );
