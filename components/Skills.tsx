@@ -59,69 +59,57 @@ function Keycap({ skill, color, index, size = 44 }: {
   );
 }
 
-// ─── Tech info panel (desktop) ────────────────────────────────────────────────
+// ─── Tech info panel (desktop) — hero-style, no container ────────────────────
 function TechInfoPanel({ tech }: { tech: TechKey | null }) {
   const TechIcon = tech?.I;
   return (
-    <div style={{ width: 400 }}>
+    <div style={{ width: 420, minHeight: 280 }}>
       <AnimatePresence mode="wait">
         {tech ? (
           <motion.div
             key={tech.name}
-            initial={{ opacity: 0, x: -24, y: 8 }}
+            initial={{ opacity: 0, x: -20, y: 6 }}
             animate={{ opacity: 1, x: 0, y: 0 }}
-            exit={{ opacity: 0, x: -14, y: 4 }}
-            transition={{ duration: 0.22, ease: "easeOut" }}
-            style={{
-              padding: "36px 40px 40px",
-              borderRadius: 28,
-              background: "rgba(18,11,6,0.94)",
-              border: `1px solid ${tech.c}40`,
-              boxShadow: `0 0 80px ${tech.c}22, 0 40px 80px rgba(0,0,0,0.65)`,
-              backdropFilter: "blur(24px)",
-            }}
+            exit={{ opacity: 0, x: -12, y: 4 }}
+            transition={{ duration: 0.20, ease: "easeOut" }}
           >
-            {/* icon */}
-            <div style={{
-              width: 96, height: 96,
-              borderRadius: 24,
-              background: `${tech.c}1a`,
-              border: `1px solid ${tech.c}50`,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              marginBottom: 28,
-              boxShadow: `0 0 32px ${tech.c}18`,
-            }}>
+            {/* Large floating icon — no background box */}
+            <div style={{ marginBottom: 22 }}>
               {TechIcon
-                ? <TechIcon size={52} style={{ color: tech.c }} />
+                ? <TechIcon size={76} style={{ color: tech.c, filter: `drop-shadow(0 0 28px ${tech.c}55)` }} />
                 : tech.s
-                ? <Image src={tech.s} alt={tech.name} width={52} height={52} style={{ objectFit: "contain" }} />
-                : null}
+                  ? <Image src={tech.s} alt={tech.name} width={76} height={76} style={{ objectFit: "contain", filter: `drop-shadow(0 0 28px ${tech.c}44)` }} />
+                  : null}
             </div>
 
-            {/* name */}
-            <h3 style={{ fontSize: 42, fontWeight: 900, color: "#f4ede0", marginBottom: 10, lineHeight: 1, letterSpacing: "-0.02em" }}>
+            {/* Category — hero slabel style */}
+            <div className="slabel" style={{ marginBottom: 10, color: tech.c }}>
+              {tech.cat}
+            </div>
+
+            {/* Large name */}
+            <h3 style={{
+              fontSize: 58,
+              fontWeight: 900,
+              color: "#f4ede0",
+              margin: "0 0 14px",
+              lineHeight: 1,
+              letterSpacing: "-0.025em",
+            }}>
               {tech.name}
             </h3>
 
-            {/* category badge */}
-            <span style={{
-              display: "inline-block",
-              padding: "5px 14px",
-              borderRadius: 20,
-              background: `${tech.c}20`,
-              border: `1px solid ${tech.c}55`,
-              fontSize: 10,
-              fontWeight: 700,
-              color: tech.c,
-              letterSpacing: "0.10em",
-              textTransform: "uppercase",
-              marginBottom: 20,
-            }}>
-              {tech.cat}
-            </span>
+            {/* Accent line */}
+            <div style={{
+              width: 52,
+              height: 2,
+              borderRadius: 1,
+              background: `linear-gradient(90deg, ${tech.c}, transparent)`,
+              marginBottom: 18,
+            }} />
 
-            {/* description */}
-            <p style={{ fontSize: 16, color: "#6b5f55", lineHeight: 1.75, margin: 0 }}>
+            {/* Description */}
+            <p style={{ fontSize: 15, color: "#7a6a5a", lineHeight: 1.78, margin: 0 }}>
               {tech.desc}
             </p>
           </motion.div>
@@ -132,29 +120,19 @@ function TechInfoPanel({ tech }: { tech: TechKey | null }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            style={{
-              padding: "48px 40px",
-              borderRadius: 28,
-              border: "1px dashed rgba(255,255,255,0.07)",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              gap: 16,
-              color: "rgba(255,255,255,0.18)",
-            }}
           >
-            <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.2}>
-              <rect x="2" y="6" width="20" height="13" rx="2" />
-              <path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M10 14h4M18 14h.01" strokeLinecap="round" />
-            </svg>
-            <div>
-              <p style={{ fontSize: 22, fontWeight: 700, color: "rgba(255,255,255,0.22)", margin: "0 0 8px", lineHeight: 1 }}>
-                Hover a key
-              </p>
-              <p style={{ fontSize: 14, lineHeight: 1.7, margin: 0, color: "rgba(255,255,255,0.15)" }}>
-                Colored keycaps are tech tools.<br />Hover them to see details.
-              </p>
+            <div style={{ color: "rgba(255,255,255,0.12)", marginBottom: 18 }}>
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1}>
+                <rect x="2" y="6" width="20" height="13" rx="2" />
+                <path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M10 14h4M18 14h.01" strokeLinecap="round" />
+              </svg>
             </div>
+            <p style={{ fontSize: 30, fontWeight: 800, color: "rgba(255,255,255,0.14)", margin: "0 0 12px", lineHeight: 1, letterSpacing: "-0.02em" }}>
+              Hover a key
+            </p>
+            <p style={{ fontSize: 14, lineHeight: 1.7, margin: 0, color: "rgba(255,255,255,0.10)" }}>
+              Colored keycaps are tech tools.<br />Hover them to see details.
+            </p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -173,16 +151,20 @@ export default function Skills() {
     offset: ["start end", "end start"],
   });
 
-  const kbOpacity = useTransform(scrollYProgress, [0, 0.12, 0.80, 1.0], [0, 1, 1, 0]);
+  const kbOpacity = useTransform(scrollYProgress, [0, 0.12, 0.78, 1.0], [0, 1, 1, 0]);
 
   // Spin is driven inside Three.js (no CSS rotateY on canvas ancestor — that breaks drei Html overlays)
-  const introRotYRef = useRef<number>(Math.PI / 2); // keyboard starts sideways
+  // Spins in from the right on enter, spins out to the right on exit
+  const introRotYRef = useRef<number>(Math.PI / 2);
   useEffect(() => {
-    // Sync current value on mount (handles page load with section already in view)
-    const v = scrollYProgress.get();
-    introRotYRef.current = v < 0.22 ? (1 - v / 0.22) * (Math.PI / 2) : 0;
+    const getSpinY = (val: number) => {
+      if (val < 0.20) return (1 - val / 0.20) * (Math.PI / 2);       // spin in
+      if (val > 0.78) return ((val - 0.78) / 0.22) * (Math.PI / 2);  // spin out
+      return 0;
+    };
+    introRotYRef.current = getSpinY(scrollYProgress.get());
     return scrollYProgress.on("change", (val: number) => {
-      introRotYRef.current = val < 0.22 ? (1 - val / 0.22) * (Math.PI / 2) : 0;
+      introRotYRef.current = getSpinY(val);
     });
   }, [scrollYProgress]);
 
@@ -210,7 +192,7 @@ export default function Skills() {
       {/* ── desktop: scroll-driven fade; spin is inside Three.js so Html icons stay correct ── */}
       <motion.div
         className="hidden lg:block relative"
-        style={{ height: "72vh", minHeight: 640, opacity: kbOpacity }}
+        style={{ height: "80vh", minHeight: 680, opacity: kbOpacity }}
       >
         {/* Info panel — flat, no CSS 3D transform on it */}
         <motion.div

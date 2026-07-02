@@ -23,7 +23,7 @@ body {
   padding: 0;
   background: var(--bg);
   color: var(--tx);
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 

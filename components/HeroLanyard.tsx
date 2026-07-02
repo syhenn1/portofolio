@@ -19,7 +19,7 @@ export default function HeroLanyard() {
         imageFit="cover"
         position={[0, 0, 20]}
         fov={16}
-        lanyardWidth={2.2}
+        lanyardWidth={0.9}
       />
     </div>
   );

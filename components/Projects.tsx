@@ -10,15 +10,19 @@ import { projects, getSkill, socialLinks, type Project } from "@/lib/data";
 // ── Card dimensions & pile geometry ──────────────────────────────────────────
 const CARD_W    = 400;
 const CARD_H    = 510;
-const PILE_SCALE  = 1;      // cards stay full size in the pile
-const PILE_LEFT   = 56;     // px from left edge of screen to first piled card
-const PILE_STEP   = 28;     // px between consecutive piled cards (left-edge offset)
-// Subtle rotation each card gets once in the pile
+const PILE_SCALE  = 1;
+const PILE_LEFT   = 56;
+const PILE_STEP   = 28;
 const PILE_ROT  = [-2.5, 1, -1.8, 2.2, -0.6, 1.4, -2.0, 0.8];
 
 // ── Easing helpers ────────────────────────────────────────────────────────────
-const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
-const easeIn  = (t: number) => t * t * t;
+const easeOut   = (t: number) => 1 - Math.pow(1 - t, 3);
+const easeIn    = (t: number) => t * t * t;
+const easeInOut = (t: number) => (1 - Math.cos(Math.PI * t)) / 2;
+
+// ── Phase fractions within each card's scroll segment ────────────────────────
+const P_ARRIVE  = 0.38;   // card reaches center (back face visible while sliding)
+const P_FLIP_OK = 0.63;   // flip completes (front face revealed)
 
 // ── Desktop stacked card ──────────────────────────────────────────────────────
 function StackCard({
@@ -31,54 +35,76 @@ function StackCard({
 }) {
   const techs = project.tech.slice(0, 4).map((k) => getSkill(k)).filter(Boolean);
   const seg = 1 / N;
-  const s0  = i * seg;   // segment start
-  const s1  = s0 + seg;  // segment end
+  const s0  = i * seg;
+  const s1  = s0 + seg;
+  const c   = project.color;
 
-  // Horizontal position: off-screen right → center → pile
+  // All cards start VISIBLE in a right-side deck (not off-screen).
+  // Phase 1 (0 → P_ARRIVE):  slide from right deck to center — back face showing
+  // Phase 2 (P_ARRIVE → P_FLIP_OK): hold at center, flip to front face
+  // Phase 3 (P_FLIP_OK → 1.0): slide from center to left pile
+
   const x = useTransform(progress, (p) => {
     if (typeof window === "undefined") return 2000;
     const vw = window.innerWidth;
-    const cx = (vw - CARD_W) / 2;            // centered left edge
-    const px = PILE_LEFT + i * PILE_STEP;    // pile left edge
+    const cx = (vw - CARD_W) / 2;
+    const px = PILE_LEFT + i * PILE_STEP;
+    // Right-side deck: card 0 is frontmost (rightmost); each card behind steps 5 px left
+    const rx = vw - CARD_W - 44 - Math.min(i * 5, 24);
 
-    if (p <= s0) return vw + CARD_W;         // not yet appeared
-    if (p >= s1) return px;                  // settled in pile
+    if (p <= s0) return rx;   // resting in right-side deck, always visible
+    if (p >= s1) return px;
 
     const t = (p - s0) / seg;
-    if (t < 0.46) {
-      // Enter: right → center
-      return vw + CARD_W + (cx - (vw + CARD_W)) * easeOut(t / 0.46);
+    if (t < P_ARRIVE) {
+      return rx + (cx - rx) * easeOut(t / P_ARRIVE);
+    } else if (t < P_FLIP_OK) {
+      return cx;
+    } else {
+      return cx + (px - cx) * easeIn((t - P_FLIP_OK) / (1 - P_FLIP_OK));
     }
-    // Exit: center → pile
-    return cx + (px - cx) * easeIn((t - 0.46) / 0.54);
+  });
+
+  // 3D flip: 180° (back face) → 0° (front face), eased through center pause
+  const flipY = useTransform(progress, (p) => {
+    if (p <= s0) return 180;
+    const t = (p - s0) / seg;
+    if (t <= P_ARRIVE)  return 180;
+    if (t >= P_FLIP_OK) return 0;
+    return 180 * (1 - easeInOut((t - P_ARRIVE) / (P_FLIP_OK - P_ARRIVE)));
   });
 
   const scale = useTransform(progress, (p) => {
-    if (p <= s0) return 0.88;
+    if (p <= s0) return 0.92;   // slightly smaller in the resting deck
     if (p >= s1) return PILE_SCALE;
     const t = (p - s0) / seg;
-    if (t < 0.46) return 0.88 + (1 - 0.88) * easeOut(t / 0.46);
-    return 1 + (PILE_SCALE - 1) * easeIn((t - 0.46) / 0.54);
+    if (t < P_ARRIVE) return 0.92 + (1 - 0.92) * easeOut(t / P_ARRIVE);
+    return 1;
   });
 
-  // Rotation: 0 while active, pile tilt when settled
+  // Multi-layer shadow: card edge (thickness illusion) + lanyard-style drop shadow
+  const EDGE = "0 2px 0 rgba(0,0,0,0.98), 0 4px 0 rgba(0,0,0,0.80), 0 6px 0 rgba(0,0,0,0.50)";
+  const shadow = useTransform(progress, (p) => {
+    if (p <= s0) return `${EDGE}, 0 16px 48px rgba(0,0,0,0.65), 0 40px 90px rgba(0,0,0,0.45)`;
+    const t = (p - s0) / seg;
+    if (t >= P_ARRIVE && t < 1)
+      return `${EDGE}, 0 0 0 1px ${c}30, 0 16px 60px rgba(0,0,0,0.75), 0 0 80px ${c}44, 0 50px 120px rgba(0,0,0,0.60)`;
+    return `${EDGE}, 0 16px 48px rgba(0,0,0,0.65), 0 40px 90px rgba(0,0,0,0.45)`;
+  });
+
+  // Slight tilt in right deck, straightens as it animates to center, settles to pile tilt
   const rotate = useTransform(progress, (p) => {
     if (p >= s1) return PILE_ROT[i % PILE_ROT.length];
+    if (p <= s0)  return PILE_ROT[i % PILE_ROT.length] * 0.5;
+    const t = (p - s0) / seg;
+    if (t < P_ARRIVE) return PILE_ROT[i % PILE_ROT.length] * 0.5 * (1 - t / P_ARRIVE);
     return 0;
   });
 
-  // Z-index: highest while active, stack order in pile
   const zIndex = useTransform(progress, (p) => {
-    if (p >= s0 && p <= s1) return N + 10;
-    if (p > s1) return i + 1;
-    return 0;
-  });
-
-  // Fade in on first appearance
-  const opacity = useTransform(progress, (p) => {
-    if (p <= s0) return 0;
-    if (p >= s0 + seg * 0.07) return 1;
-    return (p - s0) / (seg * 0.07);
+    if (p >= s0 && p <= s1) return N + 10;   // active: topmost
+    if (p > s1) return i + 1;               // left pile
+    return N - i;                            // right deck: card 0 on top
   });
 
   return (
@@ -91,68 +117,163 @@ function StackCard({
         height: CARD_H,
         x,
         y: "-50%",
+        rotateX: -6,
         scale,
         rotate,
         zIndex,
-        opacity,
+        opacity: 1,
+        boxShadow: shadow,
+        borderRadius: 24,
         transformOrigin: "center center",
-        willChange: "transform",
+        willChange: "transform, box-shadow",
       }}
     >
-      <Link href={`/projects/${project.slug}`} className="proj-card group flex flex-col h-full">
-        {/* Thumbnail */}
-        <div className="relative shrink-0" style={{ height: "52%" }}>
-          <Image src={project.img} alt={project.title} fill className="proj-img object-cover" />
-          <div
-            className="absolute inset-0"
-            style={{ background: "linear-gradient(to top, rgba(14,9,5,.95) 0%, rgba(14,9,5,.12) 58%, transparent 100%)" }}
-          />
-          <span
-            className="mono absolute top-3 left-3"
-            style={{
-              fontSize: 10, color: project.color,
-              background: "rgba(0,0,0,.65)", padding: "3px 11px",
-              borderRadius: 999, border: `1px solid ${project.color}45`,
-            }}
-          >
-            {project.sub}
-          </span>
-          <div className="proj-arrow absolute top-3 right-3">
-            <FiArrowUpRight size={18} />
-          </div>
-          <span className="mono absolute bottom-3 right-4" style={{ fontSize: 11, color: "rgba(255,255,255,0.18)" }}>
-            {String(i + 1).padStart(2, "0")} / {String(N).padStart(2, "0")}
-          </span>
-        </div>
+      {/* Perspective context for the 3D flip — must be a plain div, not motion.div,
+          so that `perspective` maps to the CSS property (not a transform function) */}
+      <div style={{ perspective: "1200px", width: "100%", height: "100%" }}>
+        <motion.div
+          style={{
+            width: "100%",
+            height: "100%",
+            position: "relative",
+            rotateY: flipY,
+            transformStyle: "preserve-3d",
+          }}
+        >
 
-        {/* Content */}
-        <div className="flex flex-col flex-1 p-5 gap-2.5">
-          <div className="flex items-start justify-between gap-3">
-            <h3 className="text-xl font-black text-white leading-tight">{project.title}</h3>
-            <span className="mono text-xs shrink-0 mt-1" style={{ color: "#475569" }}>{project.year}</span>
-          </div>
-          <p
-            className="text-gray-400 leading-relaxed"
-            style={{ fontSize: 13, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}
-          >
-            {project.desc}
-          </p>
-          <div className="flex flex-wrap gap-1.5 mt-auto pt-1">
-            {techs.map((s, idx) => {
-              const skill = s!;
-              const SkillIcon = skill.Icon;
-              return (
-                <span key={idx} className="ttag">
-                  {SkillIcon
-                    ? <SkillIcon size={11} />
-                    : <Image src={skill.src!} alt={skill.name} width={11} height={11} style={{ objectFit: "contain" }} />}
-                  {skill.name}
+          {/* ── FRONT face ─────────────────────────────────────────────── */}
+          <div style={{ position: "absolute", inset: 0, backfaceVisibility: "hidden", borderRadius: 24, overflow: "hidden" }}>
+            {/* Surface sheen — light reflection like the lanyard card */}
+            <div style={{
+              position: "absolute", inset: 0, zIndex: 9, pointerEvents: "none", borderRadius: 24,
+              background: "linear-gradient(155deg, rgba(255,255,255,0.11) 0%, rgba(255,255,255,0.04) 30%, transparent 55%)",
+            }} />
+            <Link href={`/projects/${project.slug}`} className="proj-card group flex flex-col h-full">
+              {/* Thumbnail */}
+              <div className="relative shrink-0" style={{ height: "52%" }}>
+                <Image src={project.img} alt={project.title} fill className="proj-img object-cover" />
+                <div
+                  className="absolute inset-0"
+                  style={{ background: "linear-gradient(to top, rgba(14,9,5,.95) 0%, rgba(14,9,5,.12) 58%, transparent 100%)" }}
+                />
+                <span
+                  className="mono absolute top-3 left-3"
+                  style={{
+                    fontSize: 10, color: c,
+                    background: "rgba(0,0,0,.65)", padding: "3px 11px",
+                    borderRadius: 999, border: `1px solid ${c}45`,
+                  }}
+                >
+                  {project.sub}
                 </span>
-              );
-            })}
+                <div className="proj-arrow absolute top-3 right-3">
+                  <FiArrowUpRight size={18} />
+                </div>
+                <span className="mono absolute bottom-3 right-4" style={{ fontSize: 11, color: "rgba(255,255,255,0.18)" }}>
+                  {String(i + 1).padStart(2, "0")} / {String(N).padStart(2, "0")}
+                </span>
+              </div>
+              {/* Content */}
+              <div className="flex flex-col flex-1 p-5 gap-2.5">
+                <div className="flex items-start justify-between gap-3">
+                  <h3 className="text-xl font-black text-white leading-tight">{project.title}</h3>
+                  <span className="mono text-xs shrink-0 mt-1" style={{ color: "#475569" }}>{project.year}</span>
+                </div>
+                <p
+                  className="text-gray-400 leading-relaxed"
+                  style={{ fontSize: 13, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}
+                >
+                  {project.desc}
+                </p>
+                <div className="flex flex-wrap gap-1.5 mt-auto pt-1">
+                  {techs.map((s, idx) => {
+                    const skill = s!;
+                    const SkillIcon = skill.Icon;
+                    return (
+                      <span key={idx} className="ttag">
+                        {SkillIcon
+                          ? <SkillIcon size={11} />
+                          : <Image src={skill.src!} alt={skill.name} width={11} height={11} style={{ objectFit: "contain" }} />}
+                        {skill.name}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            </Link>
           </div>
-        </div>
-      </Link>
+
+          {/* ── BACK face (YuGiOh-style card back) ─────────────────────── */}
+          <div style={{
+            position: "absolute",
+            inset: 0,
+            backfaceVisibility: "hidden",
+            transform: "rotateY(180deg)",
+            borderRadius: 24,
+            overflow: "hidden",
+            background: "linear-gradient(135deg, #0e0620 0%, #180430 40%, #0a0e1c 80%, #060a14 100%)",
+          }}>
+            {/* Surface sheen on back face */}
+            <div style={{
+              position: "absolute", inset: 0, zIndex: 9, pointerEvents: "none", borderRadius: 24,
+              background: "linear-gradient(155deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 30%, transparent 55%)",
+            }} />
+            {/* Diamond cross-hatch */}
+            <div style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage: `
+                repeating-linear-gradient(45deg, rgba(255,255,255,0.028) 0px, rgba(255,255,255,0.028) 1px, transparent 1px, transparent 14px),
+                repeating-linear-gradient(-45deg, rgba(255,255,255,0.028) 0px, rgba(255,255,255,0.028) 1px, transparent 1px, transparent 14px)
+              `,
+            }} />
+            {/* Oval ornament */}
+            <div style={{
+              position: "absolute",
+              inset: "13%",
+              borderRadius: "50%",
+              border: `1px solid ${c}28`,
+              boxShadow: `0 0 40px ${c}14 inset`,
+            }} />
+            {/* RS monogram */}
+            <div style={{
+              position: "absolute", inset: 0,
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <span style={{
+                fontSize: 132,
+                fontWeight: 900,
+                color: "rgba(255,255,255,0.038)",
+                fontFamily: "var(--font-mono)",
+                letterSpacing: "-0.05em",
+                lineHeight: 1,
+                userSelect: "none",
+              }}>RS</span>
+            </div>
+            {/* Top badge */}
+            <div style={{
+              position: "absolute", top: 28, left: "50%", transform: "translateX(-50%)",
+              padding: "4px 18px", borderRadius: 999,
+              border: `1px solid ${c}55`, background: `${c}18`,
+              fontSize: 10, fontFamily: "var(--font-mono)", color: c,
+              letterSpacing: "0.12em", fontWeight: 700,
+              textTransform: "uppercase" as const, whiteSpace: "nowrap" as const,
+            }}>PORTFOLIO</div>
+            {/* Bottom label */}
+            <div style={{
+              position: "absolute", bottom: 28, left: "50%", transform: "translateX(-50%)",
+              fontSize: 11, fontFamily: "var(--font-mono)",
+              color: "rgba(255,255,255,0.22)", letterSpacing: "0.08em", whiteSpace: "nowrap" as const,
+            }}>RIFAT SYAHMAN</div>
+            {/* Corner brackets */}
+            <div style={{ position: "absolute", top: 20, left: 20, width: 26, height: 26, borderTop: `2px solid ${c}80`, borderLeft: `2px solid ${c}80` }} />
+            <div style={{ position: "absolute", top: 20, right: 20, width: 26, height: 26, borderTop: `2px solid ${c}80`, borderRight: `2px solid ${c}80` }} />
+            <div style={{ position: "absolute", bottom: 20, left: 20, width: 26, height: 26, borderBottom: `2px solid ${c}80`, borderLeft: `2px solid ${c}80` }} />
+            <div style={{ position: "absolute", bottom: 20, right: 20, width: 26, height: 26, borderBottom: `2px solid ${c}80`, borderRight: `2px solid ${c}80` }} />
+          </div>
+
+        </motion.div>
+      </div>
     </motion.div>
   );
 }
@@ -231,7 +352,7 @@ export default function Projects() {
   const N = projects.length;
   const sectionH = `${(N + 1) * 100}vh`;
 
-  // Measure the outer container once (and on resize) for jitter-free sticky math
+  // Measure once (and on resize) — refs read by both the scroll handler and progress transform
   useLayoutEffect(() => {
     const measure = () => {
       if (!outerRef.current) return;
@@ -245,15 +366,7 @@ export default function Projects() {
 
   const { scrollY } = useScroll();
 
-  // y that exactly counteracts scroll — keeps inner panel visually pinned (no CSS sticky quirks)
-  const innerY = useTransform(scrollY, (sy) => {
-    const outerH = outerHRef.current;
-    if (!outerH) return 0;
-    const vpH     = window.innerHeight;
-    return Math.max(0, Math.min(sy - outerTopRef.current, outerH - vpH));
-  });
-
-  // Normalised [0,1] progress within the section — drives all card animations
+  // Normalised [0,1] progress — drives all card animations
   const progress = useTransform(scrollY, (sy) => {
     const outerH = outerHRef.current;
     if (!outerH) return 0;
@@ -275,13 +388,12 @@ export default function Projects() {
         className="hidden md:block"
         style={{ height: sectionH, position: "relative" }}
       >
-        {/* Pinned viewport — JS sticky so it works regardless of ancestor transforms */}
-        <motion.div
+        {/* CSS sticky panel — browser compositor handles it, perfectly in sync with card RAF updates */}
+        <div
           style={{
-            position: "absolute",
-            top: 0, left: 0, right: 0,
+            position: "sticky",
+            top: 0,
             height: "100vh",
-            y: innerY,
             overflow: "hidden",
           }}
         >
@@ -313,8 +425,8 @@ export default function Projects() {
             </a>
           </motion.div>
 
-          {/* Card arena — cards float here, centered vertically */}
-          <div style={{ position: "relative", height: "calc(100vh - 156px)", overflow: "hidden" }}>
+          {/* Card arena — perspective here gives cards their rotateX 3D depth */}
+          <div style={{ position: "relative", height: "calc(100vh - 156px)", overflow: "hidden", perspective: "2200px", perspectiveOrigin: "50% 50%" }}>
             {projects.map((project, i) => (
               <StackCard
                 key={project.slug}
@@ -344,7 +456,7 @@ export default function Projects() {
             scroll to explore
             <FiArrowRight size={12} />
           </motion.div>
-        </motion.div>
+        </div>
       </div>
 
       {/* ── Mobile: horizontal snap carousel ────────────────────────────── */}

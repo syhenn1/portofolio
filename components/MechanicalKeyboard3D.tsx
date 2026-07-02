@@ -39,21 +39,21 @@ type K = {
 
 // ─── layout constants ─────────────────────────────────────────────────────────
 const CSS_B = 46;                            // 1u key px (CSS)
-const CSS_G = 6;                             // gap px (CSS)
+const CSS_G = 3;                             // gap px (CSS) — tight realistic spacing
 const S     = 1 / 52;                        // CSS px → Three.js units
 const cssKw = (u = 1) => Math.round(u * (CSS_B + CSS_G) - CSS_G);
 const kw3   = (u = 1) => cssKw(u) * S;      // key cell width in 3D units
 
 const KH3 = CSS_B * S;  // key cell depth in Z (≈ 0.885)
-const GH3 = CSS_G * S;  // gap in X and Z (≈ 0.115)
+const GH3 = CSS_G * S;  // gap in X and Z (≈ 0.058)
 
 // physical dimensions of each piece (in Three.js units)
-const SWITCH_H    = 0.14;
+const SWITCH_H    = 0.28;  // tall switch stem — gives mechanical depth look
 const CAP_SKIRT_H = 0.08;  // bottom flange — wider, sits on switch
-const CAP_BODY_H  = 0.22;  // main key surface — narrower, tapers inward
-const CAP_H       = CAP_SKIRT_H + CAP_BODY_H;  // total keycap height (0.30)
-const CAP_RAD     = 0.055;
-const BASE_Y      = SWITCH_H + CAP_H / 2;  // keycap group resting Y
+const CAP_BODY_H  = 0.24;  // main key surface — narrower, tapers inward
+const CAP_H       = CAP_SKIRT_H + CAP_BODY_H;  // total keycap height (0.32)
+const CAP_RAD     = 0.06;
+const BASE_Y      = SWITCH_H + CAP_H / 2;  // keycap group resting Y (0.44)
 
 // ─── category accent colours ──────────────────────────────────────────────────
 const PL = "#10b981";
@@ -135,8 +135,8 @@ const ROWS: K[][] = [
 ];
 
 // ─── colour helpers ───────────────────────────────────────────────────────────
-const BASE_SWITCH_COL = new THREE.Color("#0e0905");
-const BASE_CAP_COL    = new THREE.Color("#1c1209");
+const BASE_SWITCH_COL = new THREE.Color("#221c10");
+const BASE_CAP_COL    = new THREE.Color("#30261a");
 
 // ─── Key3D ────────────────────────────────────────────────────────────────────
 type Key3DProps = {
@@ -154,7 +154,7 @@ const Key3D = memo(function Key3D({ def, pos, onHover }: Key3DProps) {
   // smooth keypress animation every frame
   useFrame(() => {
     if (!capRef.current) return;
-    const target = hov && isTech ? BASE_Y - 0.08 : BASE_Y;
+    const target = hov && isTech ? BASE_Y - 0.14 : BASE_Y;
     capRef.current.position.y = THREE.MathUtils.lerp(
       capRef.current.position.y,
       target,
@@ -165,22 +165,22 @@ const Key3D = memo(function Key3D({ def, pos, onHover }: Key3DProps) {
   // keycap material: base dark + subtle category tint for tech keys
   const capColor = useMemo(() => {
     if (!isTech || !def.c) return BASE_CAP_COL.clone();
-    return BASE_CAP_COL.clone().lerp(new THREE.Color(def.c), 0.24);
+    return BASE_CAP_COL.clone().lerp(new THREE.Color(def.c), 0.42);
   }, [isTech, def.c]);
 
   return (
     <group position={pos}>
-      {/* ── Switch housing: narrower box, creates visible gap between keys ── */}
+      {/* ── Switch housing: close-fit column, case walls show in the gap ── */}
       <RoundedBox
-        args={[w3 - 0.12, SWITCH_H, KH3 - 0.12]}
-        radius={0.025}
+        args={[w3 - 0.06, SWITCH_H, KH3 - 0.06]}
+        radius={0.02}
         smoothness={2}
         position={[0, SWITCH_H / 2, 0]}
       >
         <meshStandardMaterial
           color={BASE_SWITCH_COL}
-          roughness={0.88}
-          metalness={0.02}
+          roughness={0.70}
+          metalness={0.06}
         />
       </RoundedBox>
 
@@ -188,17 +188,17 @@ const Key3D = memo(function Key3D({ def, pos, onHover }: Key3DProps) {
       <group ref={capRef} position={[0, BASE_Y, 0]}>
         {/* Bottom flange — slightly wider, sits over the switch housing */}
         <RoundedBox
-          args={[w3 - 0.08, CAP_SKIRT_H, KH3 - 0.08]}
-          radius={0.04}
+          args={[w3 - 0.04, CAP_SKIRT_H, KH3 - 0.04]}
+          radius={0.035}
           smoothness={2}
           position={[0, -(CAP_H / 2 - CAP_SKIRT_H / 2), 0]}
         >
-          <meshStandardMaterial color={capColor} roughness={0.80} metalness={0.03} />
+          <meshStandardMaterial color={capColor} roughness={0.66} metalness={0.06} />
         </RoundedBox>
 
         {/* Main key surface — narrower than skirt, tapers inward */}
         <RoundedBox
-          args={[w3 - 0.13, CAP_BODY_H, KH3 - 0.13]}
+          args={[w3 - 0.08, CAP_BODY_H, KH3 - 0.08]}
           radius={CAP_RAD}
           smoothness={3}
           position={[0, CAP_SKIRT_H / 2, 0]}
@@ -206,35 +206,38 @@ const Key3D = memo(function Key3D({ def, pos, onHover }: Key3DProps) {
           <meshStandardMaterial
             color={capColor}
             emissive={isTech && def.c ? def.c : "#000000"}
-            emissiveIntensity={hov && isTech ? 0.40 : isTech ? 0.028 : 0}
-            roughness={0.65}
-            metalness={0.04}
+            emissiveIntensity={hov && isTech ? 0.50 : isTech ? 0.07 : 0}
+            roughness={0.48}
+            metalness={0.10}
           />
         </RoundedBox>
 
-        {/* ── Tech logo on keycap top face ── */}
+        {/* ── Tech logo: 2-D overlay at the 3-D projection of the key top ── */}
         {isTech && (
           <Html
-            position={[0, CAP_H / 2 + 0.01, 0]}
+            position={[0, CAP_H / 2 + 0.04, 0]}
             center
-            transform
-            scale={0.022}
+            zIndexRange={[100, 0]}
             style={{ pointerEvents: "none", userSelect: "none" }}
           >
             <div style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: hov ? def.c : "rgba(255,255,255,0.80)",
-              filter: hov ? `drop-shadow(0 0 6px ${def.c})` : "none",
+              color: hov ? def.c : "rgba(255,255,255,0.92)",
+              filter: hov
+                ? `drop-shadow(0 0 6px ${def.c}) brightness(1.4)`
+                : "drop-shadow(0 1px 3px rgba(0,0,0,0.9))",
               transition: "color 0.15s, filter 0.15s",
-              fontSize: 20,
+              fontSize: 18,
               lineHeight: 1,
+              width: 18,
+              height: 18,
             }}>
               {def.I
-                ? <def.I size={20} />
+                ? <def.I size={18} />
                 : def.s
-                  ? <img src={def.s} alt="" width={18} height={18} style={{ objectFit: "contain", display: "block" }} />
+                  ? <img src={def.s} alt="" width={16} height={16} style={{ objectFit: "contain", display: "block" }} />
                   : null}
             </div>
           </Html>
@@ -306,33 +309,33 @@ function KeyboardScene({ onHover, introRotY }: { onHover: (k: K | null) => void;
     g.position.y = Math.sin(clock.elapsedTime * 0.55) * 0.20;
   });
 
-  const CHASSIS_H = 0.16;
-  const PLATE_H   = 0.05;
+  const CHASSIS_H = 0.52;  // tall case body — gives keyboard proper thickness
+  const PLATE_H   = 0.08;
+  // Case top surface sits at Y=0.10 (wraps 36% of switch height),
+  // making keys look recessed/deep like real mechanical switches.
+  const CASE_TOP  = 0.10;
 
-  // Outer group is a static x-offset so the keyboard sits right of the info panel.
-  // Inner groupRef is mutated by useFrame — keeping them separate avoids a
-  // React re-render overwriting the y that useFrame wrote.
   return (
     <group position={[6, 0, 0]}>
     <group ref={groupRef}>
-      {/* Keyboard body / case */}
+      {/* Keyboard body / case — top surface at CASE_TOP, extends deep below */}
       <RoundedBox
         args={[chassisW, CHASSIS_H, chassisD]}
         radius={0.14}
         smoothness={4}
-        position={[0, -(CHASSIS_H / 2) - 0.01, 0]}
+        position={[0, CASE_TOP - CHASSIS_H / 2, 0]}
       >
-        <meshStandardMaterial color="#0a0705" roughness={0.82} metalness={0.09} />
+        <meshStandardMaterial color="#1c1510" roughness={0.76} metalness={0.14} />
       </RoundedBox>
 
-      {/* Mounting plate / PCB — visible in the gap between switch housings */}
+      {/* Mounting plate / PCB — sits inside the chassis */}
       <RoundedBox
         args={[chassisW - 0.10, PLATE_H, chassisD - 0.10]}
         radius={0.12}
         smoothness={3}
         position={[0, PLATE_H / 2, 0]}
       >
-        <meshStandardMaterial color="#0f0c07" roughness={0.92} metalness={0.02} />
+        <meshStandardMaterial color="#231e12" roughness={0.84} metalness={0.05} />
       </RoundedBox>
 
       {/* All keys */}
@@ -371,25 +374,24 @@ export default function MechanicalKeyboard3D({ onHover, introRotY }: Props) {
   );
 
   return (
-    // Extends 120 px above/below so the tilted keyboard never clips at container edges
     <div
       className="absolute hidden lg:block"
       style={{
-        top: "-120px", bottom: "-120px", left: 0, right: 0,
+        top: "-180px", bottom: "-180px", left: 0, right: 0,
         pointerEvents: "none",
         zIndex: 20,
       }}
     >
       <Canvas
-        camera={{ position: [-0.5, 5.5, 10.5], fov: 42 }}
+        camera={{ position: [0, 8, 15], fov: 50 }}
         gl={{ alpha: true, antialias: true }}
         style={{ background: "transparent", width: "100%", height: "100%", pointerEvents: "auto" }}
-        onCreated={({ camera }) => camera.lookAt(4, 0.6, -0.5)}
+        onCreated={({ camera }) => camera.lookAt(5, 0.3, -0.5)}
       >
-        <ambientLight     intensity={0.40} color="#fff4e8" />
-        <directionalLight intensity={0.90} color="#ffe8d0" position={[4, 10, 8]} />
-        <pointLight       intensity={0.30} color="#ffd4a3" position={[-5, 6,  6]} />
-        <pointLight       intensity={0.16} color="#cc8855" position={[ 4, 2,  8]} />
+        <ambientLight     intensity={0.90} color="#fff4e8" />
+        <directionalLight intensity={1.80} color="#ffe8d0" position={[4, 10, 8]} />
+        <pointLight       intensity={0.70} color="#ffd4a3" position={[-5, 6,  6]} />
+        <pointLight       intensity={0.40} color="#cc8855" position={[ 4, 2,  8]} />
 
         <Suspense fallback={null}>
           <KeyboardScene onHover={handleKey} introRotY={introRotY} />

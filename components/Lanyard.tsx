@@ -60,8 +60,8 @@ export default function Lanyard({
       <Canvas
         style={{ pointerEvents: 'auto', width: '100%', height: '100%' }}
         camera={{ position, fov }}
-        dpr={[1, 1]}
-        gl={{ alpha: transparent, antialias: false, powerPreference: 'high-performance' }}
+        dpr={[1, 2]}
+        gl={{ alpha: transparent, antialias: true, powerPreference: 'high-performance' }}
         onCreated={({ gl }) =>
           gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)
         }
@@ -79,9 +79,9 @@ export default function Lanyard({
           </Physics>
         </Suspense>
         <Environment blur={0.75}>
-          <Lightformer intensity={4}  color="#ff6622" position={[0, -1, 5]}  rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
-          <Lightformer intensity={5}  color="#ffaa44" position={[1, 1, 1]}   rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
-          <Lightformer intensity={8}  color="#cc2200" position={[-10, 0, 14]} rotation={[0, Math.PI / 2, Math.PI / 3]} scale={[100, 10, 1]} />
+          <Lightformer intensity={2}  color="#f0ece8" position={[0, -1, 5]}  rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
+          <Lightformer intensity={2.5} color="#dce4f0" position={[1, 1, 1]}  rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
+          <Lightformer intensity={3}  color="#e8e8ff" position={[-10, 0, 14]} rotation={[0, Math.PI / 2, Math.PI / 3]} scale={[100, 10, 1]} />
         </Environment>
       </Canvas>
     </div>
@@ -131,29 +131,45 @@ function Band({
 
   // Text lanyard texture: repeating role labels along the cord
   const lanyardTex = useMemo(() => {
-    const W = 512;
-    const H = 40;
+    // 2× resolution for sharp text on HiDPI displays
+    const SC = 2;
+    const W  = 512 * SC;
+    const H  = 40  * SC;
     const canvas = document.createElement('canvas');
-    canvas.width = W;
+    canvas.width  = W;
     canvas.height = H;
     const ctx = canvas.getContext('2d')!;
+    ctx.scale(SC, SC);
 
-    ctx.fillStyle = '#111111';
-    ctx.fillRect(0, 0, W, H);
+    // Background with subtle gradient
+    const bg = ctx.createLinearGradient(0, 0, 0, 40);
+    bg.addColorStop(0,   '#1a1a1a');
+    bg.addColorStop(0.5, '#222222');
+    bg.addColorStop(1,   '#1a1a1a');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, 512, 40);
 
-    ctx.font = 'bold 11px monospace';
+    // Thin accent lines top and bottom
+    ctx.fillStyle = 'rgba(255,107,53,0.35)';
+    ctx.fillRect(0, 0, 512, 1.5);
+    ctx.fillRect(0, 38.5, 512, 1.5);
+
+    ctx.font = '700 13px "JetBrains Mono", monospace';
     ctx.textBaseline = 'middle';
-    const midY = H / 2;
+    ctx.letterSpacing = '0.06em';
+    const midY = 20;
 
-    const SEP = '  ×  ';
-    const A = 'FULLSTACK DEVELOPER';
+    const SEP = '  ✦  ';
+    const A = 'FULLSTACK DEV';
     const B = 'PROJECT MANAGER';
     const chunk = A + SEP + B + SEP;
+
+    // measure with current font
     const chunkW = ctx.measureText(chunk).width;
 
     let x = 0;
-    while (x < W + chunkW) {
-      ctx.fillStyle = '#e0e0e0';
+    while (x < 512 + chunkW) {
+      ctx.fillStyle = '#f0ece8';
       ctx.fillText(A, x, midY);
       const wA = ctx.measureText(A).width;
 
@@ -161,7 +177,7 @@ function Band({
       ctx.fillText(SEP, x + wA, midY);
       const wSep = ctx.measureText(SEP).width;
 
-      ctx.fillStyle = '#e0e0e0';
+      ctx.fillStyle = '#f0ece8';
       ctx.fillText(B, x + wA + wSep, midY);
       const wB = ctx.measureText(B).width;
 
@@ -171,18 +187,19 @@ function Band({
       x += chunkW;
     }
 
-    // Edge shadow for depth
-    const g = ctx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0,   'rgba(0,0,0,0.75)');
-    g.addColorStop(0.2, 'rgba(0,0,0,0)');
-    g.addColorStop(0.8, 'rgba(0,0,0,0)');
-    g.addColorStop(1,   'rgba(0,0,0,0.75)');
+    // Edge vignette
+    const g = ctx.createLinearGradient(0, 0, 0, 40);
+    g.addColorStop(0,    'rgba(0,0,0,0.6)');
+    g.addColorStop(0.18, 'rgba(0,0,0,0)');
+    g.addColorStop(0.82, 'rgba(0,0,0,0)');
+    g.addColorStop(1,    'rgba(0,0,0,0.6)');
     ctx.fillStyle = g;
-    ctx.fillRect(0, 0, W, H);
+    ctx.fillRect(0, 0, 512, 40);
 
     const tex = new THREE.CanvasTexture(canvas);
     tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
     tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 16;
     return tex;
   }, []);
 
@@ -256,7 +273,7 @@ function Band({
   useRopeJoint(fixed, j1, [[0, 0, 0], [0, 0, 0], 1]);
   useRopeJoint(j1, j2,    [[0, 0, 0], [0, 0, 0], 1]);
   useRopeJoint(j2, j3,    [[0, 0, 0], [0, 0, 0], 1]);
-  useSphericalJoint(j3, card, [[0, 0, 0], [0, 1.45, 0]]);
+  useSphericalJoint(j3, card, [[0, 0, 0], [0, 1.85, 0]]);
 
   useEffect(() => {
     if (hovered) {
@@ -299,17 +316,17 @@ function Band({
     <>
       <group position={[3, 4, 0]}>
         <RigidBody ref={fixed} {...segmentProps} type="fixed" />
-        <RigidBody position={[0.5, 0, 0]} ref={j1} {...segmentProps} type="dynamic">
+        <RigidBody position={[0, -1, 0]} ref={j1} {...segmentProps} type="dynamic">
           <BallCollider args={[0.1]} />
         </RigidBody>
-        <RigidBody position={[1, 0, 0]} ref={j2} {...segmentProps} type="dynamic">
+        <RigidBody position={[0, -2, 0]} ref={j2} {...segmentProps} type="dynamic">
           <BallCollider args={[0.1]} />
         </RigidBody>
-        <RigidBody position={[1.5, 0, 0]} ref={j3} {...segmentProps} type="dynamic">
+        <RigidBody position={[0, -3, 0]} ref={j3} {...segmentProps} type="dynamic">
           <BallCollider args={[0.1]} />
         </RigidBody>
         <RigidBody
-          position={[2, 0, 0]}
+          position={[0, -4.5, 0]}
           ref={card}
           {...segmentProps}
           type={dragged ? 'kinematicPosition' : 'dynamic'}
@@ -330,11 +347,15 @@ function Band({
             }}
           >
             <mesh geometry={nodes.card.geometry}>
-              <meshStandardMaterial
+              <meshPhysicalMaterial
                 map={cardMap}
-                map-anisotropy={8}
-                roughness={0.35}
-                metalness={0.75}
+                map-anisotropy={16}
+                roughness={0.22}
+                metalness={0.88}
+                reflectivity={0.9}
+                clearcoat={0.4}
+                clearcoatRoughness={0.12}
+                envMapIntensity={0.65}
               />
             </mesh>
             <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} />
