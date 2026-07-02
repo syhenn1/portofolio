@@ -8,8 +8,9 @@ const Lanyard = dynamic(() => import("@/components/Lanyard"), { ssr: false });
 export default function HeroLanyard() {
   return (
     <div
-      className="absolute inset-0 z-10 hidden lg:block pointer-events-none"
+      className="absolute inset-y-0 right-0 z-10 hidden lg:block pointer-events-none"
       style={{
+        width: "55%",
         WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%)",
         maskImage: "linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%)",
       }}
