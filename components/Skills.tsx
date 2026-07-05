@@ -91,7 +91,7 @@ function TechInfoPanel({ tech }: { tech: TechKey | null }) {
             <h3 style={{
               fontSize: 58,
               fontWeight: 900,
-              color: "#f4ede0",
+              color: "var(--tx)",
               margin: "0 0 14px",
               lineHeight: 1,
               letterSpacing: "-0.025em",
@@ -109,7 +109,7 @@ function TechInfoPanel({ tech }: { tech: TechKey | null }) {
             }} />
 
             {/* Description */}
-            <p style={{ fontSize: 15, color: "#7a6a5a", lineHeight: 1.78, margin: 0 }}>
+            <p style={{ fontSize: 15, color: "var(--muted)", lineHeight: 1.78, margin: 0 }}>
               {tech.desc}
             </p>
           </motion.div>
@@ -121,16 +121,16 @@ function TechInfoPanel({ tech }: { tech: TechKey | null }) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
           >
-            <div style={{ color: "rgba(255,255,255,0.12)", marginBottom: 18 }}>
+            <div style={{ color: "rgba(0,0,0,0.14)", marginBottom: 18 }}>
               <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1}>
                 <rect x="2" y="6" width="20" height="13" rx="2" />
                 <path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M10 14h4M18 14h.01" strokeLinecap="round" />
               </svg>
             </div>
-            <p style={{ fontSize: 30, fontWeight: 800, color: "rgba(255,255,255,0.14)", margin: "0 0 12px", lineHeight: 1, letterSpacing: "-0.02em" }}>
+            <p style={{ fontSize: 30, fontWeight: 800, color: "rgba(0,0,0,0.16)", margin: "0 0 12px", lineHeight: 1, letterSpacing: "-0.02em" }}>
               Hover a key
             </p>
-            <p style={{ fontSize: 14, lineHeight: 1.7, margin: 0, color: "rgba(255,255,255,0.10)" }}>
+            <p style={{ fontSize: 14, lineHeight: 1.7, margin: 0, color: "rgba(0,0,0,0.12)" }}>
               Colored keycaps are tech tools.<br />Hover them to see details.
             </p>
           </motion.div>
@@ -183,9 +183,9 @@ export default function Skills() {
         >
           <div className="slabel mb-3">tech stack</div>
           <h2 className="text-3xl sm:text-5xl font-black">
-            Tools & <span className="gtx">Teknologi</span>
+            Tools & <span className="gtx">Technology</span>
           </h2>
-          <p className="text-gray-500 mt-2 text-sm">Senjata yang saya pakai untuk membangun produk.</p>
+          <p className="text-gray-600 mt-2 text-sm">The tools I use to build products.</p>
         </motion.div>
       </div>
 

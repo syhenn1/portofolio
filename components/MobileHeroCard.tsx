@@ -16,7 +16,7 @@ export default function MobileHeroCard() {
         {/* Glow behind card */}
         <div
           className="absolute -inset-4 rounded-3xl blur-2xl"
-          style={{ background: "radial-gradient(circle, rgba(204,0,0,0.2) 0%, rgba(255,107,53,0.1) 50%, transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, rgba(255,106,0,0.2) 0%, rgba(255,106,0,0.08) 50%, transparent 70%)" }}
         />
 
         {/* Card */}
@@ -25,8 +25,8 @@ export default function MobileHeroCard() {
           style={{
             width: 180,
             height: 230,
-            border: "2px solid rgba(204,0,0,0.3)",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(204,0,0,0.15)",
+            border: "2px solid rgba(255,106,0,0.35)",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(255,106,0,0.15)",
           }}
           animate={{ y: [0, -8, 0], rotate: [2, -1, 2] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
@@ -40,7 +40,7 @@ export default function MobileHeroCard() {
           {/* Bottom gradient overlay */}
           <div
             className="absolute inset-x-0 bottom-0 h-1/3"
-            style={{ background: "linear-gradient(to top, rgba(14,9,5,0.9), transparent)" }}
+            style={{ background: "linear-gradient(to top, rgba(10, 10, 10,0.9), transparent)" }}
           />
           {/* Name tag */}
           <div className="absolute bottom-3 left-3 right-3">

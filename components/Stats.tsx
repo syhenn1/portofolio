@@ -18,14 +18,14 @@ export default function Stats() {
           viewport={{ once: false, margin: "-50px" }}
           transition={{ duration: 0.6 }}
         >
-          <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-white/5">
+          <div className="grid grid-cols-1 lg:grid-cols-2 lg:items-start divide-y lg:divide-y-0 lg:divide-x divide-black/10">
             {/* Left — Stats */}
-            <div className="grid grid-cols-3 divide-x divide-white/5">
+            <div className="grid grid-cols-3 divide-x divide-black/10">
               {statsData.map((stat) => (
                 <div key={stat.label} className="flex flex-col items-center justify-center text-center py-4 px-3">
-                  <div className="text-2xl mb-2">{stat.icon}</div>
+                  <stat.Icon size={22} className="mb-2" style={{ color: "var(--em)" }} />
                   <div className="text-2xl sm:text-3xl font-black gtx mb-1">{stat.n}</div>
-                  <div className="text-xs sm:text-sm text-gray-400">{stat.label}</div>
+                  <div className="text-xs sm:text-sm text-gray-600">{stat.label}</div>
                 </div>
               ))}
             </div>

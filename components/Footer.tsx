@@ -3,24 +3,24 @@ import { socialLinks } from "@/lib/data";
 import { basePath } from "@/lib/basePath";
 
 const navLinks = [
-  { href: "#projects", label: "Projects" },
   { href: "#about", label: "About" },
+  { href: "#projects", label: "Projects" },
   { href: "#skills", label: "Skills" },
   { href: "#contact", label: "Contact" },
 ];
 
 export default function Footer() {
   return (
-    <footer className="relative z-2" style={{ background: "var(--surf)", borderTop: "1px solid rgba(255,255,255,.04)" }}>
+    <footer className="relative z-2" style={{ background: "var(--surf)", borderTop: "1px solid rgba(0,0,0,.06)" }}>
       <div className="max-w-7xl mx-auto px-3 sm:px-5 py-12 flex flex-col sm:flex-row sm:items-start justify-between gap-10">
         <div>
           <span className="mono text-sm font-bold">
-            <span style={{ color: "#475569" }}>&lt;</span>
-            <span className="text-white">rifat</span>
+            <span style={{ color: "#a3a39c" }}>&lt;</span>
+            <span style={{ color: "var(--tx)" }}>rifat</span>
             <span style={{ color: "var(--em)" }}>/&gt;</span>
           </span>
-          <p className="text-sm text-gray-500 mt-3 max-w-xs leading-relaxed">
-            Software Developer dari Jakarta — membangun produk web, mobile, dan data dengan sungguh-sungguh.
+          <p className="text-sm text-gray-600 mt-3 max-w-xs leading-relaxed">
+            Software Developer from Jakarta — building web, mobile, and data products with genuine care.
           </p>
         </div>
 
@@ -54,7 +54,7 @@ export default function Footer() {
       </div>
 
       <div className="max-w-7xl mx-auto px-3 sm:px-5 py-5">
-        <p className="text-xs text-center sm:text-left" style={{ color: "#334155" }}>
+        <p className="text-xs text-center sm:text-left" style={{ color: "var(--muted)" }}>
           &copy; 2025 Mochamad Rifat Syahman Hambali. All rights reserved.
         </p>
       </div>

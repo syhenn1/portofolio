@@ -18,11 +18,11 @@ type CalendarData = {
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const LEVEL_COLORS = [
-  "rgba(255,255,255,0.04)",
-  "rgba(204,0,0,0.25)",
-  "rgba(204,0,0,0.45)",
-  "rgba(255,70,34,0.65)",
-  "rgba(255,107,53,0.9)",
+  "rgba(0,0,0,0.055)",
+  "rgba(255,106,0,0.3)",
+  "rgba(255,106,0,0.5)",
+  "rgba(255,106,0,0.72)",
+  "rgba(255,106,0,0.95)",
 ];
 
 function buildCalendar(contributions: { date: string; count: number; level: number }[]): CalendarData {
@@ -88,7 +88,7 @@ export default function GitHubCalendar({ username }: { username: string }) {
       <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
         <div className="flex items-center gap-3">
           <FiGithub size={18} style={{ color: "var(--em2)" }} />
-          <span className="mono text-sm font-semibold text-gray-300">
+          <span className="mono text-sm font-semibold text-gray-700">
             {data && (
               <span>
                 <span className="gtx">{data.total.toLocaleString()}</span>
@@ -111,18 +111,18 @@ export default function GitHubCalendar({ username }: { username: string }) {
       </div>
 
       {data && (
-        <div className="overflow-x-auto">
+        <div>
           <svg
-            width={data.weeks.length * step + 30}
-            height={7 * step + 24}
-            style={{ display: "block" }}
+            viewBox={`0 0 ${data.weeks.length * step + 30} ${7 * step + 24}`}
+            width="100%"
+            style={{ display: "block", height: "auto" }}
           >
             {data.monthLabels.map((m, i) => (
               <text
                 key={`${m.label}-${i}`}
                 x={m.col * step + 30}
                 y={10}
-                fill="#4a2e1e"
+                fill="#8a8a86"
                 fontSize={10}
                 fontFamily="var(--font-mono, 'JetBrains Mono', monospace)"
               >
@@ -157,20 +157,20 @@ export default function GitHubCalendar({ username }: { username: string }) {
         <div className="flex items-center justify-center py-8">
           <div
             className="w-5 h-5 border-2 rounded-full animate-spin"
-            style={{ borderColor: "rgba(204,0,0,0.3)", borderTopColor: "var(--em)" }}
+            style={{ borderColor: "rgba(255,106,0,0.3)", borderTopColor: "var(--em)" }}
           />
         </div>
       )}
 
       <div className="flex items-center justify-end gap-2 mt-2">
-        <span className="mono text-[10px]" style={{ color: "#4a2e1e" }}>Less</span>
+        <span className="mono text-[10px]" style={{ color: "#8a8a86" }}>Less</span>
         {LEVEL_COLORS.map((color, i) => (
           <div
             key={i}
             style={{ width: cellSize, height: cellSize, borderRadius: 2.5, background: color }}
           />
         ))}
-        <span className="mono text-[10px]" style={{ color: "#4a2e1e" }}>More</span>
+        <span className="mono text-[10px]" style={{ color: "#8a8a86" }}>More</span>
       </div>
     </div>
   );

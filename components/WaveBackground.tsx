@@ -21,7 +21,7 @@ const PUSH_STRENGTH = 50;
 const BASE_ALPHA = 0.18;
 const HOVER_ALPHA = 0.55;
 const PAGE_HEIGHT = 8000;
-const COLOR = "255, 107, 53";
+const COLOR = "255, 106, 0";
 
 export default function WaveBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -138,7 +138,7 @@ export default function WaveBackground() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none"
-      style={{ zIndex: 1, mixBlendMode: "screen" }}
+      style={{ zIndex: 1, mixBlendMode: "multiply" }}
     />
   );
 }

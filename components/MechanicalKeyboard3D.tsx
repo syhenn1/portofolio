@@ -8,6 +8,7 @@ import { basePath } from "@/lib/basePath";
 import type { IconType } from "react-icons";
 import {
   SiHtml5, SiCss, SiJavascript, SiTypescript, SiPhp, SiPython, SiDart,
+  SiOpenjdk, SiDotnet,
   SiReact, SiNextdotjs, SiExpress, SiLaravel, SiCodeigniter, SiFlutter,
   SiTailwindcss, SiBootstrap, SiNodedotjs, SiFirebase,
   SiMysql, SiPostgresql, SiMongodb, SiSqlite,
@@ -81,7 +82,9 @@ const ROWS: K[][] = [
     { k: "5", I: SiPhp,        c: PL, name: "PHP",         cat: "Language", desc: "Server-side scripting language" },
     { k: "6", I: SiPython,     c: PL, name: "Python",      cat: "Language", desc: "Versatile scripting & data" },
     { k: "7", I: SiDart,       c: PL, name: "Dart",         cat: "Language", desc: "Language powering Flutter apps" },
-    { k: "8", w: 1 }, { k: "9", w: 1 }, { k: "0", w: 1 }, { k: "-", w: 1 }, { k: "=", w: 1 },
+    { k: "8", I: SiOpenjdk,    c: PL, name: "Java",         cat: "Language", desc: "Object-oriented, cross-platform language" },
+    { k: "9", I: SiDotnet,     c: PL, name: "VB.NET",       cat: "Language", desc: ".NET language for Windows applications" },
+    { k: "0", w: 1 }, { k: "-", w: 1 }, { k: "=", w: 1 },
     { k: "⌫", w: 2 },
   ],
   [
@@ -135,8 +138,8 @@ const ROWS: K[][] = [
 ];
 
 // ─── colour helpers ───────────────────────────────────────────────────────────
-const BASE_SWITCH_COL = new THREE.Color("#221c10");
-const BASE_CAP_COL    = new THREE.Color("#30261a");
+const BASE_SWITCH_COL = new THREE.Color("#d8d8d3");
+const BASE_CAP_COL    = new THREE.Color("#fbfbf9");
 
 // ─── Key3D ────────────────────────────────────────────────────────────────────
 type Key3DProps = {
@@ -212,8 +215,8 @@ const Key3D = memo(function Key3D({ def, pos, onHover }: Key3DProps) {
           />
         </RoundedBox>
 
-        {/* ── Tech logo: 2-D overlay at the 3-D projection of the key top ── */}
-        {isTech && (
+        {/* ── Key legend: tech logo for tech keys, printed label for every other key ── */}
+        {isTech ? (
           <Html
             position={[0, CAP_H / 2 + 0.04, 0]}
             center
@@ -224,10 +227,10 @@ const Key3D = memo(function Key3D({ def, pos, onHover }: Key3DProps) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: hov ? def.c : "rgba(255,255,255,0.92)",
+              color: hov ? def.c : "#2a2a26",
               filter: hov
-                ? `drop-shadow(0 0 6px ${def.c}) brightness(1.4)`
-                : "drop-shadow(0 1px 3px rgba(0,0,0,0.9))",
+                ? `drop-shadow(0 0 6px ${def.c}) brightness(1.15)`
+                : "drop-shadow(0 1px 1px rgba(0,0,0,0.15))",
               transition: "color 0.15s, filter 0.15s",
               fontSize: 18,
               lineHeight: 1,
@@ -241,7 +244,28 @@ const Key3D = memo(function Key3D({ def, pos, onHover }: Key3DProps) {
                   : null}
             </div>
           </Html>
-        )}
+        ) : def.k ? (
+          <Html
+            position={[0, CAP_H / 2 + 0.04, 0]}
+            center
+            zIndexRange={[100, 0]}
+            style={{ pointerEvents: "none", userSelect: "none" }}
+          >
+            <span
+              className="mono"
+              style={{
+                color: "#3a3a35",
+                fontSize: def.k.length > 2 ? 9 : 12,
+                fontWeight: 700,
+                letterSpacing: "-0.02em",
+                whiteSpace: "nowrap",
+                filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.12))",
+              }}
+            >
+              {def.k}
+            </span>
+          </Html>
+        ) : null}
       </group>
 
       {/* ── Invisible hit volume — full cell size for easy targeting ── */}
@@ -318,7 +342,7 @@ function KeyboardScene({ onHover, introRotY }: { onHover: (k: K | null) => void;
   const CASE_TOP  = 0.10;
 
   return (
-    <group position={[6, 0, 0]}>
+    <group position={[3.0, 0, 0]}>
     <group ref={groupRef}>
       {/* Keyboard body / case — top surface at CASE_TOP, extends deep below */}
       <RoundedBox
@@ -327,7 +351,7 @@ function KeyboardScene({ onHover, introRotY }: { onHover: (k: K | null) => void;
         smoothness={4}
         position={[0, CASE_TOP - CHASSIS_H / 2, 0]}
       >
-        <meshStandardMaterial color="#1c1510" roughness={0.76} metalness={0.14} />
+        <meshStandardMaterial color="#f2f2ee" roughness={0.55} metalness={0.08} />
       </RoundedBox>
 
       {/* Mounting plate / PCB — sits inside the chassis */}
@@ -337,7 +361,7 @@ function KeyboardScene({ onHover, introRotY }: { onHover: (k: K | null) => void;
         smoothness={3}
         position={[0, PLATE_H / 2, 0]}
       >
-        <meshStandardMaterial color="#231e12" roughness={0.84} metalness={0.05} />
+        <meshStandardMaterial color="#dcdcd7" roughness={0.7} metalness={0.05} />
       </RoundedBox>
 
       {/* All keys */}
@@ -379,16 +403,16 @@ export default function MechanicalKeyboard3D({ onHover, introRotY }: Props) {
     <div
       className="absolute hidden lg:block"
       style={{
-        top: "-180px", bottom: "-180px", left: 0, right: 0,
+        top: "-220px", bottom: "-380px", left: "38%", right: 0,
         pointerEvents: "none",
         zIndex: 20,
       }}
     >
       <Canvas
-        camera={{ position: [0, 8, 15], fov: 50 }}
+        camera={{ position: [0, 7, 13], fov: 50 }}
         gl={{ alpha: true, antialias: true }}
         style={{ background: "transparent", width: "100%", height: "100%", pointerEvents: "auto" }}
-        onCreated={({ camera }) => camera.lookAt(5, 0.3, -0.5)}
+        onCreated={({ camera }) => camera.lookAt(0, 0.3, -0.5)}
       >
         <ambientLight     intensity={0.90} color="#fff4e8" />
         <directionalLight intensity={1.80} color="#ffe8d0" position={[4, 10, 8]} />

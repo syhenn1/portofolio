@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 510">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e0620"/>
+      <stop offset="40%" stop-color="#180430"/>
+      <stop offset="80%" stop-color="#0a0e1c"/>
+      <stop offset="100%" stop-color="#060a14"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff6a00" stop-opacity="0.30"/>
+      <stop offset="70%" stop-color="#ff6a00" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#ff6a00" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="400" height="510" fill="url(#bg)"/>
+
+  <!-- outer bezel frame -->
+  <rect x="14" y="14" width="372" height="482" rx="20" fill="none" stroke="#ff6a00" stroke-opacity="0.35" stroke-width="1.5"/>
+  <rect x="23" y="23" width="354" height="464" rx="15" fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="1"/>
+
+  <!-- center backlight -->
+  <circle cx="200" cy="253" r="150" fill="url(#glow)"/>
+
+  <!-- concentric rings -->
+  <circle cx="200" cy="253" r="123" fill="none" stroke="#ff6a00" stroke-opacity="0.28" stroke-width="1.25"/>
+  <circle cx="200" cy="253" r="98" fill="none" stroke="#ff6a00" stroke-opacity="0.16" stroke-width="1"/>
+  <circle cx="200" cy="253" r="72" fill="none" stroke="#ffffff" stroke-opacity="0.10" stroke-width="1"/>
+
+  <!-- sunburst ticks, 16 spokes at 22.5 degree steps -->
+  <g stroke="#ff6a00" stroke-opacity="0.20" stroke-width="1.25">
+    <line x1="200" y1="98"  x2="200" y2="128" transform="rotate(0 200 253)"/>
+    <line x1="200" y1="98"  x2="200" y2="128" transform="rotate(22.5 200 253)"/>
+    <line x1="200" y1="98"  x2="200" y2="128" transform="rotate(45 200 253)"/>
+    <line x1="200" y1="98"  x2="200" y2="128" transform="rotate(67.5 200 253)"/>
+    <line x1="200" y1="98"  x2="200" y2="128" transform="rotate(90 200 253)"/>
+    <line x1="200" y1="98"  x2="200" y2="128" transform="rotate(112.5 200 253)"/>
+    <line x1="200" y1="98"  x2="200" y2="128" transform="rotate(135 200 253)"/>
+    <line x1="200" y1="98"  x2="200" y2="128" transform="rotate(157.5 200 253)"/>
+    <line x1="200" y1="98"  x2="200" y2="128" transform="rotate(180 200 253)"/>
+    <line x1="200" y1="98"  x2="200" y2="128" transform="rotate(202.5 200 253)"/>
+    <line x1="200" y1="98"  x2="200" y2="128" transform="rotate(225 200 253)"/>
+    <line x1="200" y1="98"  x2="200" y2="128" transform="rotate(247.5 200 253)"/>
+    <line x1="200" y1="98"  x2="200" y2="128" transform="rotate(270 200 253)"/>
+    <line x1="200" y1="98"  x2="200" y2="128" transform="rotate(292.5 200 253)"/>
+    <line x1="200" y1="98"  x2="200" y2="128" transform="rotate(315 200 253)"/>
+    <line x1="200" y1="98"  x2="200" y2="128" transform="rotate(337.5 200 253)"/>
+  </g>
+
+  <!-- small diamond accents at the 4 cardinal points of the mid ring -->
+  <g fill="#ff6a00" fill-opacity="0.55">
+    <rect x="196" y="126" width="8" height="8" transform="rotate(45 200 130)"/>
+    <rect x="196" y="376" width="8" height="8" transform="rotate(45 200 380)"/>
+    <rect x="71"  y="249" width="8" height="8" transform="rotate(45 75 253)"/>
+    <rect x="321" y="249" width="8" height="8" transform="rotate(45 325 253)"/>
+  </g>
+
+  <!-- diamond cross-hatch texture -->
+  <g stroke="#ffffff" stroke-opacity="0.03">
+    <path d="M0 30 L400 430 M0 60 L400 460 M0 90 L400 490 M0 -30 L400 370 M0 0 L400 400 M0 120 L370 510 M0 150 L340 510 M-30 0 L400 460"/>
+    <path d="M400 30 L0 430 M400 60 L0 460 M400 90 L0 490 M400 -30 L0 370 M400 0 L0 400 M400 120 L30 510 M400 150 L60 510 M430 0 L0 460"/>
+  </g>
+
+  <!-- RS monogram -->
+  <text x="200" y="288" text-anchor="middle" font-family="monospace" font-weight="900" font-size="100" letter-spacing="-6" fill="#ffffff" fill-opacity="0.09">RS</text>
+
+  <!-- corner flourish ticks -->
+  <g stroke="#ff6a00" stroke-opacity="0.5" stroke-width="2" fill="none">
+    <path d="M34 54 v-20 h20"/>
+    <path d="M366 54 v-20 h-20"/>
+    <path d="M34 456 v20 h20"/>
+    <path d="M366 456 v20 h-20"/>
+  </g>
+</svg>

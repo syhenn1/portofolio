@@ -6,6 +6,7 @@ import Link from "next/link";
 import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { FiArrowUpRight, FiGithub, FiArrowRight } from "react-icons/fi";
 import { projects, getSkill, socialLinks, type Project } from "@/lib/data";
+import { basePath } from "@/lib/basePath";
 
 // ── Card dimensions & pile geometry ──────────────────────────────────────────
 const CARD_W    = 400;
@@ -13,7 +14,13 @@ const CARD_H    = 510;
 const PILE_SCALE  = 1;
 const PILE_LEFT   = 56;
 const PILE_STEP   = 28;
-const PILE_ROT  = [-2.5, 1, -1.8, 2.2, -0.6, 1.4, -2.0, 0.8];
+const PILE_Z_STEP = 7;   // per-card recession into the pile — real 3D depth, no tilt
+
+// Card-thickness illusion during the flip — one set recedes behind the front
+// face, a mirrored set (baked-in 180° rotation) recedes behind the back face,
+// so real depth is visible through the whole rotation, not just half of it.
+const DEPTH_STEPS  = [4, 8, 12, 16, 20] as const;
+const DEPTH_COLORS = ["#eeeeea", "#e2e2dc", "#d6d6cf", "#cacac2", "#bebeb5"] as const;
 
 // ── Easing helpers ────────────────────────────────────────────────────────────
 const easeOut   = (t: number) => 1 - Math.pow(1 - t, 3);
@@ -82,23 +89,30 @@ function StackCard({
     return 1;
   });
 
-  // Multi-layer edge shadow: thick card-edge illusion + ambient drop shadow
-  const EDGE = "0 2px 0 #1a1510, 0 4px 0 #130f0a, 0 6px 0 #0e0a06, 0 8px 0 rgba(0,0,0,0.85), 0 10px 0 rgba(0,0,0,0.60), 0 12px 0 rgba(0,0,0,0.35)";
+  // Soft ambient elevation shadow — the card's cast shadow on the page, not its own
+  // geometry, so it stays put while the card flips (see the depth layers below for that).
+  // The colored glow only kicks in once the flip has actually finished (t >= P_FLIP_OK) —
+  // showing it any earlier made it flash on mid-spin, before the front face even settled.
+  const REST_SHADOW   = "0 20px 45px rgba(0,0,0,0.16), 0 8px 18px rgba(0,0,0,0.10)";
   const shadow = useTransform(progress, (p) => {
-    if (p <= s0) return `${EDGE}, 0 20px 60px rgba(0,0,0,0.70), 0 50px 100px rgba(0,0,0,0.50)`;
+    if (p <= s0) return REST_SHADOW;
     const t = (p - s0) / seg;
-    if (t >= P_ARRIVE && t < 1)
-      return `${EDGE}, 0 0 0 1px ${c}35, 0 20px 70px rgba(0,0,0,0.80), 0 0 100px ${c}50, 0 60px 140px rgba(0,0,0,0.65)`;
-    return `${EDGE}, 0 20px 60px rgba(0,0,0,0.70), 0 50px 100px rgba(0,0,0,0.50)`;
+    if (t >= P_FLIP_OK && t < 1)
+      return `0 0 0 1px ${c}30, 0 30px 60px rgba(0,0,0,0.22), 0 0 80px ${c}35`;
+    return REST_SHADOW;
   });
 
-  // Slight tilt in right deck, straightens as it animates to center, settles to pile tilt
-  const rotate = useTransform(progress, (p) => {
-    if (p >= s1) return PILE_ROT[i % PILE_ROT.length];
-    if (p <= s0)  return PILE_ROT[i % PILE_ROT.length] * 0.5;
-    const t = (p - s0) / seg;
-    if (t < P_ARRIVE) return PILE_ROT[i % PILE_ROT.length] * 0.5 * (1 - t / P_ARRIVE);
-    return 0;
+  // Specular sheen — a bright band that sweeps across the card as it rotates,
+  // like light catching a real glossy surface turning in place. Parked off-frame
+  // (opacity 0) whenever flipY is holding still, so it only appears mid-spin.
+  const sheenX = useTransform(flipY, [180, 0], ["-220%", "220%"]);
+  const sheenOpacity = useTransform(flipY, [180, 150, 90, 30, 0], [0, 1, 1, 1, 0]);
+
+  // Cards stay perfectly upright — depth comes from translateZ recession into the pile, not tilt.
+  const z = useTransform(progress, (p) => {
+    if (p >= s0 && p <= s1) return 0;                    // active: front-most
+    if (p > s1) return -Math.min(i, 10) * PILE_Z_STEP;    // left pile: recedes with each card
+    return -Math.min(i, 10) * (PILE_Z_STEP * 0.5);        // right deck: slight recession
   });
 
   const zIndex = useTransform(progress, (p) => {
@@ -119,28 +133,32 @@ function StackCard({
 
   return (
     <>
-    {/* Hero-style info panel — floating text, no background box */}
+    {/* Info panel — soft horizontal fade spanning the full sticky arena height, no boxed backdrop */}
     <motion.div
       style={{
         position: "absolute",
-        left: 40,
-        top: "50%",
-        translateY: "-50%",
-        width: 300,
+        left: 0,
+        top: 0,
+        height: "100%",
+        width: 480,
         opacity: infoOpacity,
         zIndex: N + 5,
         pointerEvents: "none",
+        background: "linear-gradient(to right, rgba(247,247,244,0.96) 0%, rgba(247,247,244,0.9) 38%, rgba(247,247,244,0.5) 68%, transparent 100%)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        padding: "0 40px 0 40px",
       }}
     >
-      <div className="slabel" style={{ marginBottom: 8, color: c, textShadow: `0 0 20px ${c}99, 0 2px 14px rgba(0,0,0,0.98)` }}>{project.sub}</div>
+      <div className="slabel" style={{ marginBottom: 8, color: c }}>{project.sub}</div>
       <h2 style={{
         fontSize: "clamp(24px, 2.6vw, 38px)",
         fontWeight: 900,
-        color: "#f4ede0",
+        color: "#14140f",
         margin: "0 0 12px",
         lineHeight: 1.05,
         letterSpacing: "-0.02em",
-        textShadow: "0 2px 28px rgba(0,0,0,0.99), 0 0 60px rgba(0,0,0,0.95)",
       }}>
         {project.title}
       </h2>
@@ -150,7 +168,7 @@ function StackCard({
         marginBottom: 14,
         filter: `drop-shadow(0 0 6px ${c})`,
       }} />
-      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", lineHeight: 1.75, margin: 0, textShadow: "0 1px 12px rgba(0,0,0,0.99)" }}>
+      <p style={{ fontSize: 13, color: "rgba(0,0,0,0.65)", lineHeight: 1.75, margin: 0 }}>
         {project.desc}
       </p>
     </motion.div>
@@ -164,9 +182,8 @@ function StackCard({
         height: CARD_H,
         x,
         y: "-50%",
-        rotateX: -14,
+        z,
         scale,
-        rotate,
         zIndex,
         opacity: 1,
         boxShadow: shadow,
@@ -176,17 +193,6 @@ function StackCard({
         willChange: "transform, box-shadow",
       }}
     >
-      {/* Spine layers — literal card thickness, visible at edges when tilted */}
-      {([4, 8, 12, 16, 20, 24] as const).map((z, idx) => (
-        <div key={idx} style={{
-          position: "absolute",
-          inset: 0,
-          borderRadius: 24,
-          background: (["#1c1610","#17120d","#130e09","#0f0b06","#0c0804","#090603"] as const)[idx],
-          transform: `translateZ(-${z}px)`,
-        }} />
-      ))}
-
       {/* Perspective context for the 3D flip */}
       <div style={{ position: "absolute", inset: 0, perspective: "1200px" }}>
         <motion.div
@@ -198,6 +204,36 @@ function StackCard({
             transformStyle: "preserve-3d",
           }}
         >
+
+          {/* ── Depth layers — real card thickness, part of the same rotating
+                group as the faces so it spins with the flip instead of sitting
+                behind it as a flat, static shadow. Two sets, each culled via
+                backfaceVisibility like its matching face: the plain set recedes
+                behind the FRONT face for the first half of the flip, the
+                180°-baked set recedes behind the BACK face for the second half —
+                so thickness reads through the whole rotation, and neither set
+                ever ends up floating in front of the face it's supposed to sit
+                behind (a 180° flip inverts the sign of local translateZ). ── */}
+          {DEPTH_STEPS.map((zd, idx) => (
+            <div key={`f${idx}`} style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: 24,
+              background: DEPTH_COLORS[idx],
+              transform: `translateZ(-${zd}px)`,
+              backfaceVisibility: "hidden",
+            }} />
+          ))}
+          {DEPTH_STEPS.map((zd, idx) => (
+            <div key={`b${idx}`} style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: 24,
+              background: DEPTH_COLORS[idx],
+              transform: `rotateY(180deg) translateZ(-${zd}px)`,
+              backfaceVisibility: "hidden",
+            }} />
+          ))}
 
           {/* ── FRONT face ─────────────────────────────────────────────── */}
           <div style={{ position: "absolute", inset: 0, backfaceVisibility: "hidden", borderRadius: 24, overflow: "hidden" }}>
@@ -212,7 +248,7 @@ function StackCard({
                 <Image src={project.img} alt={project.title} fill className="proj-img object-cover" />
                 <div
                   className="absolute inset-0"
-                  style={{ background: "linear-gradient(to top, rgba(14,9,5,.95) 0%, rgba(14,9,5,.12) 58%, transparent 100%)" }}
+                  style={{ background: "linear-gradient(to top, rgba(10, 10, 10,.95) 0%, rgba(10, 10, 10,.12) 58%, transparent 100%)" }}
                 />
                 <span
                   className="mono absolute top-3 left-3"
@@ -234,11 +270,11 @@ function StackCard({
               {/* Content */}
               <div className="flex flex-col flex-1 p-5 gap-2.5">
                 <div className="flex items-start justify-between gap-3">
-                  <h3 className="text-xl font-black text-white leading-tight">{project.title}</h3>
-                  <span className="mono text-xs shrink-0 mt-1" style={{ color: "#475569" }}>{project.year}</span>
+                  <h3 className="text-xl font-black leading-tight" style={{ color: "var(--tx)" }}>{project.title}</h3>
+                  <span className="mono text-xs shrink-0 mt-1" style={{ color: "var(--muted)" }}>{project.year}</span>
                 </div>
                 <p
-                  className="text-gray-400 leading-relaxed"
+                  className="text-gray-600 leading-relaxed"
                   style={{ fontSize: 13, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}
                 >
                   {project.desc}
@@ -261,7 +297,7 @@ function StackCard({
             </Link>
           </div>
 
-          {/* ── BACK face (YuGiOh-style card back) ─────────────────────── */}
+          {/* ── BACK face — illustrated card back (real image, not CSS shapes) ── */}
           <div style={{
             position: "absolute",
             inset: 0,
@@ -269,44 +305,27 @@ function StackCard({
             transform: "rotateY(180deg)",
             borderRadius: 24,
             overflow: "hidden",
-            background: "linear-gradient(135deg, #0e0620 0%, #180430 40%, #0a0e1c 80%, #060a14 100%)",
+            background: "#0a0e1c",
           }}>
+            <Image
+              src={`${basePath}/images/card-back.svg`}
+              alt=""
+              fill
+              className="object-cover"
+              style={{ pointerEvents: "none" }}
+            />
             {/* Surface sheen on back face */}
             <div style={{
               position: "absolute", inset: 0, zIndex: 9, pointerEvents: "none", borderRadius: 24,
               background: "linear-gradient(155deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 30%, transparent 55%)",
             }} />
-            {/* Diamond cross-hatch */}
+            {/* Series number — bottom-left, echoes the front face's counter */}
             <div style={{
-              position: "absolute",
-              inset: 0,
-              backgroundImage: `
-                repeating-linear-gradient(45deg, rgba(255,255,255,0.028) 0px, rgba(255,255,255,0.028) 1px, transparent 1px, transparent 14px),
-                repeating-linear-gradient(-45deg, rgba(255,255,255,0.028) 0px, rgba(255,255,255,0.028) 1px, transparent 1px, transparent 14px)
-              `,
-            }} />
-            {/* Oval ornament */}
-            <div style={{
-              position: "absolute",
-              inset: "13%",
-              borderRadius: "50%",
-              border: `1px solid ${c}28`,
-              boxShadow: `0 0 40px ${c}14 inset`,
-            }} />
-            {/* RS monogram */}
-            <div style={{
-              position: "absolute", inset: 0,
-              display: "flex", alignItems: "center", justifyContent: "center",
+              position: "absolute", bottom: 28, left: 28,
+              fontSize: 10, fontFamily: "var(--font-mono)",
+              color: "rgba(255,255,255,0.28)", letterSpacing: "0.08em", whiteSpace: "nowrap" as const,
             }}>
-              <span style={{
-                fontSize: 132,
-                fontWeight: 900,
-                color: "rgba(255,255,255,0.038)",
-                fontFamily: "var(--font-mono)",
-                letterSpacing: "-0.05em",
-                lineHeight: 1,
-                userSelect: "none",
-              }}>RS</span>
+              NO. {String(i + 1).padStart(2, "0")}/{String(N).padStart(2, "0")}
             </div>
             {/* Top badge */}
             <div style={{
@@ -331,6 +350,24 @@ function StackCard({
           </div>
 
         </motion.div>
+
+        {/* Specular sheen sweep — sits outside the rotating group so it always
+            faces the viewer flat-on; only its position/opacity are driven by
+            the flip, so the "light" visibly tracks the spin instead of a
+            static highlight that ignores it. */}
+        <motion.div
+          className="pointer-events-none"
+          style={{ position: "absolute", inset: 0, borderRadius: 24, overflow: "hidden", opacity: sheenOpacity, zIndex: 20 }}
+        >
+          <motion.div
+            style={{
+              position: "absolute", top: "-30%", bottom: "-30%", width: "45%",
+              background: "linear-gradient(100deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%)",
+              x: sheenX,
+              mixBlendMode: "overlay",
+            }}
+          />
+        </motion.div>
       </div>
     </motion.div>
     </>
@@ -354,7 +391,7 @@ function MobileProjectCard({ project, i }: { project: Project; i: number }) {
           <Image src={project.img} alt={project.title} fill className="proj-img object-cover" />
           <div
             className="absolute inset-0"
-            style={{ background: "linear-gradient(to top, rgba(14,9,5,.95) 0%, rgba(14,9,5,.1) 60%, transparent 100%)" }}
+            style={{ background: "linear-gradient(to top, rgba(10, 10, 10,.95) 0%, rgba(10, 10, 10,.1) 60%, transparent 100%)" }}
           />
           <span
             className="mono absolute top-3 left-3"
@@ -371,11 +408,11 @@ function MobileProjectCard({ project, i }: { project: Project; i: number }) {
 
         <div className="flex flex-col flex-1 p-4 gap-2">
           <div className="flex items-center justify-between gap-2">
-            <h3 className="text-base font-bold text-white leading-tight">{project.title}</h3>
-            <span className="mono text-[10px] shrink-0" style={{ color: "#475569" }}>{project.year}</span>
+            <h3 className="text-base font-bold leading-tight" style={{ color: "var(--tx)" }}>{project.title}</h3>
+            <span className="mono text-[10px] shrink-0" style={{ color: "var(--muted)" }}>{project.year}</span>
           </div>
           <p
-            className="text-gray-400 leading-relaxed"
+            className="text-gray-600 leading-relaxed"
             style={{ fontSize: 12, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}
           >
             {project.desc}
@@ -482,10 +519,10 @@ export default function Projects() {
             <div>
               <div className="slabel mb-3">featured work</div>
               <h2 className="text-3xl sm:text-5xl font-black">
-                Projects <span className="gtx">Unggulan</span>
+                Featured <span className="gtx">Projects</span>
               </h2>
-              <p className="text-gray-500 mt-2 text-sm">
-                Dari web, mobile, hingga data — dibangun dengan sungguh-sungguh.
+              <p className="text-gray-600 mt-2 text-sm">
+                From web, mobile, to data — built with genuine care.
               </p>
             </div>
             <a
@@ -527,17 +564,17 @@ export default function Projects() {
           {/* Progress bar */}
           <div
             className="absolute bottom-0 left-0 right-0"
-            style={{ height: 2, background: "rgba(255,255,255,0.05)" }}
+            style={{ height: 2, background: "rgba(0,0,0,0.06)" }}
           >
             <motion.div
-              style={{ height: "100%", width: progressW, background: "linear-gradient(90deg, #cc0000, #ff6b35)" }}
+              style={{ height: "100%", width: progressW, background: "linear-gradient(90deg, #ff6a00, #b34700)" }}
             />
           </div>
 
           {/* Scroll hint */}
           <motion.div
             className="absolute bottom-6 right-8 flex items-center gap-2 mono"
-            style={{ opacity: hintOpacity, color: "rgba(255,255,255,0.25)", fontSize: 11 }}
+            style={{ opacity: hintOpacity, color: "rgba(0,0,0,0.35)", fontSize: 11 }}
           >
             scroll to explore
             <FiArrowRight size={12} />
@@ -556,7 +593,7 @@ export default function Projects() {
         >
           <div>
             <div className="slabel mb-2">featured work</div>
-            <h2 className="text-3xl font-black">Projects <span className="gtx">Unggulan</span></h2>
+            <h2 className="text-3xl font-black">Featured <span className="gtx">Projects</span></h2>
           </div>
           <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="btn-ghost text-sm mt-4 sm:mt-0 self-start">
             <FiGithub size={14} /> GitHub

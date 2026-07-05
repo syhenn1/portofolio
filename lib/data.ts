@@ -26,14 +26,17 @@ import {
   SiDocker,
   SiNotion,
   SiJira,
+  SiOpenjdk,
+  SiDotnet,
 } from "react-icons/si";
+import { FiFolder, FiCode, FiBookOpen } from "react-icons/fi";
 import type { IconType } from "react-icons";
 import { basePath } from "@/lib/basePath";
 
 export const statsData = [
-  { n: "5+", label: "Projects Built", icon: "🚀" },
-  { n: "5+", label: "Languages", icon: "💻" },
-  { n: "3+", label: "Years Learning", icon: "📚" },
+  { n: "5+", label: "Projects Built", Icon: FiFolder },
+  { n: "5+", label: "Languages", Icon: FiCode },
+  { n: "3+", label: "Years Learning", Icon: FiBookOpen },
 ];
 
 export const roles = [
@@ -46,27 +49,48 @@ export const roles = [
 export const timelineData = [
   {
     year: "2023",
-    color: "#10b981",
+    color: "#8a8a86",
     title: "Politeknik Negeri Jakarta",
-    desc: "Mulai mendalami ilmu teknologi informasi di program D4 Teknik Informatika.",
+    desc: "Started diving deep into information technology through the D4 Informatics Engineering program.",
   },
   {
     year: "2024",
-    color: "#06b6d4",
+    color: "#cc5500",
     title: "Computer Student Club",
-    desc: "Bergabung KSM Club Komputer sebagai Software Developer, memimpin berbagai project.",
+    desc: "Joined the KSM Computer Club as a Software Developer, leading various projects.",
   },
   {
     year: "2025",
-    color: "#f59e0b",
+    color: "#e8690a",
     title: "Expanding Skills",
-    desc: "Memperdalam data science dan terus membangun project-project baru yang berdampak.",
+    desc: "Deepening data science skills and continuing to build new, impactful projects.",
+  },
+  {
+    year: "Sep 2025 – Jul 2026",
+    color: "#ff6a00",
+    title: "Data Verifier — Kementerian Pendidikan Dasar dan Menengah",
+    desc: "Worked at the Ministry of Primary and Secondary Education as a data verifier.",
+    images: [`${basePath}/images/kemendik-team.png`],
+  },
+  {
+    year: "Dec 2025",
+    color: "#ff6a00",
+    title: "Project-Based Learning — Dinas Kesehatan Depok",
+    desc: "Built Delisa, an information system for the Depok Health Department, as a project-based learning engagement.",
+    images: [`${basePath}/images/delisa-landing.png`, `${basePath}/images/delisa-team.png`],
+  },
+  {
+    year: "Jun 2026",
+    color: "#ff6a00",
+    title: "Project-Based Learning — PT Nusa Tekno Global",
+    desc: "Built Kira on request from PT Nusa Tekno Global, as a project-based learning engagement.",
+    images: [`${basePath}/images/kira-landing.png`, `${basePath}/images/kira-team.png`],
   },
   {
     year: "Now",
-    color: "#a78bfa",
+    color: "#14140f",
     title: "Open to Opportunities",
-    desc: "Terus belajar, membangun, dan siap berkontribusi dalam proyek-proyek inovatif.",
+    desc: "Always learning, building, and ready to contribute to innovative projects.",
   },
 ];
 
@@ -81,6 +105,8 @@ export const skills: Record<string, Record<string, Skill>> = {
     php: { name: "PHP", Icon: SiPhp },
     python: { name: "Python", Icon: SiPython },
     dart: { name: "Dart", Icon: SiDart },
+    java: { name: "Java", Icon: SiOpenjdk },
+    vbnet: { name: "VB.NET", Icon: SiDotnet },
   },
   "Frameworks & Technologies": {
     react: { name: "React", Icon: SiReact },
@@ -158,20 +184,20 @@ export const projects: Project[] = [
     category: "Web Application",
     year: "2025",
     role: "Full-Stack Developer",
-    desc: "Sistem prediksi Remaining Useful Life (RUL) aset perusahaan berbasis histori maintenance dengan fitur NLP untuk summarize dashboard.",
+    desc: "Remaining Useful Life (RUL) prediction system for company assets based on maintenance history, with an NLP feature to summarize the dashboard.",
     img: `${basePath}/images/kira-landing.png`,
     color: "#06b6d4",
     tech: ["python", "nextjs", "tailwind", "postgresql"],
     problem:
-      "Perusahaan kesulitan memprediksi kapan aset mereka akan mengalami kerusakan, sehingga sering terjadi downtime tidak terencana yang mengganggu operasional dan meningkatkan biaya maintenance.",
+      "Companies struggle to predict when their assets will fail, causing frequent unplanned downtime that disrupts operations and increases maintenance costs.",
     solution:
-      "KIRA menganalisis histori maintenance untuk memprediksi Remaining Useful Life (RUL) setiap aset, dilengkapi fitur NLP yang secara otomatis merangkum insight dari dashboard prediksi ke dalam narasi yang mudah dipahami.",
+      "KIRA analyzes maintenance history to predict the Remaining Useful Life (RUL) of each asset, complete with an NLP feature that automatically summarizes insights from the prediction dashboard into an easy-to-understand narrative.",
     features: [
-      "Prediksi RUL berbasis histori maintenance",
-      "Dashboard analitik interaktif",
-      "NLP auto-summarization dashboard",
-      "Manajemen aset multi-kategori",
-      "Notifikasi prediksi kerusakan",
+      "RUL prediction based on maintenance history",
+      "Interactive analytics dashboard",
+      "NLP auto-summarization of the dashboard",
+      "Multi-category asset management",
+      "Failure prediction notifications",
     ],
     screenshots: [
       `${basePath}/images/kira-page1.png`,
@@ -186,20 +212,20 @@ export const projects: Project[] = [
     category: "Web Application",
     year: "2025",
     role: "Full-Stack Developer",
-    desc: "Sistem informasi Dinas Kesehatan Depok dengan 4 role: Dinkes, Rumah Sakit, Bidan, dan Pasien untuk alur screening dan rujukan.",
+    desc: "Information system for the Depok Health Department with 4 roles: Health Department, Hospital, Midwife, and Patient, for screening and referral workflows.",
     img: `${basePath}/images/delisa-landing.png`,
     color: "#10b981",
     tech: ["php", "laravel", "mysql", "tailwind", "figma"],
     problem:
-      "Alur screening kesehatan di Kota Depok masih dilakukan secara manual dan terpisah antar instansi, menyebabkan data pasien tidak terintegrasi dan proses rujukan menjadi lambat.",
+      "The health screening workflow in Depok City was still done manually and separately across institutions, leaving patient data unintegrated and making the referral process slow.",
     solution:
-      "DELISA mengintegrasikan seluruh alur kesehatan dalam satu platform: pasien melakukan screening, bidan memberikan rujukan, rumah sakit memberikan tindakan, dan Dinkes menganalisis data secara real-time.",
+      "DELISA integrates the entire health workflow into a single platform: patients perform screening, midwives issue referrals, hospitals record treatment, and the Health Department analyzes data in real time.",
     features: [
-      "Multi-role: Dinkes, Rumah Sakit, Bidan, Pasien",
-      "Screening kesehatan online oleh pasien",
-      "Sistem rujukan otomatis oleh bidan",
-      "Pencatatan tindakan oleh rumah sakit",
-      "Dashboard analisis data oleh Dinkes",
+      "Multi-role: Health Department, Hospital, Midwife, Patient",
+      "Online health screening by patients",
+      "Automated referral system by midwives",
+      "Treatment logging by hospitals",
+      "Data analytics dashboard for the Health Department",
     ],
     screenshots: [
       `${basePath}/images/delisa-page1.png`,
@@ -214,20 +240,20 @@ export const projects: Project[] = [
     category: "Computer Vision",
     year: "2025",
     role: "ML Engineer",
-    desc: "Sistem monitoring berbasis computer vision untuk Seminar Nasional Inovasi Vokasi yang mendeteksi gerak-gerik siswa di kelas menggunakan YOLO.",
+    desc: "Computer vision-based monitoring system for the National Vocational Innovation Seminar that detects student movement in class using YOLO.",
     img: `${basePath}/images/sniv-landing.png`,
     color: "#a78bfa",
     tech: ["python", "nextjs", "tailwind"],
     problem:
-      "Pemantauan aktivitas siswa di dalam kelas masih dilakukan secara manual oleh pengajar, sehingga sulit mendeteksi siswa yang tidak fokus atau melakukan aktivitas di luar konteks pembelajaran.",
+      "Monitoring student activity in class was still done manually by teachers, making it difficult to detect students who were unfocused or engaged in off-task activity.",
     solution:
-      "SNIV memanfaatkan YOLO sebagai pretrained model untuk mendeteksi dan mengklasifikasikan gerak-gerik siswa secara real-time melalui kamera, memberikan insight kepada pengajar tentang tingkat fokus dan partisipasi kelas.",
+      "SNIV uses YOLO as a pretrained model to detect and classify student movement in real time via camera, giving teachers insight into class focus and participation levels.",
     features: [
-      "Deteksi gerak-gerik siswa real-time",
-      "YOLO sebagai pretrained model",
-      "Dashboard monitoring aktivitas kelas",
-      "Klasifikasi perilaku siswa",
-      "Laporan analisis partisipasi",
+      "Real-time student movement detection",
+      "YOLO as the pretrained model",
+      "Class activity monitoring dashboard",
+      "Student behavior classification",
+      "Participation analysis reports",
     ],
     screenshots: [
       `${basePath}/images/sniv-page1.png`,
@@ -242,20 +268,20 @@ export const projects: Project[] = [
     category: "Decision Support System",
     year: "2024",
     role: "Full-Stack Developer",
-    desc: "Sistem Pendukung Keputusan pemilihan ikan hias menggunakan metode MOORA berbasis web dengan Laravel.",
+    desc: "Web-based Decision Support System for choosing ornamental fish using the MOORA method, built with Laravel.",
     img: `${basePath}/images/finder.png`,
     color: "#06b6d4",
     tech: ["php", "laravel", "mysql", "tailwind", "figma", "notion"],
     problem:
-      "Pembudidaya ikan hias pemula sering kesulitan menentukan jenis ikan yang paling cocok untuk dibudidayakan karena banyaknya kriteria yang harus dipertimbangkan sekaligus.",
+      "Beginner ornamental fish breeders often struggle to determine the best species to raise because of the many criteria that need to be weighed at once.",
     solution:
-      "FinDer adalah Sistem Pendukung Keputusan berbasis web yang menerapkan metode MOORA (Multi-Objective Optimization by Ratio Analysis) untuk merangking pilihan ikan hias berdasarkan kriteria dan bobot yang diinput pengguna.",
+      "FinDer is a web-based Decision Support System that applies the MOORA (Multi-Objective Optimization by Ratio Analysis) method to rank ornamental fish choices based on criteria and weights entered by the user.",
     features: [
-      "Input & bobot kriteria custom oleh pengguna",
-      "Perhitungan otomatis dengan metode MOORA",
-      "Ranking hasil rekomendasi ikan hias",
-      "Riwayat perhitungan tersimpan per pengguna",
-      "Dibangun dengan Laravel + Tailwind CSS",
+      "Custom criteria input & weighting by the user",
+      "Automatic calculation with the MOORA method",
+      "Ranked ornamental fish recommendations",
+      "Calculation history saved per user",
+      "Built with Laravel + Tailwind CSS",
     ],
   },
   {
@@ -265,20 +291,20 @@ export const projects: Project[] = [
     category: "Mobile Application",
     year: "2025",
     role: "Mobile Developer",
-    desc: "Flutter app manajemen tugas dan jadwal studi dengan SQLite lokal, offline-first dan clean UI.",
+    desc: "Flutter app for managing tasks and study schedules with local SQLite storage, offline-first with a clean UI.",
     img: `${basePath}/images/mindcourse.png`,
     color: "#f59e0b",
     tech: ["flutter", "sqlite"],
     problem:
-      "Mahasiswa sering kesulitan mengatur jadwal kuliah, deadline tugas, dan progres belajar dalam satu tempat, terutama saat tidak ada koneksi internet.",
+      "Students often struggle to manage class schedules, assignment deadlines, and study progress in one place, especially without an internet connection.",
     solution:
-      "MindCourse adalah aplikasi Flutter offline-first yang menyimpan data tugas dan jadwal secara lokal dengan SQLite, sehingga tetap bisa diakses kapan saja tanpa internet.",
+      "MindCourse is an offline-first Flutter app that stores task and schedule data locally with SQLite, so it stays accessible anytime without internet.",
     features: [
-      "Manajemen tugas dengan deadline & prioritas",
-      "Jadwal studi mingguan",
-      "Penyimpanan lokal dengan SQLite (offline-first)",
-      "Notifikasi pengingat tugas",
-      "UI bersih dan minimalis",
+      "Task management with deadlines & priority",
+      "Weekly study schedule",
+      "Local storage with SQLite (offline-first)",
+      "Task reminder notifications",
+      "Clean, minimalist UI",
     ],
   },
   {
@@ -288,20 +314,20 @@ export const projects: Project[] = [
     category: "Mobile Application",
     year: "2025",
     role: "Mobile Developer",
-    desc: "Flutter app berbagi file peer-to-peer di jaringan lokal tanpa koneksi internet.",
+    desc: "Flutter app for peer-to-peer file sharing over a local network without an internet connection.",
     img: `${basePath}/images/sharethem.png`,
     color: "#a78bfa",
     tech: ["flutter", "firebase", "figma"],
     problem:
-      "Berbagi file berukuran besar antar perangkat sering terhambat oleh keterbatasan kuota internet atau ketiadaan koneksi data di lokasi tertentu.",
+      "Sharing large files between devices is often hampered by limited internet quota or the lack of a data connection in certain locations.",
     solution:
-      "ShareThem memungkinkan pengguna berbagi file secara peer-to-peer melalui jaringan lokal (Wi-Fi) tanpa membutuhkan koneksi internet sama sekali.",
+      "ShareThem lets users share files peer-to-peer over a local network (Wi-Fi) without needing any internet connection at all.",
     features: [
-      "Transfer file peer-to-peer via jaringan lokal",
-      "Tidak memerlukan koneksi internet",
-      "Mendukung berbagai jenis file",
-      "Riwayat transfer file",
-      "Dibangun dengan Flutter & Firebase",
+      "Peer-to-peer file transfer via local network",
+      "No internet connection required",
+      "Supports various file types",
+      "File transfer history",
+      "Built with Flutter & Firebase",
     ],
   },
   {
@@ -311,20 +337,20 @@ export const projects: Project[] = [
     category: "Web Application",
     year: "2024",
     role: "Lead Developer",
-    desc: "Sistem Kasir dan Inventaris terintegrasi untuk UMKM. Multi-role, multi-user dengan batasan akses per pengelola.",
+    desc: "Integrated POS and Inventory system for small businesses. Multi-role, multi-user with per-manager access restrictions.",
     img: `${basePath}/images/invensync.png`,
     color: "#10b981",
     tech: ["html", "css", "js", "tailwind", "php", "oracle", "figma", "jira"],
     problem:
-      "UMKM sering mengelola kasir dan stok barang secara terpisah, sehingga data penjualan dan inventaris mudah tidak sinkron dan rawan kesalahan pencatatan manual.",
+      "Small businesses often manage checkout and stock separately, causing sales and inventory data to easily fall out of sync and become prone to manual recording errors.",
     solution:
-      "InvenSync menyatukan sistem kasir (POS) dan manajemen inventaris dalam satu platform web, dengan kontrol akses multi-role agar pemilik dan karyawan punya hak akses sesuai tanggung jawab masing-masing.",
+      "InvenSync unifies the point-of-sale (POS) system and inventory management into a single web platform, with multi-role access control so owners and employees each have access rights matching their responsibilities.",
     features: [
-      "Transaksi kasir real-time dengan cetak struk",
-      "Stok otomatis tersinkron setiap transaksi",
-      "Multi-role: Owner, Admin, dan Kasir dengan batasan akses",
-      "Laporan penjualan & stok harian/bulanan",
-      "Desain responsif untuk tablet & desktop",
+      "Real-time checkout transactions with receipt printing",
+      "Stock automatically synced with every transaction",
+      "Multi-role: Owner, Admin, and Cashier with access restrictions",
+      "Daily/monthly sales & stock reports",
+      "Responsive design for tablet & desktop",
     ],
   },
   {
@@ -334,20 +360,20 @@ export const projects: Project[] = [
     category: "Landing Page",
     year: "2024",
     role: "Frontend Developer",
-    desc: "Landing page profil Computer Student Club PNJ, dibangun dengan Next.js + Tailwind CSS.",
+    desc: "Profile landing page for the PNJ Computer Student Club, built with Next.js + Tailwind CSS.",
     img: `${basePath}/images/csc.png`,
     color: "#f97316",
     tech: ["nextjs", "tailwind", "figma"],
     problem:
-      "Computer Student Club PNJ membutuhkan halaman profil online yang modern untuk memperkenalkan organisasi, divisi, dan program kerja kepada anggota maupun calon anggota.",
+      "The PNJ Computer Student Club needed a modern online profile page to introduce the organization, its divisions, and work programs to both members and prospective members.",
     solution:
-      "Landing page modern dan responsif dibangun dengan Next.js dan Tailwind CSS, menampilkan profil organisasi, struktur divisi, dan kegiatan CSC secara menarik dan mudah dinavigasi.",
+      "A modern, responsive landing page built with Next.js and Tailwind CSS, showcasing the organization's profile, division structure, and CSC activities in an engaging and easy-to-navigate way.",
     features: [
-      "Desain responsif & modern",
-      "Section profil organisasi & divisi",
-      "Showcase kegiatan & program kerja",
-      "Optimasi performa dengan Next.js",
-      "Animasi halus dengan Tailwind CSS",
+      "Responsive, modern design",
+      "Organization & division profile sections",
+      "Activities & work program showcase",
+      "Performance optimized with Next.js",
+      "Smooth animations with Tailwind CSS",
     ],
   },
 ];

@@ -5,9 +5,9 @@ import { motion } from "framer-motion";
 
 const SECTIONS = [
   { id: "hero", label: "Home" },
+  { id: "about", label: "About" },
   { id: "stats", label: "Stats" },
   { id: "projects", label: "Projects" },
-  { id: "about", label: "About" },
   { id: "skills", label: "Skills" },
   { id: "contact", label: "Contact" },
 ];
@@ -42,7 +42,8 @@ export default function MobileSwipeDots() {
 
   return (
     <div
-      className="fixed right-3 top-1/2 -translate-y-1/2 z-[60] md:hidden flex flex-col gap-2 items-center"
+      className="fixed right-3 top-1/2 -translate-y-1/2 z-40 md:hidden flex flex-col gap-2 items-center"
+      style={{ pointerEvents: "none" }}
       role="navigation"
       aria-label="Section navigation"
     >
@@ -56,8 +57,8 @@ export default function MobileSwipeDots() {
             title={label}
             animate={{
               height: isActive ? 22 : 6,
-              backgroundColor: isActive ? "#cc0000" : "rgba(255,255,255,0.18)",
-              boxShadow: isActive ? "0 0 10px rgba(204,0,0,0.6)" : "none",
+              backgroundColor: isActive ? "#ff6a00" : "rgba(0,0,0,0.18)",
+              boxShadow: isActive ? "0 0 10px rgba(255,106,0,0.6)" : "none",
             }}
             whileTap={{ scale: 0.75 }}
             transition={{ type: "spring", stiffness: 400, damping: 28 }}
@@ -69,6 +70,7 @@ export default function MobileSwipeDots() {
               cursor: "pointer",
               outline: "none",
               display: "block",
+              pointerEvents: "auto",
             }}
           />
         );

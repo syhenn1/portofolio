@@ -50,8 +50,8 @@ export default function CvModal({ isOpen, onClose, pdfUrl }: CvModalProps) {
               maxWidth: 900,
               maxHeight: "90vh",
               background: "var(--surf)",
-              border: "1px solid rgba(204,0,0,0.2)",
-              borderRadius: 20,
+              border: "1px solid rgba(255,106,0,0.25)",
+              borderRadius: 4,
               boxShadow: "0 40px 80px rgba(0,0,0,0.6)",
             }}
             initial={{ scale: 0.92, y: 30 }}
@@ -62,9 +62,9 @@ export default function CvModal({ isOpen, onClose, pdfUrl }: CvModalProps) {
             {/* Header */}
             <div
               className="flex items-center justify-between px-5 py-3.5 shrink-0"
-              style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+              style={{ borderBottom: "1px solid rgba(0,0,0,0.08)" }}
             >
-              <span className="mono text-sm font-semibold text-gray-300">
+              <span className="mono text-sm font-semibold text-gray-700">
                 CV Preview
               </span>
               <div className="flex items-center gap-2">
@@ -96,7 +96,7 @@ export default function CvModal({ isOpen, onClose, pdfUrl }: CvModalProps) {
             </div>
 
             {/* PDF embed */}
-            <div className="flex-1 min-h-0" style={{ background: "#1a1a1a" }}>
+            <div className="flex-1 min-h-0" style={{ background: "#e5e5e2" }}>
               <iframe
                 src={`${pdfUrl}#toolbar=0&navpanes=0`}
                 title="CV Preview"

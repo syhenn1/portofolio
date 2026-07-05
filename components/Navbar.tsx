@@ -6,8 +6,8 @@ import { FiDownload, FiMenu, FiX } from "react-icons/fi";
 import { basePath } from "@/lib/basePath";
 
 const navLinks = [
-  { href: "#projects", label: "Projects" },
   { href: "#about", label: "About" },
+  { href: "#projects", label: "Projects" },
   { href: "#skills", label: "Skills" },
   { href: "#contact", label: "Contact" },
 ];
@@ -51,8 +51,8 @@ export default function Navbar() {
       <nav className="glass max-w-5xl mx-auto rounded-2xl overflow-hidden">
         <div className="px-5 sm:px-7 py-3.5 flex justify-between items-center">
           <a href={`${basePath}/`} className="flex items-center gap-1 mono text-sm font-bold">
-            <span style={{ color: "#475569" }}>&lt;</span>
-            <span className="text-white">rifat</span>
+            <span style={{ color: "#a3a39c" }}>&lt;</span>
+            <span style={{ color: "var(--tx)" }}>rifat</span>
             <span style={{ color: "var(--em)" }}>/&gt;</span>
           </a>
 
@@ -78,7 +78,8 @@ export default function Navbar() {
 
           <button
             onClick={() => setOpen((o) => !o)}
-            className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-white/5 text-white"
+            className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-black/5"
+            style={{ color: "var(--tx)" }}
             aria-label="Menu"
           >
             {open ? <FiX size={20} /> : <FiMenu size={20} />}
@@ -88,7 +89,7 @@ export default function Navbar() {
         <AnimatePresence>
           {open && (
             <motion.div
-              className="md:hidden border-t border-white/5 overflow-hidden"
+              className="md:hidden border-t border-black/5 overflow-hidden"
               initial={{ height: 0 }}
               animate={{ height: "auto" }}
               exit={{ height: 0 }}
@@ -100,7 +101,7 @@ export default function Navbar() {
                     key={link.href}
                     href={`${basePath}/${link.href}`}
                     onClick={() => setOpen(false)}
-                    className="py-2.5 px-3 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 font-medium transition-all"
+                    className="py-2.5 px-3 rounded-xl text-sm text-gray-600 hover:text-black hover:bg-black/5 font-medium transition-all"
                   >
                     {link.label}
                   </a>

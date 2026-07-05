@@ -20,7 +20,7 @@ const mono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Rifat Syahman — Software Developer",
   description:
-    "Portfolio Rifat Syahman, Software Developer dari Jakarta. Web, mobile, dan data — dibangun dengan Next.js, Tailwind CSS, dan Framer Motion.",
+    "Portfolio of Rifat Syahman, Software Developer from Jakarta. Web, mobile, and data — built with Next.js, Tailwind CSS, and Framer Motion.",
 };
 
 export default function RootLayout({

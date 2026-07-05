@@ -8,12 +8,6 @@ import { FiArrowLeft, FiArrowRight, FiCheck, FiGithub, FiMail } from "react-icon
 import { getAdjacentProjects, getSkill, socialLinks, type Project } from "@/lib/data";
 import ImageLightbox from "@/components/ImageLightbox";
 
-const heroBadgeStyle = {
-  background: "rgba(27,37,54,.55)",
-  borderColor: "rgba(255,255,255,.14)",
-  backdropFilter: "blur(8px)",
-} as const;
-
 export default function ProjectDetail({ project }: { project: Project }) {
   const { prev, next } = getAdjacentProjects(project.slug);
   const techs = project.tech.map((k) => getSkill(k)).filter(Boolean);
@@ -27,11 +21,11 @@ export default function ProjectDetail({ project }: { project: Project }) {
   return (
     <main style={{ background: "var(--bg)" }}>
       {/* Sticky background image */}
-      <div className="sticky top-0 w-full overflow-hidden" style={{ height: "min(88vh, 760px)", minHeight: 480, zIndex: 0 }}>
+      <div className="sticky top-0 w-full h-screen overflow-hidden" style={{ zIndex: 0 }}>
         <Image src={project.img} alt={project.title} fill className="object-cover object-top" priority />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to top, var(--bg) 0%, rgba(14,9,5,.72) 38%, rgba(14,9,5,.1) 70%, transparent 100%)" }} />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(12,6,3,.75) 0%, transparent 60%)" }} />
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 80%, rgba(204,0,0,.22) 0%, transparent 55%), linear-gradient(160deg, rgba(204,0,0,.1) 0%, transparent 45%)" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to top, var(--bg) 0%, rgba(10, 10, 10,.72) 38%, rgba(10, 10, 10,.1) 70%, transparent 100%)" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(0,0,0,.7) 0%, transparent 100%)" }} />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 80%, rgba(255,106,0,.16) 0%, transparent 55%), linear-gradient(160deg, rgba(255,106,0,.08) 0%, transparent 45%)" }} />
       </div>
 
       {/* Title block — scrolls over the sticky image */}
@@ -41,20 +35,32 @@ export default function ProjectDetail({ project }: { project: Project }) {
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <Link href="/#projects" className="inline-flex items-center gap-2 mono text-xs mb-8" style={{ color: "var(--muted)" }}>
                 <FiArrowLeft size={14} />
-                Kembali ke Projects
+                Back to Projects
               </Link>
             </motion.div>
             <motion.div
-              className="flex flex-wrap items-center gap-2 mb-5"
+              className="flex flex-wrap items-center gap-3 mb-5 mono"
+              style={{ fontSize: 12 }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.05 }}
             >
-              <span className="badge" style={{ ...heroBadgeStyle, color: project.color, borderColor: `${project.color}45` }}>
+              <span
+                style={{
+                  color: project.color,
+                  borderBottom: `2px solid ${project.color}`,
+                  paddingBottom: 3,
+                  letterSpacing: "0.12em",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                }}
+              >
                 {project.category}
               </span>
-              <span className="badge" style={heroBadgeStyle}>{project.year}</span>
-              <span className="badge" style={heroBadgeStyle}>{project.role}</span>
+              <span style={{ color: "rgba(255,255,255,0.2)" }}>/</span>
+              <span style={{ color: "var(--muted)", letterSpacing: "0.08em" }}>{project.year}</span>
+              <span style={{ color: "rgba(255,255,255,0.2)" }}>/</span>
+              <span style={{ color: "var(--muted)", letterSpacing: "0.08em" }}>{project.role}</span>
             </motion.div>
             <motion.h1
               className="font-black leading-none text-white"
@@ -90,11 +96,11 @@ export default function ProjectDetail({ project }: { project: Project }) {
             >
               <div>
                 <div className="slabel mb-3">the problem</div>
-                <p className="text-gray-300 leading-relaxed">{project.problem}</p>
+                <p className="text-gray-700 leading-relaxed">{project.problem}</p>
               </div>
               <div>
                 <div className="slabel mb-3">the solution</div>
-                <p className="text-gray-300 leading-relaxed">{project.solution}</p>
+                <p className="text-gray-700 leading-relaxed">{project.solution}</p>
               </div>
               <div>
                 <div className="slabel mb-3">key features</div>
@@ -119,15 +125,15 @@ export default function ProjectDetail({ project }: { project: Project }) {
               <div className="meta-card">
                 <div className="meta-row" style={{ marginTop: 0, paddingTop: 0, borderTop: "none" }}>
                   <p className="mono text-xs mb-1" style={{ color: "var(--em)" }}>role</p>
-                  <p className="text-sm text-gray-300 font-medium">{project.role}</p>
+                  <p className="text-sm text-gray-700 font-medium">{project.role}</p>
                 </div>
                 <div className="meta-row">
                   <p className="mono text-xs mb-1" style={{ color: "var(--em)" }}>year</p>
-                  <p className="text-sm text-gray-300 font-medium">{project.year}</p>
+                  <p className="text-sm text-gray-700 font-medium">{project.year}</p>
                 </div>
                 <div className="meta-row">
                   <p className="mono text-xs mb-1" style={{ color: "var(--em)" }}>category</p>
-                  <p className="text-sm text-gray-300 font-medium">{project.category}</p>
+                  <p className="text-sm text-gray-700 font-medium">{project.category}</p>
                 </div>
                 <div className="meta-row">
                   <p className="mono text-xs mb-2" style={{ color: "var(--em)" }}>tech stack</p>
@@ -152,11 +158,11 @@ export default function ProjectDetail({ project }: { project: Project }) {
 
               <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="btn-ghost w-full justify-center">
                 <FiGithub size={16} />
-                Lihat Profil GitHub
+                View GitHub Profile
               </a>
               <Link href="/#contact" className="btn-em w-full justify-center">
                 <FiMail size={16} />
-                Diskusikan Project
+                Discuss a Project
               </Link>
             </motion.div>
           </div>
@@ -175,8 +181,8 @@ export default function ProjectDetail({ project }: { project: Project }) {
                   <button
                     key={i}
                     onClick={() => setLightboxIdx(i)}
-                    className="relative group rounded-xl overflow-hidden cursor-zoom-in"
-                    style={{ border: "1px solid rgba(255,255,255,0.06)" }}
+                    className="relative group rounded-sm overflow-hidden cursor-zoom-in"
+                    style={{ border: "1px solid rgba(0,0,0,0.1)" }}
                   >
                     <Image
                       src={src}
@@ -213,14 +219,14 @@ export default function ProjectDetail({ project }: { project: Project }) {
                 <FiArrowLeft size={12} style={{ display: "inline", marginRight: 6 }} />
                 previous
               </span>
-              <span className="text-lg font-bold text-white">{prev.title}</span>
+              <span className="text-lg font-bold" style={{ color: "var(--tx)" }}>{prev.title}</span>
             </Link>
             <Link href={`/projects/${next.slug}`} className="nav-card sm:items-end sm:text-right">
               <span className="mono text-xs" style={{ color: "var(--muted)" }}>
                 next
                 <FiArrowRight size={12} style={{ display: "inline", marginLeft: 6 }} />
               </span>
-              <span className="text-lg font-bold text-white">{next.title}</span>
+              <span className="text-lg font-bold" style={{ color: "var(--tx)" }}>{next.title}</span>
             </Link>
           </div>
         </div>

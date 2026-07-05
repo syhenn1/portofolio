@@ -50,7 +50,7 @@ export default function Contact() {
           <h2 className="text-3xl sm:text-5xl font-black">
             Let&apos;s <span className="gtx">Connect</span>
           </h2>
-          <p className="text-gray-500 mt-2 text-sm">Ada project seru atau mau ngobrol? Jangan ragu, reach out!</p>
+          <p className="text-gray-600 mt-2 text-sm">Got an exciting project or just want to chat? Don&apos;t hesitate to reach out!</p>
         </motion.div>
 
         <motion.div
@@ -72,7 +72,7 @@ export default function Contact() {
               </div>
               <div>
                 <p className="mono text-xs mb-0.5" style={{ color: "var(--em)" }}>email</p>
-                <p className="text-sm text-gray-300 font-medium">{socialLinks.email}</p>
+                <p className="text-sm text-gray-700 font-medium">{socialLinks.email}</p>
               </div>
             </a>
             <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="cl">
@@ -86,7 +86,7 @@ export default function Contact() {
               </div>
               <div>
                 <p className="mono text-xs mb-0.5" style={{ color: "var(--em)" }}>github</p>
-                <p className="text-sm text-gray-300 font-medium">
+                <p className="text-sm text-gray-700 font-medium">
                   {socialLinks.github.replace("https://", "")}
                 </p>
               </div>
@@ -102,7 +102,7 @@ export default function Contact() {
               </div>
               <div>
                 <p className="mono text-xs mb-0.5" style={{ color: "#06b6d4" }}>linkedin</p>
-                <p className="text-sm text-gray-300 font-medium">
+                <p className="text-sm text-gray-700 font-medium">
                   {socialLinks.linkedin.replace("https://", "").replace(/\/$/, "")}
                 </p>
               </div>
@@ -118,8 +118,8 @@ export default function Contact() {
                 <input type="checkbox" name="botcheck" style={{ display: "none" }} />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block mono text-xs mb-1.5" style={{ color: "var(--muted)" }}>nama</label>
-                    <input type="text" name="name" placeholder="Nama Anda" required className="ff" />
+                    <label className="block mono text-xs mb-1.5" style={{ color: "var(--muted)" }}>name</label>
+                    <input type="text" name="name" placeholder="Your name" required className="ff" />
                   </div>
                   <div>
                     <label className="block mono text-xs mb-1.5" style={{ color: "var(--muted)" }}>email</label>
@@ -127,21 +127,21 @@ export default function Contact() {
                   </div>
                 </div>
                 <div>
-                  <label className="block mono text-xs mb-1.5" style={{ color: "var(--muted)" }}>pesan</label>
-                  <textarea name="message" rows={5} placeholder="Tulis pesan kamu..." required className="ff" style={{ resize: "none" }} />
+                  <label className="block mono text-xs mb-1.5" style={{ color: "var(--muted)" }}>message</label>
+                  <textarea name="message" rows={5} placeholder="Write your message..." required className="ff" style={{ resize: "none" }} />
                 </div>
                 <button type="submit" disabled={status === "sending"} className="btn-em w-full justify-center">
                   <FiSend size={16} />
-                  {status === "sending" ? "Mengirim..." : "Kirim Pesan"}
+                  {status === "sending" ? "Sending..." : "Send Message"}
                 </button>
                 {status === "success" && (
                   <p className="text-sm" style={{ color: "var(--em2)" }}>
-                    Pesan terkirim! Terima kasih, akan saya balas secepatnya.
+                    Message sent! Thanks, I&apos;ll get back to you soon.
                   </p>
                 )}
                 {status === "error" && (
-                  <p className="text-sm" style={{ color: "#f87171" }}>
-                    Gagal mengirim pesan. Coba lagi atau email langsung ya.
+                  <p className="text-sm" style={{ color: "#dc2626" }}>
+                    Failed to send message. Try again or email me directly.
                   </p>
                 )}
               </form>
