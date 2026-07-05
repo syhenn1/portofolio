@@ -12,47 +12,32 @@ const MechanicalKeyboard3D = dynamic(
   { ssr: false },
 );
 
-// ─── Mobile keycap ────────────────────────────────────────────────────────────
-function Keycap({ skill, color, index, size = 44 }: {
-  skill: Skill; color: string; index: number; size?: number;
+// ─── Mobile skill pill ─────────────────────────────────────────────────────────
+function SkillPill({ skill, color, index }: {
+  skill: Skill; color: string; index: number;
 }) {
   const Icon = skill.Icon;
-  const sz   = Math.round(size * 0.44);
   return (
     <motion.div
-      className="flex flex-col items-center gap-1.5"
-      initial={{ opacity: 0, y: -10 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      className="inline-flex items-center gap-2 select-none"
+      style={{
+        padding: "8px 14px",
+        borderRadius: 999,
+        background: "#fff",
+        border: `1px solid ${color}30`,
+        boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+      }}
+      initial={{ opacity: 0, scale: 0.92 }}
+      whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, margin: "-20px" }}
-      transition={{ delay: index * 0.035, duration: 0.28, ease: "easeOut" }}
+      transition={{ delay: index * 0.02, duration: 0.25, ease: "easeOut" }}
     >
-      <motion.div
-        className="flex items-center justify-center select-none"
-        style={{
-          width: size, height: size,
-          borderRadius: 9,
-          background: "linear-gradient(145deg, #252016 0%, #191310 100%)",
-          border: "1px solid rgba(255,255,255,0.06)",
-          borderTop: `2px solid ${color}55`,
-          boxShadow: "0 6px 0 0 #080503, 0 0 0 1px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.10)",
-          cursor: "default",
-        }}
-        whileHover={{
-          y: 3,
-          boxShadow: "0 3px 0 0 #080503, 0 0 0 1px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.10)",
-        }}
-        whileTap={{
-          y: 5,
-          boxShadow: "0 1px 0 0 #080503, 0 0 0 1px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04), inset 0 3px 6px rgba(0,0,0,0.40)",
-        }}
-      >
-        {Icon ? (
-          <Icon size={sz} />
-        ) : (
-          <Image src={skill.src!} alt={skill.name} width={sz} height={sz} style={{ objectFit: "contain" }} />
-        )}
-      </motion.div>
-      <span style={{ fontSize: 9, color: "#475569", fontWeight: 600, textAlign: "center", lineHeight: 1.2, maxWidth: size + 8 }}>
+      {Icon ? (
+        <Icon size={15} style={{ color, flexShrink: 0 }} />
+      ) : (
+        <Image src={skill.src!} alt="" width={15} height={15} style={{ objectFit: "contain", flexShrink: 0 }} />
+      )}
+      <span style={{ fontSize: 13, fontWeight: 600, color: "var(--tx)", whiteSpace: "nowrap" }}>
         {skill.name}
       </span>
     </motion.div>
@@ -210,8 +195,8 @@ export default function Skills() {
         <MechanicalKeyboard3D onHover={setHoveredTech} introRotY={introRotYRef} />
       </motion.div>
 
-        {/* ── mobile: flat keycap grid by category (no card wrappers) ─── */}
-        <div className="lg:hidden space-y-8 px-3 sm:px-5 pb-14 max-w-7xl mx-auto">
+        {/* ── mobile: pill/chip list by category ────────────────────────── */}
+        <div className="lg:hidden space-y-7 px-3 sm:px-5 pb-14 max-w-7xl mx-auto">
           {categories.map(([cat, items], i) => {
             const color = categoryColors[cat] || "#10b981";
             return (
@@ -222,15 +207,15 @@ export default function Skills() {
                 viewport={{ once: true, margin: "-20px" }}
                 transition={{ duration: 0.45, delay: i * 0.06 }}
               >
-                <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center gap-2 mb-3.5">
                   <div style={{ width: 3, height: 18, borderRadius: 2, background: color }} />
                   <span className="mono" style={{ fontSize: 11, fontWeight: 700, color, letterSpacing: "0.07em" }}>
                     {cat}
                   </span>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(52px, 1fr))", gap: 10 }}>
+                <div className="flex flex-wrap gap-2">
                   {Object.entries(items).map(([key, skill], j) => (
-                    <Keycap key={key} skill={skill} color={color} index={j} />
+                    <SkillPill key={key} skill={skill} color={color} index={j} />
                   ))}
                 </div>
               </motion.div>

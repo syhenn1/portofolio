@@ -81,7 +81,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-end overflow-hidden"
+      className="relative min-h-screen flex items-end overflow-hidden pt-24 lg:pt-0"
       style={{ background: "linear-gradient(160deg, #f7f7f4 0%, #efefea 50%, #f7f7f4 100%)" }}
     >
       {/* Lighting: main orange spotlight top-right */}

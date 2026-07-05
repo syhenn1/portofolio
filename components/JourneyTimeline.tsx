@@ -141,7 +141,9 @@ export default function JourneyTimeline() {
   return (
     <section className="relative z-2 py-14 px-3 sm:px-5">
     <div className="max-w-7xl mx-auto">
-    <div ref={outerRef} style={{ height: `${(N + 1) * 100}vh`, position: "relative" }}>
+
+    {/* ── Desktop: scroll-driven "focus" timeline ─────────────────────── */}
+    <div ref={outerRef} className="hidden md:block" style={{ height: `${(N + 1) * 100}vh`, position: "relative" }}>
       <div className="sticky flex flex-col" style={{ top: 60, height: "min(90vh, 760px)" }}>
         <Corner pos="tl" />
         <Corner pos="br" />
@@ -186,6 +188,66 @@ export default function JourneyTimeline() {
         </motion.div>
       </div>
     </div>
+
+    {/* ── Mobile: plain vertical timeline, no scroll-jacking ──────────── */}
+    <div className="md:hidden">
+      <div className="flex items-center justify-between mb-6">
+        <p className="mono text-sm" style={{ color: "var(--em)", letterSpacing: "0.1em" }}>
+          // my_journey[]
+        </p>
+        <p className="mono" style={{ fontSize: 11, color: "rgba(0,0,0,0.3)", letterSpacing: "0.1em" }}>
+          {String(N).padStart(2, "0")} ENTRIES
+        </p>
+      </div>
+
+      <div className="relative pl-7">
+        <div style={{ position: "absolute", left: 4, top: 6, bottom: 6, width: 2, background: "rgba(0,0,0,0.12)" }} />
+        {timelineData.map((t, i) => {
+          const images = "images" in t ? t.images : undefined;
+          return (
+            <motion.div
+              key={t.year}
+              className="relative"
+              style={{ paddingBottom: i === N - 1 ? 0 : 28 }}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.45 }}
+            >
+              <div
+                style={{
+                  position: "absolute", left: -28, top: 4,
+                  width: 11, height: 11, borderRadius: "50%",
+                  border: `3px solid ${t.color}`, background: "var(--bg)",
+                }}
+              />
+              <span className="mono" style={{ fontSize: 13, color: t.color, fontWeight: 700, letterSpacing: "0.1em" }}>
+                {t.year}
+              </span>
+              <h4 style={{ fontSize: 19, fontWeight: 800, color: "var(--tx)", margin: "5px 0 7px", lineHeight: 1.2 }}>
+                {t.title}
+              </h4>
+              <p style={{ fontSize: 14, color: "var(--muted)", lineHeight: 1.55 }}>{t.desc}</p>
+
+              {images && images.length > 0 && (
+                <div className="flex gap-2 mt-3 flex-wrap">
+                  {images.map((src) => (
+                    <div
+                      key={src}
+                      className="relative shrink-0 overflow-hidden rounded-sm"
+                      style={{ width: 108, height: 68, border: "1px solid rgba(0,0,0,0.1)" }}
+                    >
+                      <Image src={src} alt="" fill className="object-cover" sizes="108px" />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
+
     </div>
     </section>
   );
