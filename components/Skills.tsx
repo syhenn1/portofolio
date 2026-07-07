@@ -5,7 +5,9 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { skills, categoryColors, type Skill } from "@/lib/data";
+import { useMediaQuery } from "@/lib/useMediaQuery";
 import type { TechKey } from "@/components/MechanicalKeyboard3D";
+import { useInView } from "@/lib/useInView";
 
 const MechanicalKeyboard3D = dynamic(
   () => import("@/components/MechanicalKeyboard3D"),
@@ -130,6 +132,11 @@ export default function Skills() {
   const [hoveredTech, setHoveredTech] = useState<TechKey | null>(null);
   const categories = Object.entries(skills);
   const sectionRef = useRef<HTMLElement>(null);
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  // Unmount the canvas once scrolled well away — Hero and Projects each mount their
+  // own Lanyard (WebGL + Rapier), and stacking several persistent 3D contexts at once
+  // is what blows past the browser's live WebGL-context budget (see Lanyard.tsx).
+  const inView = useInView(sectionRef, "300px 0px 300px 0px");
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -191,8 +198,12 @@ export default function Skills() {
           <TechInfoPanel tech={hoveredTech} />
         </motion.div>
 
-        {/* No CSS perspective/rotateY wrapper here — drei Html overlays break under CSS 3D transforms */}
-        <MechanicalKeyboard3D onHover={setHoveredTech} introRotY={introRotYRef} />
+        {/* No CSS perspective/rotateY wrapper here — drei Html overlays break under CSS 3D transforms.
+            Mount gated by JS media query, not just the `hidden lg:block` above — a display:none
+            canvas still runs its WebGL render loop, which was piling onto the mobile crash. */}
+        {isDesktop && inView && (
+          <MechanicalKeyboard3D onHover={setHoveredTech} introRotY={introRotYRef} />
+        )}
       </motion.div>
 
         {/* ── mobile: pill/chip list by category ────────────────────────── */}

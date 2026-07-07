@@ -3,7 +3,7 @@
 
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, extend, useFrame } from '@react-three/fiber';
-import { useGLTF, useTexture, Environment, Lightformer } from '@react-three/drei';
+import { Environment, Lightformer } from '@react-three/drei';
 import {
   BallCollider,
   CuboidCollider,
@@ -14,15 +14,9 @@ import {
 } from '@react-three/rapier';
 import { MeshLineGeometry, MeshLineMaterial } from 'meshline';
 import * as THREE from 'three';
-import { basePath } from '@/lib/basePath';
+import { useCardTexture } from '@/lib/useCardTexture';
 
 extend({ MeshLineGeometry, MeshLineMaterial });
-
-const BLANK =
-  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
-
-const FRONT_UV = { x: 0, y: 0, w: 0.5, h: 0.755 };
-const BACK_UV  = { x: 0.5, y: 0, w: 0.5, h: 0.757 };
 
 interface Props {
   position?: [number, number, number];
@@ -130,7 +124,7 @@ function Band({
     linearDamping: 4,
   };
 
-  const { nodes, materials } = useGLTF(`${basePath}/card.glb`) as any;
+  const { nodes, materials, cardMap } = useCardTexture({ frontImage, backImage, imageFit });
 
   // Text lanyard texture: repeating role labels along the cord
   const lanyardTex = useMemo(() => {
@@ -205,60 +199,6 @@ function Band({
     tex.anisotropy = 16;
     return tex;
   }, []);
-
-  const frontTex = useTexture(frontImage || BLANK);
-  const backTex  = useTexture(backImage  || BLANK);
-
-  const cardMap = useMemo(() => {
-    const baseMap = materials.base.map as THREE.Texture;
-    if (!frontImage && !backImage) return baseMap;
-
-    const baseImg = baseMap.image as HTMLImageElement;
-    const W = baseImg?.width;
-    const H = baseImg?.height;
-    if (!W || !H) return baseMap;
-    const canvas = document.createElement('canvas');
-    canvas.width  = W;
-    canvas.height = H;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return baseMap;
-
-    // Neutral dark base so card edges are not white (no color tint)
-    ctx.fillStyle = '#1a1a1a';
-    ctx.fillRect(0, 0, W, H);
-    ctx.globalCompositeOperation = 'multiply';
-    ctx.drawImage(baseImg, 0, 0, W, H);
-    ctx.globalCompositeOperation = 'source-over';
-
-    const drawFitted = (img: HTMLImageElement, rect: typeof FRONT_UV) => {
-      const rx = rect.x * W;
-      const ry = rect.y * H;
-      const rw = rect.w * W;
-      const rh = rect.h * H;
-      const pick = imageFit === 'contain' ? Math.min : Math.max;
-      const scale = pick(rw / img.width, rh / img.height);
-      const dw = img.width  * scale;
-      const dh = img.height * scale;
-      const dx = rx + (rw - dw) / 2;
-      const dy = ry + (rh - dh) / 2;
-      ctx.save();
-      ctx.beginPath();
-      ctx.rect(rx, ry, rw, rh);
-      ctx.clip();
-      ctx.drawImage(img, dx, dy, dw, dh);
-      ctx.restore();
-    };
-
-    if (frontImage && frontTex.image) drawFitted(frontTex.image as HTMLImageElement, FRONT_UV);
-    if (backImage  && backTex.image)  drawFitted(backTex.image  as HTMLImageElement, BACK_UV);
-
-    const composite = new THREE.CanvasTexture(canvas);
-    composite.colorSpace = THREE.SRGBColorSpace;
-    composite.flipY      = baseMap.flipY;
-    composite.anisotropy = 16;
-    composite.needsUpdate = true;
-    return composite;
-  }, [frontImage, backImage, imageFit, frontTex, backTex, materials.base.map]);
 
   const [curve] = useState(() => {
     const c = new THREE.CatmullRomCurve3([

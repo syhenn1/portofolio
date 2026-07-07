@@ -53,8 +53,15 @@ const SWITCH_H    = 0.28;  // tall switch stem — gives mechanical depth look
 const CAP_SKIRT_H = 0.08;  // bottom flange — wider, sits on switch
 const CAP_BODY_H  = 0.24;  // main key surface — narrower, tapers inward
 const CAP_H       = CAP_SKIRT_H + CAP_BODY_H;  // total keycap height (0.32)
-const CAP_RAD     = 0.06;
+const CAP_RAD     = 0.075;
 const BASE_Y      = SWITCH_H + CAP_H / 2;  // keycap group resting Y (0.44)
+
+// Sculpted (OEM/Cherry-style) row profile — real mechanical keycaps are taller
+// and more steeply raked the further they sit from the typist, then flatten
+// out toward the home row and spacebar. A uniform cap height across every row
+// is what reads as "flat toy blocks" instead of a genuine keyboard; this scales
+// SWITCH_H/CAP_H per row (index 0 = function row … index 5 = bottom row).
+const ROW_PROFILE = [1.28, 1.14, 1.0, 0.90, 0.95, 0.80] as const;
 
 // ─── category accent colours ──────────────────────────────────────────────────
 const PL = "#10b981";
@@ -143,21 +150,29 @@ const BASE_CAP_COL    = new THREE.Color("#fbfbf9");
 
 // ─── Key3D ────────────────────────────────────────────────────────────────────
 type Key3DProps = {
-  def:     K;
-  pos:     [number, number, number];
-  onHover: (k: K | null) => void;
+  def:      K;
+  pos:      [number, number, number];
+  rowScale: number;
+  onHover:  (k: K | null) => void;
 };
 
-const Key3D = memo(function Key3D({ def, pos, onHover }: Key3DProps) {
+const Key3D = memo(function Key3D({ def, pos, rowScale, onHover }: Key3DProps) {
   const [hov, setHov] = useState(false);
   const capRef = useRef<THREE.Group>(null);
   const isTech = !!def.name;
   const w3 = kw3(def.w ?? 1);
 
+  // Row-scaled dimensions — see ROW_PROFILE for why these aren't the raw constants.
+  const switchH  = SWITCH_H * rowScale;
+  const capSkirtH = CAP_SKIRT_H * rowScale;
+  const capBodyH  = CAP_BODY_H * rowScale;
+  const capH      = capSkirtH + capBodyH;
+  const baseY     = switchH + capH / 2;
+
   // smooth keypress animation every frame
   useFrame(() => {
     if (!capRef.current) return;
-    const target = hov && isTech ? BASE_Y - 0.14 : BASE_Y;
+    const target = hov && isTech ? baseY - 0.14 : baseY;
     capRef.current.position.y = THREE.MathUtils.lerp(
       capRef.current.position.y,
       target,
@@ -175,10 +190,10 @@ const Key3D = memo(function Key3D({ def, pos, onHover }: Key3DProps) {
     <group position={pos}>
       {/* ── Switch housing: close-fit column, case walls show in the gap ── */}
       <RoundedBox
-        args={[w3 - 0.06, SWITCH_H, KH3 - 0.06]}
+        args={[w3 - 0.06, switchH, KH3 - 0.06]}
         radius={0.02}
         smoothness={2}
-        position={[0, SWITCH_H / 2, 0]}
+        position={[0, switchH / 2, 0]}
       >
         <meshStandardMaterial
           color={BASE_SWITCH_COL}
@@ -188,37 +203,57 @@ const Key3D = memo(function Key3D({ def, pos, onHover }: Key3DProps) {
       </RoundedBox>
 
       {/* ── Keycap: skirt + body compound shape (OEM-style profile) ── */}
-      <group ref={capRef} position={[0, BASE_Y, 0]}>
+      <group ref={capRef} position={[0, baseY, 0]}>
         {/* Bottom flange — slightly wider, sits over the switch housing */}
         <RoundedBox
-          args={[w3 - 0.04, CAP_SKIRT_H, KH3 - 0.04]}
+          args={[w3 - 0.04, capSkirtH, KH3 - 0.04]}
           radius={0.035}
           smoothness={2}
-          position={[0, -(CAP_H / 2 - CAP_SKIRT_H / 2), 0]}
+          position={[0, -(capH / 2 - capSkirtH / 2), 0]}
         >
-          <meshStandardMaterial color={capColor} roughness={0.66} metalness={0.06} />
+          <meshPhysicalMaterial color={capColor} roughness={0.62} metalness={0.05} clearcoat={0.25} clearcoatRoughness={0.4} />
         </RoundedBox>
 
-        {/* Main key surface — narrower than skirt, tapers inward */}
+        {/* Main key surface — narrower than skirt, tapers inward. A slightly
+            smaller, raised inset disc fakes the concave "dish" every real
+            keycap has, instead of a flat sculpted-nothing top. */}
         <RoundedBox
-          args={[w3 - 0.08, CAP_BODY_H, KH3 - 0.08]}
+          args={[w3 - 0.08, capBodyH, KH3 - 0.08]}
           radius={CAP_RAD}
           smoothness={3}
-          position={[0, CAP_SKIRT_H / 2, 0]}
+          position={[0, capSkirtH / 2, 0]}
         >
-          <meshStandardMaterial
+          <meshPhysicalMaterial
             color={capColor}
             emissive={isTech && def.c ? def.c : "#000000"}
             emissiveIntensity={hov && isTech ? 0.50 : isTech ? 0.07 : 0}
-            roughness={0.48}
-            metalness={0.10}
+            roughness={0.42}
+            metalness={0.08}
+            clearcoat={0.35}
+            clearcoatRoughness={0.3}
+          />
+        </RoundedBox>
+        <RoundedBox
+          args={[w3 - 0.16, capBodyH * 0.5, KH3 - 0.18]}
+          radius={CAP_RAD * 0.8}
+          smoothness={2}
+          position={[0, capBodyH / 2 - 0.006, 0]}
+        >
+          <meshPhysicalMaterial
+            color={capColor}
+            roughness={0.38}
+            metalness={0.06}
+            clearcoat={0.4}
+            clearcoatRoughness={0.25}
+            transparent
+            opacity={0.65}
           />
         </RoundedBox>
 
         {/* ── Key legend: tech logo for tech keys, printed label for every other key ── */}
         {isTech ? (
           <Html
-            position={[0, CAP_H / 2 + 0.04, 0]}
+            position={[0, capH / 2 + 0.04, 0]}
             center
             zIndexRange={[100, 0]}
             style={{ pointerEvents: "none", userSelect: "none" }}
@@ -246,7 +281,7 @@ const Key3D = memo(function Key3D({ def, pos, onHover }: Key3DProps) {
           </Html>
         ) : def.k ? (
           <Html
-            position={[0, CAP_H / 2 + 0.04, 0]}
+            position={[0, capH / 2 + 0.04, 0]}
             center
             zIndexRange={[100, 0]}
             style={{ pointerEvents: "none", userSelect: "none" }}
@@ -271,7 +306,7 @@ const Key3D = memo(function Key3D({ def, pos, onHover }: Key3DProps) {
       {/* ── Invisible hit volume — full cell size for easy targeting ── */}
       <mesh
         visible={false}
-        position={[0, (SWITCH_H + CAP_H) / 2 + 0.01, 0]}
+        position={[0, (switchH + capH) / 2 + 0.01, 0]}
         onPointerEnter={(e) => {
           e.stopPropagation();
           setHov(true);
@@ -282,7 +317,7 @@ const Key3D = memo(function Key3D({ def, pos, onHover }: Key3DProps) {
           onHover(null);
         }}
       >
-        <boxGeometry args={[w3 + 0.01, SWITCH_H + CAP_H + 0.10, KH3 + 0.01]} />
+        <boxGeometry args={[w3 + 0.01, switchH + capH + 0.10, KH3 + 0.01]} />
       </mesh>
     </group>
   );
@@ -295,19 +330,20 @@ function KeyboardScene({ onHover, introRotY }: { onHover: (k: K | null) => void;
   // Pre-compute every key's 3D center position (static, no deps)
   const { keyPositions, chassisW, chassisD } = useMemo(() => {
     const totalDepth = ROWS.length * KH3 + (ROWS.length - 1) * GH3;
-    const positions: { def: K; pos: [number, number, number] }[] = [];
+    const positions: { def: K; pos: [number, number, number]; rowScale: number }[] = [];
 
     // rotation.x = 0.90 maps +Z to bottom, -Z to top in camera view.
     // Start ESC row at -Z (top) and increment toward +Z so spacebar is at bottom.
     let zPos = -(totalDepth / 2 - KH3 / 2);
 
-    ROWS.forEach((row) => {
+    ROWS.forEach((row, ri) => {
+      const rowScale = ROW_PROFILE[ri] ?? 1;
       const rowWidth = row.reduce((s, k) => s + kw3(k.w ?? 1), 0) + (row.length - 1) * GH3;
       let cumX = -rowWidth / 2;
 
       row.forEach((key) => {
         const w = kw3(key.w ?? 1);
-        positions.push({ def: key, pos: [cumX + w / 2, 0, zPos] });
+        positions.push({ def: key, pos: [cumX + w / 2, 0, zPos], rowScale });
         cumX += w + GH3;
       });
 
@@ -342,7 +378,7 @@ function KeyboardScene({ onHover, introRotY }: { onHover: (k: K | null) => void;
   const CASE_TOP  = 0.10;
 
   return (
-    <group position={[3.0, 0, 0]}>
+    <group position={[2.6, 0, 0]}>
     <group ref={groupRef}>
       {/* Keyboard body / case — top surface at CASE_TOP, extends deep below */}
       <RoundedBox
@@ -365,8 +401,8 @@ function KeyboardScene({ onHover, introRotY }: { onHover: (k: K | null) => void;
       </RoundedBox>
 
       {/* All keys */}
-      {keyPositions.map(({ def, pos }, i) => (
-        <Key3D key={i} def={def} pos={pos} onHover={onHover} />
+      {keyPositions.map(({ def, pos, rowScale }, i) => (
+        <Key3D key={i} def={def} pos={pos} rowScale={rowScale} onHover={onHover} />
       ))}
     </group>
     </group>
@@ -409,7 +445,7 @@ export default function MechanicalKeyboard3D({ onHover, introRotY }: Props) {
       }}
     >
       <Canvas
-        camera={{ position: [0, 7, 13], fov: 50 }}
+        camera={{ position: [0, 7, 13], fov: 62 }}
         gl={{ alpha: true, antialias: true }}
         style={{ background: "transparent", width: "100%", height: "100%", pointerEvents: "auto" }}
         onCreated={({ camera }) => camera.lookAt(0, 0.3, -0.5)}

@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "framer-motion";
 import { FiArrowRight } from "react-icons/fi";
 import { basePath } from "@/lib/basePath";
+import { useMediaQuery } from "@/lib/useMediaQuery";
 
 const Lanyard = dynamic(() => import("@/components/Lanyard"), { ssr: false });
 
@@ -18,6 +19,7 @@ const SPECS = [
 export default function IntroGate({ children }: { children: React.ReactNode }) {
   const [entered, setEntered] = useState(false);
   const [booting, setBooting] = useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   useEffect(() => {
     const html = document.documentElement;
@@ -128,7 +130,7 @@ export default function IntroGate({ children }: { children: React.ReactNode }) {
                 maskImage: "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)",
               }}
             >
-              {!booting && (
+              {isDesktop && !booting && (
                 <Lanyard
                   frontImage={`${basePath}/images/ripat.png`}
                   imageFit="cover"

@@ -1,12 +1,23 @@
 "use client";
 
-import { useRef, useLayoutEffect } from "react";
+import { useRef, useLayoutEffect, useState } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence, type MotionValue } from "framer-motion";
 import { FiChevronDown } from "react-icons/fi";
 import { timelineData } from "@/lib/data";
 
-const TRAVEL_PX = 150;
+// Scroll distance dedicated to each entry — higher = slower pace, more
+// scrolling required to move from one node to the next.
+const VH_PER_ENTRY = 180;
+
+// Every node's position, on-screen size, and opacity all come from this one
+// constant plus the live scroll progress — there's exactly one formula, so
+// the rail line and the dots can never drift out of sync with each other.
+// Raising it is literally "space the nodes out more."
+const NODE_GAP_PCT = 34;
+
+const FALLOFF_SCALE   = 0.3;
+const FALLOFF_OPACITY = 0.55;
 
 function Corner({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) {
   const size = 22;
@@ -25,86 +36,102 @@ function Corner({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) {
   return <div style={map[pos]} />;
 }
 
-// Signed distance (in "segments") from entry i's own focus point — 0 when centered,
-// growing as scroll carries it away. Pinned at 0 before the first entry's turn and
-// after the last entry's turn, so those two never drift out of focus.
-function localProgress(p: number, i: number, N: number) {
-  const segCenter = (i + 0.5) / N;
-  let lp = (p - segCenter) * N;
-  if (i === 0 && lp < 0) lp = 0;
-  if (i === N - 1 && lp > 0) lp = 0;
-  return lp;
-}
-
-function TravelingEntry({
-  t, i, N, progress,
+// One node's mark on the rail. Its vertical slot is `i * NODE_GAP_PCT` away
+// from center — the exact same formula the rail's traveled/remaining split
+// uses — so every dot sits literally where the line says it should, at
+// whatever speed the scroll math implies, no separately-tuned rate to drift
+// out of step with it. Distance from center also drives its own scale/opacity
+// falloff, so the dot nearest the active story reads as biggest and brightest.
+function RailDot({
+  t, i, N, progress, activeIndex,
 }: {
   t: (typeof timelineData)[number];
   i: number;
   N: number;
   progress: MotionValue<number>;
+  activeIndex: number;
 }) {
-  const side = i % 2 === 0 ? "right" : "left";
-  const sideOffset = side === "left" ? { right: "56%" } : { left: "56%" };
-  const images = "images" in t ? t.images : undefined;
+  const denom = N - 1 || 1;
+  const top = useTransform(progress, (p) => `${50 + (i - p * denom) * NODE_GAP_PCT}%`);
+  const scale = useTransform(progress, (p) => Math.max(0.4, 1 - Math.abs(i - p * denom) * FALLOFF_SCALE));
+  const opacity = useTransform(progress, (p) => Math.max(0, 1 - Math.abs(i - p * denom) * FALLOFF_OPACITY));
 
-  const lp = useTransform(progress, (p) => localProgress(p, i, N));
-  const y = useTransform(lp, (v) => -v * TRAVEL_PX);
-  const opacity = useTransform(lp, (v) => {
-    const a = Math.abs(v);
-    if (a < 0.35) return 1;
-    if (a > 1.1) return 0;
-    return 1 - (a - 0.35) / 0.75;
-  });
-  const dotScale = useTransform(opacity, (o) => 0.65 + o * 0.75);
+  const isActive = i === activeIndex;
+  const isPassed = i < activeIndex;
+  const size = isActive ? 30 : isPassed ? 18 : 15;
 
   return (
-    <div className="absolute left-0 right-0 top-1/2" style={{ transform: "translateY(-50%)" }}>
-      <motion.div className="relative" style={{ y, opacity }}>
-        <motion.div
-          className="absolute left-1/2 top-0"
-          style={{
-            translateX: "-50%", translateY: "-50%", scale: dotScale,
-            width: 17, height: 17, border: `3px solid ${t.color}`, background: t.color,
-          }}
-        />
-        <div
-          className="absolute top-0"
-          style={{
-            transform: "translateY(-50%)",
-            ...sideOffset,
-            width: "46%",
-            minWidth: 300,
-            textAlign: side === "left" ? "right" : "left",
-          }}
-        >
-          <span className="mono" style={{ fontSize: 15, color: t.color, fontWeight: 700, letterSpacing: "0.15em" }}>
-            {t.year}
-          </span>
-          <h4 style={{ fontSize: 26, fontWeight: 800, color: "var(--tx)", margin: "8px 0 10px", lineHeight: 1.15 }}>
-            {t.title}
-          </h4>
-          <p style={{ fontSize: 15, color: "var(--muted)", lineHeight: 1.6 }}>{t.desc}</p>
+    <motion.div
+      className="absolute rounded-full"
+      style={{
+        left: "50%", top, x: "-50%", y: "-50%", scale, opacity,
+        width: size, height: size,
+        background: isActive || isPassed ? t.color : "var(--bg)",
+        border: `3px solid ${t.color}`,
+        boxShadow: isActive ? `0 0 0 7px ${t.color}22, 0 0 26px ${t.color}66` : "none",
+        zIndex: isActive ? 3 : 1,
+        transition: "background 0.3s ease, box-shadow 0.3s ease",
+      }}
+    />
+  );
+}
 
-          {images && images.length > 0 && (
-            <div
-              className="flex gap-2.5 mt-4"
-              style={{ justifyContent: side === "left" ? "flex-end" : "flex-start" }}
-            >
-              {images.map((src) => (
-                <div
-                  key={src}
-                  className="relative shrink-0 overflow-hidden rounded-sm"
-                  style={{ width: 120, height: 76, border: "1px solid rgba(0,0,0,0.1)" }}
-                >
-                  <Image src={src} alt="" fill className="object-cover" sizes="120px" />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </motion.div>
-    </div>
+// The ONLY story on screen at a time — plain, bare text (no card box around
+// it) pinned dead-center so it stays legible, swiping up-and-in as it
+// arrives and up-and-out as it leaves.
+function ActiveEntry({
+  t, side,
+}: {
+  t: (typeof timelineData)[number];
+  side: "left" | "right";
+}) {
+  const sideOffset = side === "left" ? { right: "54%" } : { left: "54%" };
+  const images = "images" in t ? t.images : undefined;
+
+  return (
+    <motion.div
+      className="absolute inset-0"
+      initial={{ opacity: 0, y: 46 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -46 }}
+      transition={{ type: "spring", stiffness: 380, damping: 34 }}
+    >
+      <div
+        className="absolute top-1/2"
+        style={{
+          transform: "translateY(-50%)",
+          ...sideOffset,
+          width: "48%",
+          minWidth: 360,
+          textAlign: side === "left" ? "right" : "left",
+        }}
+      >
+        <span className="mono" style={{ fontSize: 18, color: t.color, fontWeight: 700, letterSpacing: "0.15em" }}>
+          {t.year}
+        </span>
+        <h4 style={{ fontSize: 38, fontWeight: 800, color: "var(--tx)", margin: "12px 0 14px", lineHeight: 1.12 }}>
+          {t.title}
+        </h4>
+        <p style={{ fontSize: 18, color: "var(--muted)", lineHeight: 1.7 }}>{t.desc}</p>
+
+        {images && images.length > 0 && (
+          <div
+            className="flex gap-4 mt-5"
+            style={{ justifyContent: side === "left" ? "flex-end" : "flex-start" }}
+          >
+            {images.map((src) => (
+              <div
+                key={src}
+                className="relative shrink-0 overflow-hidden rounded-sm"
+                style={{ width: 260, height: 164, border: "1px solid rgba(0,0,0,0.1)" }}
+              >
+                <Image src={src} alt="" fill className="object-cover" sizes="260px" />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 }
 
@@ -113,6 +140,7 @@ export default function JourneyTimeline() {
   const outerTopRef = useRef(0);
   const outerHRef = useRef(0);
   const N = timelineData.length;
+  const denom = N - 1 || 1;
 
   useLayoutEffect(() => {
     const measure = () => {
@@ -138,38 +166,72 @@ export default function JourneyTimeline() {
 
   const hintOpacity = useTransform(progress, [0, 0.9, 1], [1, 1, 0]);
 
+  // The traveled (colored) segment runs from center up to node 0's own
+  // current position — clamped to the rail's top edge once that position
+  // scrolls out of view, so the line reads as endless mid-journey but still
+  // visibly starts at nothing when node 0 is the one sitting at center.
+  // Same formula and same NODE_GAP_PCT as RailDot, so it can't fall out of
+  // step with where the dots actually are.
+  const traveledTop = useTransform(progress, (p) => Math.max(0, 50 - p * denom * NODE_GAP_PCT));
+  const traveledHeight = useTransform(traveledTop, (v) => `${50 - v}%`);
+  const traveledTopPct = useTransform(traveledTop, (v) => `${v}%`);
+
+  const remainingBottom = useTransform(progress, (p) => Math.min(100, 50 + (denom - p * denom) * NODE_GAP_PCT));
+  const remainingHeight = useTransform(remainingBottom, (v) => `${v - 50}%`);
+
+  // Which entry is "arrived" — rounds to the nearest of N even slots along
+  // progress, switching at the exact midpoint between two neighbors, so only
+  // one entry's story is ever shown at once.
+  const [activeIndex, setActiveIndex] = useState(0);
+  useMotionValueEvent(progress, "change", (p) => {
+    const idx = Math.min(N - 1, Math.max(0, Math.round(p * denom)));
+    setActiveIndex(idx);
+  });
+  const active = timelineData[activeIndex];
+  const activeSide = activeIndex % 2 === 0 ? "right" : "left";
+
   return (
     <section className="relative z-2 py-14 px-3 sm:px-5">
     <div className="max-w-7xl mx-auto">
 
     {/* ── Desktop: scroll-driven "focus" timeline ─────────────────────── */}
-    <div ref={outerRef} className="hidden md:block" style={{ height: `${(N + 1) * 100}vh`, position: "relative" }}>
-      <div className="sticky flex flex-col" style={{ top: 60, height: "min(90vh, 760px)" }}>
+    <div ref={outerRef} className="hidden md:block" style={{ height: `${(N + 1) * VH_PER_ENTRY}vh`, position: "relative" }}>
+      <div className="sticky flex flex-col" style={{ top: 0, height: "100vh" }}>
         <Corner pos="tl" />
         <Corner pos="br" />
 
-        <div className="flex items-center justify-between mb-4 px-2 pt-1 shrink-0">
+        <div className="flex items-center justify-between mb-4 px-2 pt-8 shrink-0">
           <p className="mono text-sm" style={{ color: "var(--em)", letterSpacing: "0.1em" }}>
-            // my_journey[]
+            {"// my_journey[]"}
           </p>
           <p className="mono" style={{ fontSize: 12, color: "rgba(0,0,0,0.3)", letterSpacing: "0.1em" }}>
             {String(N).padStart(2, "0")} ENTRIES
           </p>
         </div>
 
-        {/* Focus stage — centered line; only the active node + entry sit in focus,
-            the rest travel past above/below as you scroll. */}
+        {/* Rail — dots and line both driven by the same progress → position
+            formula, so they move at the same literal rate and never drift. */}
         <div className="relative flex-1 overflow-hidden">
-          <div style={{ position: "absolute", left: "50%", top: "10%", bottom: "10%", width: 2, background: "rgba(0,0,0,0.12)", transform: "translateX(-50%)" }} />
           <motion.div
             style={{
-              position: "absolute", left: "50%", top: "10%", bottom: "10%", width: 2,
-              background: "var(--em)", scaleY: progress, transformOrigin: "top", transform: "translateX(-50%)",
+              position: "absolute", left: "50%", top: traveledTopPct, height: traveledHeight, width: 2,
+              background: "var(--em)", transform: "translateX(-50%)",
             }}
           />
+          <motion.div
+            style={{
+              position: "absolute", left: "50%", top: "50%", height: remainingHeight, width: 2,
+              background: "rgba(0,0,0,0.12)", transform: "translateX(-50%)",
+            }}
+          />
+
           {timelineData.map((t, i) => (
-            <TravelingEntry key={t.year} t={t} i={i} N={N} progress={progress} />
+            <RailDot key={t.year} t={t} i={i} N={N} progress={progress} activeIndex={activeIndex} />
           ))}
+
+          <AnimatePresence>
+            <ActiveEntry key={active.year} t={active} side={activeSide} />
+          </AnimatePresence>
         </div>
 
         {/* Scroll hint */}
@@ -193,7 +255,7 @@ export default function JourneyTimeline() {
     <div className="md:hidden">
       <div className="flex items-center justify-between mb-6">
         <p className="mono text-sm" style={{ color: "var(--em)", letterSpacing: "0.1em" }}>
-          // my_journey[]
+          {"// my_journey[]"}
         </p>
         <p className="mono" style={{ fontSize: 11, color: "rgba(0,0,0,0.3)", letterSpacing: "0.1em" }}>
           {String(N).padStart(2, "0")} ENTRIES
@@ -221,23 +283,23 @@ export default function JourneyTimeline() {
                   border: `3px solid ${t.color}`, background: "var(--bg)",
                 }}
               />
-              <span className="mono" style={{ fontSize: 13, color: t.color, fontWeight: 700, letterSpacing: "0.1em" }}>
+              <span className="mono" style={{ fontSize: 15, color: t.color, fontWeight: 700, letterSpacing: "0.1em" }}>
                 {t.year}
               </span>
-              <h4 style={{ fontSize: 19, fontWeight: 800, color: "var(--tx)", margin: "5px 0 7px", lineHeight: 1.2 }}>
+              <h4 style={{ fontSize: 24, fontWeight: 800, color: "var(--tx)", margin: "7px 0 9px", lineHeight: 1.2 }}>
                 {t.title}
               </h4>
-              <p style={{ fontSize: 14, color: "var(--muted)", lineHeight: 1.55 }}>{t.desc}</p>
+              <p style={{ fontSize: 16, color: "var(--muted)", lineHeight: 1.6 }}>{t.desc}</p>
 
               {images && images.length > 0 && (
-                <div className="flex gap-2 mt-3 flex-wrap">
+                <div className="flex gap-3 mt-4 flex-wrap">
                   {images.map((src) => (
                     <div
                       key={src}
                       className="relative shrink-0 overflow-hidden rounded-sm"
-                      style={{ width: 108, height: 68, border: "1px solid rgba(0,0,0,0.1)" }}
+                      style={{ width: 150, height: 94, border: "1px solid rgba(0,0,0,0.1)" }}
                     >
-                      <Image src={src} alt="" fill className="object-cover" sizes="108px" />
+                      <Image src={src} alt="" fill className="object-cover" sizes="150px" />
                     </div>
                   ))}
                 </div>
