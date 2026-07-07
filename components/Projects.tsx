@@ -1,12 +1,14 @@
 "use client";
 
-import { useRef, useLayoutEffect, useState } from "react";
+import { useRef, useLayoutEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from "framer-motion";
 import { FiArrowUpRight, FiGithub, FiArrowRight } from "react-icons/fi";
 import { projects, getSkill, socialLinks, type Project } from "@/lib/data";
 import ProjectCardDeck from "@/components/ProjectCardDeck";
+import { getLenisInstance } from "@/lib/lenis";
 
 const VH_PER_CARD = 140; // scroll distance dedicated to each project — higher = slower pace
 
@@ -78,11 +80,34 @@ function MobileProjectCard({ project, i }: { project: Project; i: number }) {
 
 // ── Projects section ───────────────────────────────────────────────────────────
 export default function Projects() {
+  const router      = useRouter();
   const outerRef    = useRef<HTMLDivElement>(null);
   const outerTopRef = useRef(0);
   const outerHRef   = useRef(0);
   const N = projects.length;
   const sectionH = `${(N + 1) * VH_PER_CARD}vh`;
+
+  // The info panel sits on top of (and blocks clicks into) the pile of past
+  // cards behind it — fade it out of the way whenever the cursor drifts
+  // toward that left-hand zone, so the pile stays reachable.
+  const [hoverPileZone, setHoverPileZone] = useState(false);
+  const handleArenaMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    setHoverPileZone(e.clientX - e.currentTarget.getBoundingClientRect().left < 520);
+  };
+
+  // Clicking a piled (already-passed) card scrolls the section back to bring
+  // that project into focus at center first, then hands off to its case
+  // study — instead of jumping straight there from a small, off-to-the-side card.
+  const focusAndGo = useCallback((index: number, href: string) => {
+    const maxScroll = outerHRef.current - window.innerHeight;
+    const lenis = getLenisInstance();
+    if (lenis && maxScroll > 0) {
+      const targetY = outerTopRef.current + ((index + 0.5) / N) * maxScroll;
+      lenis.scrollTo(targetY, { duration: 1.1, onComplete: () => router.push(href) });
+    } else {
+      router.push(href);
+    }
+  }, [N, router]);
 
   // Measure once (and on resize) — refs read by both the scroll handler and progress transform
   useLayoutEffect(() => {
@@ -176,12 +201,16 @@ export default function Projects() {
           </motion.div>
 
           {/* Card arena — info panel on the left, the Atropos card deck sweeping through the rest */}
-          <div style={{ position: "relative", height: "calc(100vh - 156px)", overflow: "hidden" }}>
+          <div
+            style={{ position: "relative", height: "calc(100vh - 156px)", overflow: "hidden" }}
+            onMouseMove={handleArenaMouseMove}
+            onMouseLeave={() => setHoverPileZone(false)}
+          >
             <AnimatePresence mode="wait">
               <motion.div
                 key={active.slug}
                 initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={{ opacity: hoverPileZone ? 0.05 : 1, y: 0 }}
                 exit={{ opacity: 0, y: -14 }}
                 transition={{ duration: 0.35, ease: "easeOut" }}
                 style={{
@@ -191,6 +220,7 @@ export default function Projects() {
                   height: "100%",
                   width: 480,
                   zIndex: 5,
+                  pointerEvents: hoverPileZone ? "none" : "auto",
                   background: "linear-gradient(to right, rgba(247,247,244,0.96) 0%, rgba(247,247,244,0.9) 38%, rgba(247,247,244,0.5) 68%, transparent 100%)",
                   display: "flex",
                   flexDirection: "column",
@@ -251,7 +281,7 @@ export default function Projects() {
             {/* Atropos project cards: a stack waits on the right, the active one
                 sweeps to center on hover-tilt, then joins the pile on the left —
                 all riding the same horizontal line as the info panel beside them. */}
-            <ProjectCardDeck projects={projects} activeIndex={activeIndex} sweep={sweep} />
+            <ProjectCardDeck projects={projects} activeIndex={activeIndex} sweep={sweep} onSelectPast={focusAndGo} />
           </div>
 
           {/* Progress bar */}

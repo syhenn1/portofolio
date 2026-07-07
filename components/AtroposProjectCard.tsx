@@ -11,12 +11,16 @@ interface Props {
   project: Project;
   href?: string;
   interactive?: boolean;
+  // When set, a plain left-click hands off to this instead of navigating
+  // immediately — used to scroll-to-focus a pile card's project before
+  // moving on to its case study. Modified clicks (new tab, etc.) still work.
+  onNavigate?: () => void;
 }
 
 // A single project's card — the image lives on Atropos's own parallax layers
 // (background pulls back slightly, rim/text/arrow pop forward) so tilting on
 // hover reads as genuine depth rather than a flat image reacting to CSS.
-export default function AtroposProjectCard({ project, href, interactive = true }: Props) {
+export default function AtroposProjectCard({ project, href, interactive = true, onNavigate }: Props) {
   const card = (
     <Atropos
       className="atropos-project"
@@ -47,7 +51,17 @@ export default function AtroposProjectCard({ project, href, interactive = true }
   if (!href) return card;
 
   return (
-    <Link href={href} className="atropos-project-link" aria-label={project.title}>
+    <Link
+      href={href}
+      className="atropos-project-link"
+      aria-label={project.title}
+      onClick={(e) => {
+        if (!onNavigate) return;
+        if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        onNavigate();
+      }}
+    >
       {card}
     </Link>
   );

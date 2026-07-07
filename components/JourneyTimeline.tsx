@@ -85,7 +85,7 @@ function ActiveEntry({
   t: (typeof timelineData)[number];
   side: "left" | "right";
 }) {
-  const sideOffset = side === "left" ? { right: "54%" } : { left: "54%" };
+  const sideOffset = side === "left" ? { right: "58%" } : { left: "58%" };
   const images = "images" in t ? t.images : undefined;
 
   return (
@@ -101,31 +101,31 @@ function ActiveEntry({
         style={{
           transform: "translateY(-50%)",
           ...sideOffset,
-          width: "48%",
+          width: "40%",
           minWidth: 360,
           textAlign: side === "left" ? "right" : "left",
         }}
       >
-        <span className="mono" style={{ fontSize: 18, color: t.color, fontWeight: 700, letterSpacing: "0.15em" }}>
+        <span className="mono" style={{ fontSize: 16, color: t.color, fontWeight: 700, letterSpacing: "0.15em" }}>
           {t.year}
         </span>
-        <h4 style={{ fontSize: 38, fontWeight: 800, color: "var(--tx)", margin: "12px 0 14px", lineHeight: 1.12 }}>
+        <h4 style={{ fontSize: 34, fontWeight: 800, color: "var(--tx)", margin: "10px 0 12px", lineHeight: 1.15 }}>
           {t.title}
         </h4>
-        <p style={{ fontSize: 18, color: "var(--muted)", lineHeight: 1.7 }}>{t.desc}</p>
+        <p style={{ fontSize: 15, color: "var(--muted)", lineHeight: 1.65 }}>{t.desc}</p>
 
         {images && images.length > 0 && (
           <div
-            className="flex gap-4 mt-5"
+            className="flex flex-wrap gap-4 mt-5"
             style={{ justifyContent: side === "left" ? "flex-end" : "flex-start" }}
           >
             {images.map((src) => (
               <div
                 key={src}
                 className="relative shrink-0 overflow-hidden rounded-sm"
-                style={{ width: 260, height: 164, border: "1px solid rgba(0,0,0,0.1)" }}
+                style={{ width: 220, height: 138, border: "1px solid rgba(0,0,0,0.1)" }}
               >
-                <Image src={src} alt="" fill className="object-cover" sizes="260px" />
+                <Image src={src} alt="" fill className="object-cover" sizes="220px" />
               </div>
             ))}
           </div>
@@ -283,13 +283,13 @@ export default function JourneyTimeline() {
                   border: `3px solid ${t.color}`, background: "var(--bg)",
                 }}
               />
-              <span className="mono" style={{ fontSize: 15, color: t.color, fontWeight: 700, letterSpacing: "0.1em" }}>
+              <span className="mono" style={{ fontSize: 14, color: t.color, fontWeight: 700, letterSpacing: "0.1em" }}>
                 {t.year}
               </span>
-              <h4 style={{ fontSize: 24, fontWeight: 800, color: "var(--tx)", margin: "7px 0 9px", lineHeight: 1.2 }}>
+              <h4 style={{ fontSize: 21, fontWeight: 800, color: "var(--tx)", margin: "7px 0 9px", lineHeight: 1.2 }}>
                 {t.title}
               </h4>
-              <p style={{ fontSize: 16, color: "var(--muted)", lineHeight: 1.6 }}>{t.desc}</p>
+              <p style={{ fontSize: 14, color: "var(--muted)", lineHeight: 1.55 }}>{t.desc}</p>
 
               {images && images.length > 0 && (
                 <div className="flex gap-3 mt-4 flex-wrap">
@@ -297,9 +297,9 @@ export default function JourneyTimeline() {
                     <div
                       key={src}
                       className="relative shrink-0 overflow-hidden rounded-sm"
-                      style={{ width: 150, height: 94, border: "1px solid rgba(0,0,0,0.1)" }}
+                      style={{ width: 220, height: 138, border: "1px solid rgba(0,0,0,0.1)" }}
                     >
-                      <Image src={src} alt="" fill className="object-cover" sizes="150px" />
+                      <Image src={src} alt="" fill className="object-cover" sizes="220px" />
                     </div>
                   ))}
                 </div>

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
+import { setLenisInstance } from "@/lib/lenis";
 
 export default function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -10,6 +11,7 @@ export default function SmoothScrollProvider({ children }: { children: React.Rea
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     });
+    setLenisInstance(lenis);
 
     function raf(time: number) {
       lenis.raf(time);
@@ -17,7 +19,10 @@ export default function SmoothScrollProvider({ children }: { children: React.Rea
     }
     requestAnimationFrame(raf);
 
-    return () => lenis.destroy();
+    return () => {
+      setLenisInstance(null);
+      lenis.destroy();
+    };
   }, []);
 
   return <>{children}</>;

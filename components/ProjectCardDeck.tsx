@@ -11,8 +11,8 @@ import type { Project } from "@/lib/data";
 const P_ARRIVE   = 0.4;  // sweep progress where the incoming card reaches center
 const P_HOLD_END = 0.62; // sweep progress where it starts leaving center for the pile
 
-const CARD_W = 300;
-const CARD_H = 400;
+const CARD_W = 360;
+const CARD_H = 480;
 
 const ENTER_LEFT     = 122; // % — offscreen right, where a card's sweep begins
 const CENTER_LEFT    = 68;  // % — the resting/interactive spot, clear of the info panel
@@ -37,9 +37,13 @@ interface Props {
   projects: Project[];
   activeIndex: number;
   sweep: MotionValue<number>;
+  // Pile cards are "old news" sitting behind the info panel — clicking one
+  // scrolls the section back to bring that project into focus first, then
+  // hands off to the case-study page, instead of jumping there cold.
+  onSelectPast?: (index: number, href: string) => void;
 }
 
-export default function ProjectCardDeck({ projects, activeIndex, sweep }: Props) {
+export default function ProjectCardDeck({ projects, activeIndex, sweep, onSelectPast }: Props) {
   const active = projects[activeIndex];
   const pile = projects.slice(0, activeIndex);
   const queue = projects.slice(activeIndex + 1, activeIndex + 1 + QUEUE_VISIBLE);
@@ -100,7 +104,11 @@ export default function ProjectCardDeck({ projects, activeIndex, sweep }: Props)
               zIndex: slot.z,
             }}
           >
-            <AtroposProjectCard project={p} href={`/projects/${p.slug}`} />
+            <AtroposProjectCard
+              project={p}
+              href={`/projects/${p.slug}`}
+              onNavigate={onSelectPast ? () => onSelectPast(i, `/projects/${p.slug}`) : undefined}
+            />
           </div>
         );
       })}
