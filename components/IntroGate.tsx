@@ -50,7 +50,7 @@ export default function IntroGate({ children }: { children: React.ReactNode }) {
             key="intro-gate"
             className="fixed inset-0 z-[300] overflow-hidden"
             style={{ background: "#f7f7f4" }}
-            exit={{ opacity: 0, scale: 1.06, filter: "blur(10px)" }}
+            exit={{ opacity: 0, scale: 1.06 }}
             transition={{ duration: 0.65, ease: [0.76, 0, 0.24, 1] }}
           >
             {/* Schematic grid texture */}
