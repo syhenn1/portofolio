@@ -1,7 +1,11 @@
 "use client";
 
+import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import MobileHeroCard from "@/components/MobileHeroCard";
+import { MorphingHeroText } from "@/components/MorphingHeroText";
+import VariableFontText from "@/components/VariableFontText";
+import Waves from "@/components/Waves";
 import {
   SiReact,
   SiNextdotjs,
@@ -20,8 +24,9 @@ import {
   SiDart,
   SiSqlite,
 } from "react-icons/si";
-import { FiGithub, FiLinkedin, FiMail, FiArrowRight, FiMail as FiMailOutline } from "react-icons/fi";
+import { FiGithub, FiLinkedin, FiMail, FiArrowRight } from "react-icons/fi";
 import TiltButton from "@/components/TiltButton";
+import LearnMoreButton from "@/components/LearnMoreButton";
 import Typewriter from "@/components/Typewriter";
 import { socialLinks } from "@/lib/data";
 
@@ -72,6 +77,7 @@ const heroSocials = [
 const MARQUEE_TEXT = "FULLSTACK DEVELOPER · PROJECT MANAGER · FULLSTACK DEVELOPER · PROJECT MANAGER · FULLSTACK DEVELOPER · PROJECT MANAGER · FULLSTACK DEVELOPER · PROJECT MANAGER · FULLSTACK DEVELOPER · PROJECT MANAGER ·";
 
 export default function Hero() {
+  const heroRef = useRef<HTMLElement>(null);
   const { scrollY } = useScroll();
   const textX1 = useTransform(scrollY, [0, 600], [0, -800]);
   const textX2 = useTransform(scrollY, [0, 600], [-200, 600]);
@@ -81,15 +87,18 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-end overflow-hidden pt-24 lg:pt-0"
-      style={{ background: "linear-gradient(160deg, #f7f7f4 0%, #efefea 50%, #f7f7f4 100%)" }}
+      ref={heroRef}
+      className="relative min-h-screen flex items-end lg:items-start overflow-hidden pt-24 lg:pt-[10vh]"
+      style={{ background: "linear-gradient(160deg, var(--bg) 0%, var(--surf) 50%, var(--bg) 100%)" }}
     >
+      <Waves className="absolute inset-0 z-0 pointer-events-none" pointerSize={0} />
+
       {/* Lighting: main orange spotlight top-right */}
       <div
         className="absolute pointer-events-none z-0"
         style={{
           width: 900, height: 900, top: -300, right: -150,
-          background: "radial-gradient(circle, rgba(255,106,0,.16) 0%, rgba(255,106,0,.06) 40%, transparent 70%)",
+          background: "radial-gradient(circle, color-mix(in srgb, var(--em) 16%, transparent) 0%, color-mix(in srgb, var(--em) 6%, transparent) 40%, transparent 70%)",
           filter: "blur(80px)",
         }}
       />
@@ -123,12 +132,30 @@ export default function Hero() {
         className="absolute rounded-full pointer-events-none z-0"
         style={{
           width: 550, height: 550, top: -180, right: 100,
-          background: "radial-gradient(circle, rgba(255,106,0,.09), transparent 70%)",
+          background: "radial-gradient(circle, color-mix(in srgb, var(--em) 9%, transparent), transparent 70%)",
           filter: "blur(100px)",
         }}
         animate={{ x: [0, 40, 0], y: [0, 28, 0] }}
         transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
       />
+
+      {/* Premium RS watermark, right side (placeholder replacing the lanyard after start) */}
+      <div
+        className="absolute pointer-events-none select-none hidden lg:block z-0"
+        style={{
+          right: "10%",
+          top: "46%",
+          transform: "translateY(-50%)",
+          fontSize: "25vw",
+          fontWeight: 900,
+          color: "color-mix(in srgb, var(--tx) 1.8%, transparent)",
+          fontFamily: "var(--font-mono)",
+          letterSpacing: "-0.06em",
+          lineHeight: 1,
+        }}
+      >
+        RS
+      </div>
       <motion.div
         className="absolute rounded-full pointer-events-none z-0"
         style={{
@@ -161,8 +188,8 @@ export default function Hero() {
             <div
               className="w-11 h-11 rounded-2xl flex items-center justify-center"
               style={{
-                background: "rgba(0,0,0,0.03)",
-                border: "1px solid rgba(0,0,0,0.06)",
+                background: "var(--overlay)",
+                border: "1px solid var(--line)",
                 backdropFilter: "blur(6px)",
               }}
             >
@@ -177,7 +204,7 @@ export default function Hero() {
       {/* Status floating badge */}
       <motion.div
         className="absolute z-10 hidden md:flex items-center gap-2 glass rounded-sm px-4 py-2.5"
-        style={{ left: "8%", bottom: "13%", borderColor: "rgba(255,106,0,.3)", clipPath: "var(--cut)" }}
+        style={{ left: "8%", bottom: "13%", borderColor: "color-mix(in srgb, var(--em) 30%, transparent)", clipPath: "var(--cut)" }}
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: [0, -7, 0] }}
         transition={{
@@ -186,37 +213,45 @@ export default function Hero() {
         }}
       >
         <div className="relative w-2.5 h-2.5 shrink-0">
-          <div className="absolute inset-0 rounded-full bg-orange-400 pg" />
-          <div className="relative w-full h-full rounded-full bg-orange-400 z-10" />
+          <div className="absolute inset-0 rounded-full pg" style={{ background: "var(--em)" }} />
+          <div className="relative w-full h-full rounded-full z-10" style={{ background: "var(--em)" }} />
         </div>
-        <span className="mono text-xs font-semibold text-orange-400">open_to_work = true</span>
+        <span className="mono text-xs font-semibold" style={{ color: "var(--em)" }}>open_to_work = true</span>
       </motion.div>
 
       {/* Text content — pointer-events-none so it doesn't block the draggable
           lanyard canvas behind it; re-enabled on the actual interactive rows */}
-      <div className="relative z-30 w-full max-w-7xl mx-auto px-3 sm:px-5 pb-24 sm:pb-28 lg:pb-[9%] lg:px-8 pointer-events-none">
+      <div className="relative z-30 w-full max-w-7xl mx-auto px-3 sm:px-5 pb-24 sm:pb-28 lg:pb-0 lg:px-8 pointer-events-none">
         <motion.div
-          className="mono text-xs mb-5"
+          className="mono text-xs mb-5 pointer-events-auto"
           style={{ color: "var(--muted)" }}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <span style={{ color: "#c9c9c1" }}>const</span>
-          <span style={{ color: "var(--em2)" }}> developer</span>
-          <span style={{ color: "#c9c9c1" }}> = {"{"}</span>
+          <span style={{ color: "var(--muted)" }}>const</span>{" "}
+          <VariableFontText
+            containerRef={heroRef}
+            className="mono"
+            style={{ color: "var(--em2)" }}
+            fontVariationMapping={{
+              y: { name: "wght", min: 400, max: 800 },
+              x: { name: "wght", min: 400, max: 800 },
+            }}
+          >
+            developer
+          </VariableFontText>
+          <span style={{ color: "var(--muted)" }}> = {"{"}</span>
         </motion.div>
 
         <motion.h1
-          className="font-black leading-none mb-3"
+          className="font-black leading-none mb-3 pointer-events-auto"
           style={{ fontSize: "clamp(3rem, 9vw, 6.5rem)" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1 }}
         >
-          Rifat
-          <br />
-          <span className="gtx">Syahman</span>
+          <MorphingHeroText text={"Rifat\nSyahman"} hoverText={"Software\nDeveloper"} />
         </motion.h1>
 
         <motion.div
@@ -225,7 +260,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.25 }}
         >
-          <span style={{ color: "#6b6b66" }}>role:</span>
+          <span style={{ color: "var(--muted)" }}>role:</span>
           <Typewriter />
         </motion.div>
 
@@ -246,14 +281,11 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.45 }}
         >
-          <TiltButton href="#projects" className="btn-em">
+          <TiltButton href="#projects" className="btn-em" magnetic>
             View Projects
             <FiArrowRight size={16} />
           </TiltButton>
-          <TiltButton href="#contact" className="btn-ghost">
-            <FiMailOutline size={16} />
-            Get In Touch
-          </TiltButton>
+          <LearnMoreButton href="#contact">Get In Touch</LearnMoreButton>
         </motion.div>
 
         <motion.div
@@ -270,6 +302,7 @@ export default function Hero() {
               rel="noopener noreferrer"
               className="soc"
               aria-label={label}
+              data-magnetic=""
             >
               <Icon size={16} />
             </a>
@@ -278,7 +311,7 @@ export default function Hero() {
 
         <motion.div
           className="mono text-xs mt-5"
-          style={{ color: "#c9c9c1" }}
+          style={{ color: "var(--muted)" }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.65 }}
@@ -297,7 +330,7 @@ export default function Hero() {
               fontSize: "clamp(2.2rem, 5.5vw, 4.5rem)",
               fontWeight: 900,
               color: "transparent",
-              WebkitTextStroke: "1.5px rgba(255, 106, 0, 0.35)",
+              WebkitTextStroke: "1.5px color-mix(in srgb, var(--em) 35%, transparent)",
               letterSpacing: "0.06em",
               display: "block",
             }}
@@ -311,7 +344,7 @@ export default function Hero() {
               fontSize: "clamp(2.2rem, 5.5vw, 4.5rem)",
               fontWeight: 900,
               color: "transparent",
-              WebkitTextStroke: "1.5px rgba(255, 106, 0, 0.25)",
+              WebkitTextStroke: "1.5px color-mix(in srgb, var(--em) 25%, transparent)",
               letterSpacing: "0.06em",
               display: "block",
             }}
@@ -325,7 +358,7 @@ export default function Hero() {
               fontSize: "clamp(2.2rem, 5.5vw, 4.5rem)",
               fontWeight: 900,
               color: "transparent",
-              WebkitTextStroke: "1.5px rgba(255, 106, 0, 0.15)",
+              WebkitTextStroke: "1.5px color-mix(in srgb, var(--em) 15%, transparent)",
               letterSpacing: "0.06em",
               display: "block",
             }}
@@ -338,14 +371,14 @@ export default function Hero() {
       {/* Bottom edge fade into next section */}
       <div
         className="absolute bottom-0 left-0 right-0 pointer-events-none"
-        style={{ height: 200, zIndex: 25, background: "linear-gradient(to top, var(--bg) 0%, rgba(247,247,244,.85) 30%, transparent 100%)" }}
+        style={{ height: 200, zIndex: 25, background: "linear-gradient(to top, var(--bg) 0%, color-mix(in srgb, var(--bg) 85%, transparent) 30%, transparent 100%)" }}
       />
 
       {/* Scroll / Swipe hint */}
       <a
         href="#stats"
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2 swipe-hint"
-        style={{ color: "#c9c9c1" }}
+        style={{ color: "var(--muted)" }}
       >
         <span className="mono text-xs tracking-widest hidden sm:block" style={{ fontSize: "10px" }}>
           SCROLL

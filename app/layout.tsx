@@ -6,6 +6,7 @@ import WaveBackground from "@/components/WaveBackground";
 import ScrollProgress from "@/components/ScrollProgress";
 import BackToTop from "@/components/BackToTop";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
+import { MagneticCursor } from "@/components/MagneticCursor";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,16 +30,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${mono.variable} scroll-smooth`}>
+    <html lang="en" className={`${inter.variable} ${mono.variable} scroll-smooth`} suppressHydrationWarning>
       <body style={{ fontFamily: "var(--font-inter, Inter, sans-serif)" }}>
-        {/* Fixed-position elements live outside PageTransition to avoid being
-            trapped inside the motion.div containing block (CSS transform caveat) */}
-        <WaveBackground />
-        <ScrollProgress />
-        <BackToTop />
-        <SmoothScrollProvider>
-          <PageTransition>{children}</PageTransition>
-        </SmoothScrollProvider>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{if(localStorage.getItem('theme')==='amd'){document.documentElement.setAttribute('data-theme','amd');}}catch(e){}})();",
+          }}
+        />
+        <MagneticCursor cursorSize={22} magneticFactor={0.35} lerpAmount={0.55}>
+          {/* Fixed-position elements live outside PageTransition to avoid being
+              trapped inside the motion.div containing block (CSS transform caveat) */}
+          <WaveBackground />
+          <ScrollProgress />
+          <BackToTop />
+          <SmoothScrollProvider>
+            <PageTransition>{children}</PageTransition>
+          </SmoothScrollProvider>
+        </MagneticCursor>
       </body>
     </html>
   );

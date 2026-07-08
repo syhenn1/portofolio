@@ -17,6 +17,7 @@ export default function BackToTop() {
         <motion.button
           id="btt"
           aria-label="Back to top"
+          data-magnetic=""
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

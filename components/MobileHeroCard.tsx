@@ -16,7 +16,7 @@ export default function MobileHeroCard() {
         {/* Glow behind card */}
         <div
           className="absolute -inset-4 rounded-3xl blur-2xl"
-          style={{ background: "radial-gradient(circle, rgba(255,106,0,0.2) 0%, rgba(255,106,0,0.08) 50%, transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, color-mix(in srgb, var(--em) 20%, transparent) 0%, color-mix(in srgb, var(--em) 8%, transparent) 50%, transparent 70%)" }}
         />
 
         {/* Card */}
@@ -25,8 +25,8 @@ export default function MobileHeroCard() {
           style={{
             width: 180,
             height: 230,
-            border: "2px solid rgba(255,106,0,0.35)",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(255,106,0,0.15)",
+            border: "2px solid color-mix(in srgb, var(--em) 35%, transparent)",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 40px color-mix(in srgb, var(--em) 15%, transparent)",
           }}
           animate={{ y: [0, -8, 0], rotate: [2, -1, 2] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}

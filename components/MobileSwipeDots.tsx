@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useTheme } from "@/lib/theme";
 
 const SECTIONS = [
   { id: "hero", label: "Home" },
@@ -14,6 +15,9 @@ const SECTIONS = [
 
 export default function MobileSwipeDots() {
   const [active, setActive] = useState("hero");
+  const { theme } = useTheme();
+  const activeColor = theme === "amd" ? "#ff2f2f" : "#ff6a00";
+  const inactiveColor = theme === "amd" ? "rgba(255,255,255,0.18)" : "rgba(0,0,0,0.18)";
 
   useEffect(() => {
     const ratios: Record<string, number> = {};
@@ -57,8 +61,8 @@ export default function MobileSwipeDots() {
             title={label}
             animate={{
               height: isActive ? 22 : 6,
-              backgroundColor: isActive ? "#ff6a00" : "rgba(0,0,0,0.18)",
-              boxShadow: isActive ? "0 0 10px rgba(255,106,0,0.6)" : "none",
+              backgroundColor: isActive ? activeColor : inactiveColor,
+              boxShadow: isActive ? `0 0 10px ${activeColor}99` : "none",
             }}
             whileTap={{ scale: 0.75 }}
             transition={{ type: "spring", stiffness: 400, damping: 28 }}

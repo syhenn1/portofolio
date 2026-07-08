@@ -4,9 +4,10 @@ import { useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { FiArrowLeft, FiArrowRight, FiCheck, FiGithub, FiMail } from "react-icons/fi";
+import { FiArrowLeft, FiArrowRight, FiCheck, FiMail } from "react-icons/fi";
 import { getAdjacentProjects, getSkill, socialLinks, type Project } from "@/lib/data";
 import ImageLightbox from "@/components/ImageLightbox";
+import LearnMoreButton from "@/components/LearnMoreButton";
 
 export default function ProjectDetail({ project }: { project: Project }) {
   const { prev, next } = getAdjacentProjects(project.slug);
@@ -25,7 +26,7 @@ export default function ProjectDetail({ project }: { project: Project }) {
         <Image src={project.img} alt={project.title} fill className="object-cover object-top" priority />
         <div className="absolute inset-0" style={{ background: "linear-gradient(to top, var(--bg) 0%, rgba(10, 10, 10,.72) 38%, rgba(10, 10, 10,.1) 70%, transparent 100%)" }} />
         <div className="absolute inset-0" style={{ background: "linear-gradient(to right, rgba(0,0,0,.7) 0%, transparent 100%)" }} />
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 80%, rgba(255,106,0,.16) 0%, transparent 55%), linear-gradient(160deg, rgba(255,106,0,.08) 0%, transparent 45%)" }} />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 30% 80%, color-mix(in srgb, var(--em) 16%, transparent) 0%, transparent 55%), linear-gradient(160deg, color-mix(in srgb, var(--em) 8%, transparent) 0%, transparent 45%)" }} />
       </div>
 
       {/* Title block — scrolls over the sticky image */}
@@ -156,10 +157,9 @@ export default function ProjectDetail({ project }: { project: Project }) {
                 </div>
               </div>
 
-              <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="btn-ghost w-full justify-center">
-                <FiGithub size={16} />
+              <LearnMoreButton href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="w-full justify-center">
                 View GitHub Profile
-              </a>
+              </LearnMoreButton>
               <Link href="/#contact" className="btn-em w-full justify-center">
                 <FiMail size={16} />
                 Discuss a Project
@@ -182,7 +182,7 @@ export default function ProjectDetail({ project }: { project: Project }) {
                     key={i}
                     onClick={() => setLightboxIdx(i)}
                     className="relative group rounded-sm overflow-hidden cursor-zoom-in"
-                    style={{ border: "1px solid rgba(0,0,0,0.1)" }}
+                    style={{ border: "1px solid var(--line)" }}
                   >
                     <Image
                       src={src}

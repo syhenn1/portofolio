@@ -1,0 +1,221 @@
+@keyframes decokbSway {
+  0%, 100% { transform: perspective(1800px) rotateX(40deg) rotateZ(40deg); }
+  50%      { transform: perspective(1800px) rotateX(44deg) rotateZ(44deg); }
+}
+
+.container {
+  position: relative;
+  height: 100%;
+}
+
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 6%;
+  height: 100%;
+  min-height: 420px;
+}
+
+.keyboard {
+  --size: min(64vh, 56vw);
+  --btn-height: calc(var(--size) * .025);
+  /* Case: warm cream/beige theme matching the portfolio background */
+  --case-bg: hsl(38deg, 18%, 85%);
+  /* Keycap: clean warm white tone */
+  --cap-bg: hsl(38deg, 10%, 96%);
+  display: flex;
+  gap: 2.5em;
+  font-size: calc(var(--size) * .0175);
+  background-color: var(--case-bg);
+  padding: 1.2em;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: decokbSway 10s ease-in-out infinite;
+  transition: background-color 300ms ease-out, box-shadow 300ms ease-out;
+  /* Contact shadow grounding the case, plus a tighter shadow for its own
+     edge depth — without these it reads as a flat, cut-out sticker. */
+  box-shadow:
+    0 60px 90px -30px rgba(0, 0, 0, 0.4),
+    0 20px 35px -15px rgba(0, 0, 0, 0.3);
+}
+
+/* Dark case + keycaps under AMD mode */
+:global([data-theme="amd"]) .keyboard {
+  --case-bg: hsl(0deg, 0%, 11%);
+  --cap-bg: hsl(0deg, 0%, 17%);
+  box-shadow:
+    0 60px 90px -30px rgba(0, 0, 0, 0.7),
+    0 20px 35px -15px rgba(0, 0, 0, 0.55),
+    0 0 40px -10px color-mix(in srgb, var(--em) 25%, transparent);
+}
+
+.keyboard::before,
+.keyboard::after {
+  content: "";
+  position: absolute;
+  transition: 100ms ease-out;
+}
+.keyboard::before {
+  width: 100%;
+  height: calc(var(--btn-height) * 1.5);
+  top: 100%;
+  left: 0;
+  background-color: color-mix(in srgb, black 12%, var(--case-bg));
+  transform-origin: top center;
+  transform: rotateX(-90deg);
+}
+.keyboard::after {
+  width: calc(var(--btn-height) * 1.5);
+  height: 100%;
+  top: 0;
+  left: 100%;
+  background-color: color-mix(in srgb, white 6%, var(--case-bg));
+  transform-origin: center left;
+  transform: rotateY(90deg);
+}
+.keyboard * {
+  transform-style: preserve-3d;
+}
+
+.key {
+  margin: 0;
+  color: hsl(40deg, 12%, 35%);
+  font-weight: bold;
+  height: calc(var(--size) * .05);
+  min-width: calc(var(--size) * .045);
+  text-align: center;
+  padding: .25em;
+  --bg-color: var(--cap-bg);
+  background-color: var(--bg-color);
+  position: relative;
+  transform: translateZ(var(--btn-height));
+  transition: transform 100ms ease-out, background-color 300ms ease-out, --bg-color 300ms ease-out, box-shadow 300ms ease-out;
+  flex-grow: 1;
+  font-size: .78em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  cursor: default;
+  /* Bevel: a bright top-left highlight and a soft cast shadow, so each cap
+     reads as a raised, lit object instead of a flat color swatch. */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 1px 0 0 rgba(255, 255, 255, 0.25),
+    0 3px 4px rgba(0, 0, 0, 0.12);
+}
+.key:hover {
+  transform: translateZ(calc(var(--btn-height) * .5));
+}
+
+:global([data-theme="amd"]) .key {
+  color: hsl(0deg, 0%, 82%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 1px 0 0 rgba(255, 255, 255, 0.06),
+    0 3px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Tech keys — icon tinted by its own category color, with a glow on hover
+   so it reads as interactive; every other key stays neutral. */
+.key[data-tech] {
+  color: var(--tech-color);
+  cursor: pointer;
+}
+.key[data-tech]:hover {
+  text-shadow: 0 0 .4em var(--tech-color);
+  --bg-color: color-mix(in srgb, var(--tech-color) 20%, var(--cap-bg));
+}
+.techIcon {
+  filter: drop-shadow(0 0 .12em color-mix(in srgb, var(--tech-color) 60%, transparent));
+}
+.key::before,
+.key::after {
+  content: "";
+  position: absolute;
+  transition: transform 100ms ease-out, background-color 300ms ease-out, --bg-color 300ms ease-out;
+}
+.key::before {
+  height: calc(var(--btn-height) * 1.15);
+  width: 116%;
+  top: 100%;
+  left: -8%;
+  background-color: color-mix(in srgb, black 8%, var(--bg-color));
+  transform-origin: top center;
+  transform: rotateX(-70deg);
+  clip-path: polygon(7% 0%, 93% 0%, 100% 100%, 0% 100%);
+}
+.key::after {
+  height: 116%;
+  width: calc(var(--btn-height) * 1.15);
+  top: -8%;
+  left: 100%;
+  background-color: color-mix(in srgb, white 6%, var(--bg-color));
+  transform-origin: center left;
+  transform: rotateY(70deg);
+  clip-path: polygon(0% 7%, 100% 0%, 100% 100%, 0% 93%);
+}
+
+.keySmall {
+  font-size: .62em;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+}
+.left .top {
+  display: flex;
+  gap: 3em;
+}
+.fnKeys {
+  display: flex;
+  gap: 1.2em;
+}
+.group {
+  display: flex;
+  gap: .4em;
+}
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: .8em;
+}
+.row {
+  display: flex;
+  gap: .4em;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.right .group {
+  display: flex;
+  flex-direction: column;
+  gap: .8em;
+}
+.right .row {
+  display: flex;
+  gap: .4em;
+}
+.right .top {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+}
+
+/* Arrow cluster: ▲ centered above ◀▼▶ — needs flex-direction: column to
+   actually stack the two rows; it was previously the flex default (row),
+   which is what made the down-arrow row render beside the up arrow instead
+   of underneath it. */
+.arrows {
+  display: flex;
+  flex-direction: column;
+  gap: .4em;
+}

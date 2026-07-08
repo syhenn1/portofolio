@@ -18,11 +18,11 @@ type CalendarData = {
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const LEVEL_COLORS = [
-  "rgba(0,0,0,0.055)",
-  "rgba(255,106,0,0.3)",
-  "rgba(255,106,0,0.5)",
-  "rgba(255,106,0,0.72)",
-  "rgba(255,106,0,0.95)",
+  "var(--overlay)",
+  "color-mix(in srgb, var(--em) 30%, transparent)",
+  "color-mix(in srgb, var(--em) 50%, transparent)",
+  "color-mix(in srgb, var(--em) 72%, transparent)",
+  "color-mix(in srgb, var(--em) 95%, transparent)",
 ];
 
 function buildCalendar(contributions: { date: string; count: number; level: number }[]): CalendarData {
@@ -122,7 +122,7 @@ export default function GitHubCalendar({ username }: { username: string }) {
                 key={`${m.label}-${i}`}
                 x={m.col * step + 30}
                 y={10}
-                fill="#8a8a86"
+                fill="var(--muted)"
                 fontSize={10}
                 fontFamily="var(--font-mono, 'JetBrains Mono', monospace)"
               >
@@ -157,20 +157,20 @@ export default function GitHubCalendar({ username }: { username: string }) {
         <div className="flex items-center justify-center py-8">
           <div
             className="w-5 h-5 border-2 rounded-full animate-spin"
-            style={{ borderColor: "rgba(255,106,0,0.3)", borderTopColor: "var(--em)" }}
+            style={{ borderColor: "color-mix(in srgb, var(--em) 30%, transparent)", borderTopColor: "var(--em)" }}
           />
         </div>
       )}
 
       <div className="flex items-center justify-end gap-2 mt-2">
-        <span className="mono text-[10px]" style={{ color: "#8a8a86" }}>Less</span>
+        <span className="mono text-[10px]" style={{ color: "var(--muted)" }}>Less</span>
         {LEVEL_COLORS.map((color, i) => (
           <div
             key={i}
             style={{ width: cellSize, height: cellSize, borderRadius: 2.5, background: color }}
           />
         ))}
-        <span className="mono text-[10px]" style={{ color: "#8a8a86" }}>More</span>
+        <span className="mono text-[10px]" style={{ color: "var(--muted)" }}>More</span>
       </div>
     </div>
   );

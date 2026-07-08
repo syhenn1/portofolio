@@ -33,6 +33,11 @@ import { FiFolder, FiCode, FiBookOpen } from "react-icons/fi";
 import type { IconType } from "react-icons";
 import { basePath } from "@/lib/basePath";
 
+// Shared scroll pacing for every scroll-jacked "one item per screenful"
+// section (JourneyTimeline, Projects) — same constant so their per-item
+// scroll speed always matches; tune once here, not separately per section.
+export const SCROLL_VH_PER_ITEM = 140;
+
 export const statsData = [
   { n: "5+", label: "Projects Built", Icon: FiFolder },
   { n: "5+", label: "Languages", Icon: FiCode },

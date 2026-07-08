@@ -27,6 +27,7 @@ interface Props {
   backImage?: string | null;
   imageFit?: 'cover' | 'contain';
   lanyardWidth?: number;
+  anchorX?: number;
 }
 
 export default function Lanyard({
@@ -38,16 +39,31 @@ export default function Lanyard({
   backImage = null,
   imageFit = 'cover',
   lanyardWidth = 1.2,
+  anchorX: anchorXOverride,
 }: Props) {
   const [isMobile, setIsMobile] = useState<boolean>(
     () => typeof window !== 'undefined' && window.innerWidth < 768
   );
+  const [anchorX, setAnchorX] = useState<number>(() => {
+    if (anchorXOverride !== undefined) return anchorXOverride;
+    if (typeof window === 'undefined') return 2.2;
+    const aspect = window.innerWidth / window.innerHeight;
+    return Math.min(2.2, 2.2 * (aspect / 1.77));
+  });
 
   useEffect(() => {
-    const handle = () => setIsMobile(window.innerWidth < 768);
+    const handle = () => {
+      setIsMobile(window.innerWidth < 768);
+      if (anchorXOverride !== undefined) {
+        setAnchorX(anchorXOverride);
+      } else {
+        const aspect = window.innerWidth / window.innerHeight;
+        setAnchorX(Math.min(2.2, 2.2 * (aspect / 1.77)));
+      }
+    };
     window.addEventListener('resize', handle);
     return () => window.removeEventListener('resize', handle);
-  }, []);
+  }, [anchorXOverride]);
 
   return (
     <div className="relative z-0 w-full h-full pointer-events-none">
@@ -69,6 +85,7 @@ export default function Lanyard({
               backImage={backImage}
               imageFit={imageFit}
               lanyardWidth={lanyardWidth}
+              anchorX={anchorX}
             />
           </Physics>
         </Suspense>
@@ -90,9 +107,9 @@ interface BandProps {
   backImage?: string | null;
   imageFit?: 'cover' | 'contain';
   lanyardWidth?: number;
+  anchorX: number;
 }
 
-const ANCHOR_X = 2.2;
 const ANCHOR_Y = 4.5;
 
 function Band({
@@ -103,6 +120,7 @@ function Band({
   backImage = null,
   imageFit = 'cover',
   lanyardWidth = 1.2,
+  anchorX,
 }: BandProps) {
   const band  = useRef<any>(null);
   const fixed = useRef<any>(null);
@@ -242,6 +260,7 @@ function Band({
       });
     }
     if (fixed.current) {
+      fixed.current.setTranslation({ x: anchorX, y: ANCHOR_Y, z: 0 });
       [j1, j2].forEach(ref => {
         if (!ref.current.lerped)
           ref.current.lerped = new THREE.Vector3().copy(ref.current.translation());
@@ -258,21 +277,21 @@ function Band({
       card.current.setAngvel({ x: ang.x, y: ang.y - rot.y * 0.25, z: ang.z });
     }
   });
-
+ 
   return (
     <>
-      <RigidBody position={[ANCHOR_X, ANCHOR_Y, 0]} ref={fixed} {...segmentProps} type="fixed" />
-      <RigidBody position={[ANCHOR_X, ANCHOR_Y - 1, 0]} ref={j1} {...segmentProps} type="dynamic">
+      <RigidBody position={[anchorX, ANCHOR_Y, 0]} ref={fixed} {...segmentProps} type="fixed" />
+      <RigidBody position={[anchorX, ANCHOR_Y - 1, 0]} ref={j1} {...segmentProps} type="dynamic">
         <BallCollider args={[0.1]} />
       </RigidBody>
-      <RigidBody position={[ANCHOR_X, ANCHOR_Y - 2, 0]} ref={j2} {...segmentProps} type="dynamic">
+      <RigidBody position={[anchorX, ANCHOR_Y - 2, 0]} ref={j2} {...segmentProps} type="dynamic">
         <BallCollider args={[0.1]} />
       </RigidBody>
-      <RigidBody position={[ANCHOR_X, ANCHOR_Y - 3, 0]} ref={j3} {...segmentProps} type="dynamic">
+      <RigidBody position={[anchorX, ANCHOR_Y - 3, 0]} ref={j3} {...segmentProps} type="dynamic">
         <BallCollider args={[0.1]} />
       </RigidBody>
       <RigidBody
-        position={[ANCHOR_X, ANCHOR_Y - 4.5, 0]}
+        position={[anchorX, ANCHOR_Y - 4.5, 0]}
         ref={card}
         {...segmentProps}
         type={dragged ? 'kinematicPosition' : 'dynamic'}

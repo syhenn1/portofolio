@@ -5,12 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from "framer-motion";
-import { FiArrowUpRight, FiGithub, FiArrowRight } from "react-icons/fi";
-import { projects, getSkill, socialLinks, type Project } from "@/lib/data";
+import { FiArrowUpRight, FiArrowRight } from "react-icons/fi";
+import { projects, getSkill, socialLinks, SCROLL_VH_PER_ITEM, type Project } from "@/lib/data";
 import ProjectCardDeck from "@/components/ProjectCardDeck";
+import LearnMoreButton from "@/components/LearnMoreButton";
 import { getLenisInstance } from "@/lib/lenis";
-
-const VH_PER_CARD = 140; // scroll distance dedicated to each project — higher = slower pace
 
 // ── Mobile card ────────────────────────────────────────────────────────────────
 function MobileProjectCard({ project, i }: { project: Project; i: number }) {
@@ -85,7 +84,14 @@ export default function Projects() {
   const outerTopRef = useRef(0);
   const outerHRef   = useRef(0);
   const N = projects.length;
-  const sectionH = `${(N + 1) * VH_PER_CARD}vh`;
+
+  const [zoom, setZoom] = useState(1);
+  useLayoutEffect(() => {
+    const computedZoom = parseFloat(window.getComputedStyle(document.documentElement).zoom) || 1;
+    setZoom(computedZoom);
+  }, []);
+
+  const sectionH = `${((N + 0.5) * SCROLL_VH_PER_ITEM) / zoom}vh`;
 
   // The info panel sits on top of (and blocks clicks into) the pile of past
   // cards behind it — fade it out of the way whenever the cursor drifts
@@ -99,15 +105,16 @@ export default function Projects() {
   // that project into focus at center first, then hands off to its case
   // study — instead of jumping straight there from a small, off-to-the-side card.
   const focusAndGo = useCallback((index: number, href: string) => {
-    const maxScroll = outerHRef.current - window.innerHeight;
+    const vpHCSS = window.innerHeight / zoom;
+    const maxScrollCSS = outerHRef.current - vpHCSS;
     const lenis = getLenisInstance();
-    if (lenis && maxScroll > 0) {
-      const targetY = outerTopRef.current + ((index + 0.5) / N) * maxScroll;
+    if (lenis && maxScrollCSS > 0) {
+      const targetY = outerTopRef.current + (((index + 0.5) / N) * maxScrollCSS) * zoom;
       lenis.scrollTo(targetY, { duration: 1.1, onComplete: () => router.push(href) });
     } else {
       router.push(href);
     }
-  }, [N, router]);
+  }, [N, router, zoom]);
 
   // Measure once (and on resize) — refs read by both the scroll handler and progress transform
   useLayoutEffect(() => {
@@ -119,18 +126,24 @@ export default function Projects() {
     measure();
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
-  }, []);
+    // Re-measure once `zoom` is corrected from its default (1) — otherwise this
+    // can run before the zoom-compensated section height has actually rendered,
+    // caching a too-tall height and desyncing scroll progress from real scroll.
+  }, [zoom]);
 
   const { scrollY } = useScroll();
 
-  // Normalised [0,1] progress — which project segment we're scrolled through
+  // Normalised [0,1] progress — which project segment we're scrolled through (zoom-calibrated to layout CSS pixels)
   const progress = useTransform(scrollY, (sy) => {
     const outerH = outerHRef.current;
     if (!outerH) return 0;
-    const vpH      = window.innerHeight;
-    const maxScroll = outerH - vpH;
-    if (!maxScroll) return 0;
-    return Math.max(0, Math.min((sy - outerTopRef.current) / maxScroll, 1));
+    const vpHCSS      = window.innerHeight / zoom;
+    const maxScrollCSS = outerH - vpHCSS;
+    if (maxScrollCSS <= 0) return 0;
+    
+    const syCSS = sy / zoom;
+    const topCSS = outerTopRef.current / zoom;
+    return Math.max(0, Math.min((syCSS - topCSS) / maxScrollCSS, 1));
   });
 
   const progressW   = useTransform(progress, [0, 1], ["0%", "100%"]);
@@ -157,7 +170,7 @@ export default function Projects() {
   return (
     <section id="projects" className="relative z-2">
 
-      {/* ── Desktop: Atropos card deck, scroll sweeps right → center → left ──── */}
+      {/* ── Desktop: Comet card deck, scroll sweeps right → center → left ──── */}
       <div
         ref={outerRef}
         className="hidden md:block"
@@ -168,13 +181,14 @@ export default function Projects() {
           style={{
             position: "sticky",
             top: 0,
-            height: "100vh",
+            height: `${100 / zoom}vh`,
             overflow: "hidden",
           }}
         >
           {/* Section header */}
           <motion.div
-            className="flex items-end justify-between px-8 pt-14 pb-4"
+            className="flex items-end justify-between"
+            style={{ padding: `${56 / zoom}px ${32 / zoom}px ${16 / zoom}px` }}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
@@ -189,20 +203,14 @@ export default function Projects() {
                 From web, mobile, to data — built with genuine care.
               </p>
             </div>
-            <a
-              href={socialLinks.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-ghost text-sm shrink-0"
-            >
-              <FiGithub size={16} />
+            <LearnMoreButton href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="shrink-0">
               All on GitHub
-            </a>
+            </LearnMoreButton>
           </motion.div>
 
-          {/* Card arena — info panel on the left, the Atropos card deck sweeping through the rest */}
+          {/* Card arena — info panel on the left, the Comet card deck sweeping through the rest */}
           <div
-            style={{ position: "relative", height: "calc(100vh - 156px)", overflow: "hidden" }}
+            style={{ position: "relative", height: `calc(${100 / zoom}vh - ${156 / zoom}px)`, overflow: "hidden" }}
             onMouseMove={handleArenaMouseMove}
             onMouseLeave={() => setHoverPileZone(false)}
           >
@@ -218,50 +226,50 @@ export default function Projects() {
                   left: 0,
                   top: 0,
                   height: "100%",
-                  width: 480,
+                  width: 480 / zoom,
                   zIndex: 5,
                   pointerEvents: hoverPileZone ? "none" : "auto",
-                  background: "linear-gradient(to right, rgba(247,247,244,0.96) 0%, rgba(247,247,244,0.9) 38%, rgba(247,247,244,0.5) 68%, transparent 100%)",
+                  background: "linear-gradient(to right, color-mix(in srgb, var(--bg) 96%, transparent) 0%, color-mix(in srgb, var(--bg) 90%, transparent) 38%, color-mix(in srgb, var(--bg) 50%, transparent) 68%, transparent 100%)",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
-                  padding: "0 40px 0 40px",
+                  padding: `0 ${40 / zoom}px 0 ${40 / zoom}px`,
                 }}
               >
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-center gap-3 mb-2" style={{ marginBottom: `${8 / zoom}px` }}>
                   <div className="slabel" style={{ color: active.color }}>{active.sub}</div>
-                  <span className="mono" style={{ fontSize: 11, color: "rgba(0,0,0,0.3)" }}>
+                  <span className="mono" style={{ fontSize: 11 / zoom, color: "var(--placeholder)" }}>
                     {String(activeIndex + 1).padStart(2, "0")} / {String(N).padStart(2, "0")}
                   </span>
                 </div>
                 <h2 style={{
-                  fontSize: "clamp(24px, 2.6vw, 38px)",
+                  fontSize: `calc(clamp(24px, 2.6vw, 38px) / ${zoom})`,
                   fontWeight: 900,
-                  color: "#14140f",
-                  margin: "0 0 12px",
+                  color: "var(--tx)",
+                  margin: `0 0 ${12 / zoom}px`,
                   lineHeight: 1.05,
                   letterSpacing: "-0.02em",
                 }}>
                   {active.title}
                 </h2>
                 <div style={{
-                  width: 40, height: 2, borderRadius: 1,
+                  width: 40 / zoom, height: 2, borderRadius: 1,
                   background: `linear-gradient(90deg, ${active.color}, transparent)`,
-                  marginBottom: 14,
+                  marginBottom: 14 / zoom,
                   filter: `drop-shadow(0 0 6px ${active.color})`,
                 }} />
-                <p style={{ fontSize: 13, color: "rgba(0,0,0,0.65)", lineHeight: 1.75, margin: 0 }}>
+                <p style={{ fontSize: 13 / zoom, color: "var(--text-soft)", lineHeight: 1.75, margin: 0 }}>
                   {active.desc}
                 </p>
-                <div className="flex flex-wrap gap-1.5 mt-4">
+                <div className="flex flex-wrap gap-1.5 mt-4" style={{ marginTop: `${16 / zoom}px`, gap: `${6 / zoom}px` }}>
                   {techs.map((s, idx) => {
                     const skill = s!;
                     const SkillIcon = skill.Icon;
                     return (
-                      <span key={idx} className="ttag">
+                      <span key={idx} className="ttag" style={{ fontSize: 11 / zoom }}>
                         {SkillIcon
-                          ? <SkillIcon size={11} />
-                          : <Image src={skill.src!} alt={skill.name} width={11} height={11} style={{ objectFit: "contain" }} />}
+                          ? <SkillIcon size={Math.max(8, 11 / zoom)} />
+                          : <Image src={skill.src!} alt={skill.name} width={11 / zoom} height={11 / zoom} style={{ objectFit: "contain" }} />}
                         {skill.name}
                       </span>
                     );
@@ -270,34 +278,34 @@ export default function Projects() {
                 <Link
                   href={`/projects/${active.slug}`}
                   className="mono inline-flex items-center gap-1.5 mt-6"
-                  style={{ fontSize: 12, color: active.color, fontWeight: 700, letterSpacing: "0.04em", width: "fit-content" }}
+                  style={{ fontSize: 12 / zoom, color: active.color, fontWeight: 700, letterSpacing: "0.04em", width: "fit-content", marginTop: `${24 / zoom}px`, gap: `${6 / zoom}px` }}
                 >
                   VIEW CASE STUDY
-                  <FiArrowUpRight size={14} />
+                  <FiArrowUpRight size={14 / zoom} />
                 </Link>
               </motion.div>
             </AnimatePresence>
 
-            {/* Atropos project cards: a stack waits on the right, the active one
+            {/* Comet project cards: a stack waits on the right, the active one
                 sweeps to center on hover-tilt, then joins the pile on the left —
                 all riding the same horizontal line as the info panel beside them. */}
-            <ProjectCardDeck projects={projects} activeIndex={activeIndex} sweep={sweep} onSelectPast={focusAndGo} />
+            <ProjectCardDeck projects={projects} activeIndex={activeIndex} sweep={sweep} onSelectPast={focusAndGo} zoom={zoom} />
           </div>
 
           {/* Progress bar */}
           <div
             className="absolute bottom-0 left-0 right-0"
-            style={{ height: 2, background: "rgba(0,0,0,0.06)" }}
+            style={{ height: 2, background: "var(--line)" }}
           >
             <motion.div
-              style={{ height: "100%", width: progressW, background: "linear-gradient(90deg, #ff6a00, #b34700)" }}
+              style={{ height: "100%", width: progressW, background: "linear-gradient(90deg, var(--gtx-1), var(--gtx-2))" }}
             />
           </div>
 
           {/* Scroll hint */}
           <motion.div
             className="absolute bottom-6 right-8 flex items-center gap-2 mono"
-            style={{ opacity: hintOpacity, color: "rgba(0,0,0,0.35)", fontSize: 11 }}
+            style={{ opacity: hintOpacity, color: "var(--muted)", fontSize: 11 }}
           >
             scroll to explore
             <FiArrowRight size={12} />
@@ -318,9 +326,9 @@ export default function Projects() {
             <div className="slabel mb-2">featured work</div>
             <h2 className="text-3xl font-black">Featured <span className="gtx">Projects</span></h2>
           </div>
-          <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="btn-ghost text-sm mt-4 sm:mt-0 self-start">
-            <FiGithub size={14} /> GitHub
-          </a>
+          <LearnMoreButton href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="mt-4 sm:mt-0 self-start">
+            GitHub
+          </LearnMoreButton>
         </motion.div>
 
         <div className="snap-carousel">

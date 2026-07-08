@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { getIntroEntered, subscribeIntroEntered } from "@/lib/introState";
+import { useTheme } from "@/lib/theme";
 
 interface Dot {
   baseX: number;
@@ -21,13 +23,22 @@ const PUSH_STRENGTH = 50;
 const BASE_ALPHA = 0.18;
 const HOVER_ALPHA = 0.55;
 const PAGE_HEIGHT = 8000;
-const COLOR = "255, 106, 0";
+const COLOR_LIGHT = "255, 106, 0";
+const COLOR_AMD = "255, 45, 45";
 
+// Sitewide default background (Hero and the intro splash use LivingNebula
+// instead — see layout.tsx). Paused while the intro splash covers the screen,
+// same reasoning as LivingNebula: fully hidden behind it, so no point drawing.
 export default function WaveBackground() {
+  const { theme } = useTheme();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouse = useRef({ x: -9999, y: -9999 });
   const dots = useRef<Dot[]>([]);
   const raf = useRef(0);
+  const colorRef = useRef(COLOR_LIGHT);
+  useEffect(() => {
+    colorRef.current = theme === "amd" ? COLOR_AMD : COLOR_LIGHT;
+  }, [theme]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -59,11 +70,15 @@ export default function WaveBackground() {
     window.addEventListener("resize", buildGrid);
 
     const onMove = (e: MouseEvent) => {
-      mouse.current = { x: e.clientX, y: e.clientY };
+      const zoom = parseFloat(window.getComputedStyle(document.documentElement).zoom) || 1;
+      mouse.current = { x: e.clientX / zoom, y: e.clientY / zoom };
     };
     const onTouch = (e: TouchEvent) => {
       const t = e.touches[0];
-      if (t) mouse.current = { x: t.clientX, y: t.clientY };
+      if (t) {
+        const zoom = parseFloat(window.getComputedStyle(document.documentElement).zoom) || 1;
+        mouse.current = { x: t.clientX / zoom, y: t.clientY / zoom };
+      }
     };
     const onLeave = () => {
       mouse.current = { x: -9999, y: -9999 };
@@ -75,15 +90,31 @@ export default function WaveBackground() {
 
     const draw = () => {
       ctx.clearRect(0, 0, w, h);
-      const mx = mouse.current.x;
-      const my = mouse.current.y + window.scrollY;
       const scrollY = window.scrollY;
+
+      // Short-circuit: when scrollY is 0 (fully inside Hero), all dots are suppressed, so skip looping.
+      if (scrollY === 0) {
+        raf.current = requestAnimationFrame(draw);
+        return;
+      }
+
+      const mx = mouse.current.x;
+      const my = mouse.current.y + scrollY;
 
       for (let i = 0; i < dots.current.length; i++) {
         const d = dots.current[i];
         const screenY = d.baseY - scrollY;
 
         if (screenY < -SPACING * 2 || screenY > h + SPACING * 2) continue;
+
+        // Skip drawing dots inside the Hero section (top fold)
+        if (d.baseY < window.innerHeight) continue;
+
+        let alphaMultiplier = 1;
+        const fadeZone = 150;
+        if (d.baseY < window.innerHeight + fadeZone) {
+          alphaMultiplier = (d.baseY - window.innerHeight) / fadeZone;
+        }
 
         d.driftAngle += d.driftSpeed * 0.01;
         d.driftX = Math.cos(d.driftAngle) * d.driftRadius;
@@ -111,22 +142,38 @@ export default function WaveBackground() {
         const screenDist = Math.sqrt(screenDx * screenDx + screenDy * screenDy);
         const proximity = Math.max(0, 1 - screenDist / MOUSE_RADIUS);
 
-        const alpha = BASE_ALPHA + proximity * (HOVER_ALPHA - BASE_ALPHA);
+        const alpha = (BASE_ALPHA + proximity * (HOVER_ALPHA - BASE_ALPHA)) * alphaMultiplier;
         const r = DOT_RADIUS + proximity * 2;
 
         ctx.beginPath();
         ctx.arc(d.x, d.y, r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${COLOR}, ${alpha})`;
+        ctx.fillStyle = `rgba(${colorRef.current}, ${alpha})`;
         ctx.fill();
       }
 
       raf.current = requestAnimationFrame(draw);
     };
 
-    raf.current = requestAnimationFrame(draw);
+    const startLoop = () => {
+      raf.current = requestAnimationFrame(draw);
+    };
+    const stopLoop = () => {
+      cancelAnimationFrame(raf.current);
+    };
+
+    let unsubscribe = () => {};
+    if (getIntroEntered()) {
+      startLoop();
+    } else {
+      unsubscribe = subscribeIntroEntered((val) => {
+        if (val) startLoop();
+        else stopLoop();
+      });
+    }
 
     return () => {
-      cancelAnimationFrame(raf.current);
+      unsubscribe();
+      stopLoop();
       window.removeEventListener("resize", buildGrid);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("touchmove", onTouch);
@@ -138,7 +185,7 @@ export default function WaveBackground() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none"
-      style={{ zIndex: 1, mixBlendMode: "multiply" }}
+      style={{ zIndex: 1, mixBlendMode: theme === "amd" ? "screen" : "multiply" }}
     />
   );
 }

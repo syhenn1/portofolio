@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiDownload, FiMenu, FiX } from "react-icons/fi";
+import { FiDownload, FiMenu, FiX, FiHome } from "react-icons/fi";
 import { basePath } from "@/lib/basePath";
+import { getLenisInstance } from "@/lib/lenis";
 
 const navLinks = [
   { href: "#about", label: "About" },
@@ -12,10 +13,16 @@ const navLinks = [
   { href: "#contact", label: "Contact" },
 ];
 
+// A compact corner widget instead of a full-width top bar — the old bar (plus
+// its marching hazard stripe) sat flush against the very top edge of every
+// page like a heavy "eyebrow" across the whole viewport, which read as
+// visually disruptive. This keeps the same nav/Resume functionality behind a
+// single top-right trigger that expands into a dropdown panel on demand.
 export default function Navbar() {
   const [hidden, setHidden] = useState(false);
   const [active, setActive] = useState("");
   const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let lastY = window.scrollY;
@@ -41,84 +48,117 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Close on outside click — this panel now doubles as the site's only nav,
+  // so it needs to behave like a normal dropdown menu, not just a mobile fallback.
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [open]);
+
+  // Scrolls to the top of the already-entered page instead of a real navigation —
+  // a plain href reload would remount IntroGate with entered=false and bring the
+  // pre-Start splash back.
+  const handleHomeClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setOpen(false);
+    const lenis = getLenisInstance();
+    if (lenis) lenis.scrollTo(0, { duration: 1.1 });
+    else window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <motion.div
-      style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100 }}
-      className="px-3 sm:px-5 pt-3 sm:pt-4"
-      animate={{ y: hidden ? "-110%" : 0 }}
-      transition={{ duration: 0.4, ease: "easeInOut" }}
+      ref={rootRef}
+      style={{ position: "fixed", top: 16, right: 16, zIndex: 100 }}
+      animate={{ y: hidden && !open ? "-150%" : 0, opacity: hidden && !open ? 0 : 1 }}
+      transition={{ duration: 0.35, ease: "easeInOut" }}
     >
-      <nav className="glass max-w-5xl mx-auto rounded-2xl overflow-hidden">
-        <div className="px-5 sm:px-7 py-3.5 flex justify-between items-center">
-          <a href={`${basePath}/`} className="flex items-center gap-1 mono text-sm font-bold">
-            <span style={{ color: "#a3a39c" }}>&lt;</span>
-            <span style={{ color: "var(--tx)" }}>rifat</span>
-            <span style={{ color: "var(--em)" }}>/&gt;</span>
-          </a>
+      <button
+        onClick={() => setOpen((o) => !o)}
+        data-magnetic=""
+        className="mono flex items-center gap-2"
+        aria-label="Menu"
+        aria-expanded={open}
+        style={{
+          padding: "9px 14px",
+          borderRadius: 3,
+          background: "color-mix(in srgb, var(--bg) 86%, transparent)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          border: "1px solid var(--line)",
+          boxShadow: "0 8px 24px var(--glass-shadow)",
+          cursor: "pointer",
+        }}
+      >
+        <span className="pg" style={{ width: 6, height: 6, borderRadius: 1, background: "var(--em)", display: "inline-block" }} />
+        <span style={{ fontSize: 13, fontWeight: 700 }}>
+          <span style={{ color: "var(--placeholder)" }}>&lt;</span>
+          <span style={{ color: "var(--tx)" }}>rifat</span>
+          <span style={{ color: "var(--em)" }}>/&gt;</span>
+        </span>
+        {open ? <FiX size={16} style={{ color: "var(--tx)" }} /> : <FiMenu size={16} style={{ color: "var(--tx)" }} />}
+      </button>
 
-          <div className="hidden md:flex items-center gap-7">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={`${basePath}/${link.href}`}
-                className={`nav-link ${active === link.href ? "active" : ""}`}
-              >
-                {link.label}
-              </a>
-            ))}
-            <a
-              href={`${basePath}/assets/CV_Mochamad-Rifat-Syahman-Hambali.pdf`}
-              download
-              className="btn-em py-2 px-4 text-xs"
-            >
-              <FiDownload size={14} />
-              Resume
-            </a>
-          </div>
-
-          <button
-            onClick={() => setOpen((o) => !o)}
-            className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-black/5"
-            style={{ color: "var(--tx)" }}
-            aria-label="Menu"
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className="absolute right-0"
+            style={{
+              top: "calc(100% + 8px)",
+              width: 220,
+              borderRadius: 3,
+              background: "color-mix(in srgb, var(--bg) 96%, transparent)",
+              backdropFilter: "blur(16px)",
+              WebkitBackdropFilter: "blur(16px)",
+              border: "1px solid var(--line)",
+              boxShadow: "0 20px 45px var(--glass-shadow)",
+              overflow: "hidden",
+            }}
+            initial={{ opacity: 0, y: -8, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.97 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
           >
-            {open ? <FiX size={20} /> : <FiMenu size={20} />}
-          </button>
-        </div>
-
-        <AnimatePresence>
-          {open && (
-            <motion.div
-              className="md:hidden border-t border-black/5 overflow-hidden"
-              initial={{ height: 0 }}
-              animate={{ height: "auto" }}
-              exit={{ height: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
-              <div className="px-5 py-3 flex flex-col gap-1">
-                {navLinks.map((link) => (
+            <div className="flex flex-col gap-1 p-2">
+              <a
+                href={`${basePath}/`}
+                onClick={handleHomeClick}
+                className="mono nav-link flex items-center gap-2 py-2.5 px-3 text-xs uppercase font-bold transition-all"
+                style={{ letterSpacing: "0.08em" }}
+              >
+                <FiHome size={13} />
+                Home
+              </a>
+              {navLinks.map((link) => {
+                const isActive = active === link.href;
+                return (
                   <a
                     key={link.href}
                     href={`${basePath}/${link.href}`}
                     onClick={() => setOpen(false)}
-                    className="py-2.5 px-3 rounded-xl text-sm text-gray-600 hover:text-black hover:bg-black/5 font-medium transition-all"
+                    className={`mono nav-link py-2.5 px-3 text-xs uppercase font-bold transition-all${isActive ? " active" : ""}`}
+                    style={{ letterSpacing: "0.08em" }}
                   >
                     {link.label}
                   </a>
-                ))}
-                <a
-                  href={`${basePath}/assets/CV_Mochamad-Rifat-Syahman-Hambali.pdf`}
-                  download
-                  className="btn-em justify-center mt-2 py-3"
-                >
-                  <FiDownload size={14} />
-                  Download Resume
-                </a>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </nav>
+                );
+              })}
+              <a
+                href={`${basePath}/assets/CV_Mochamad-Rifat-Syahman-Hambali.pdf`}
+                download
+                className="btn-em justify-center mt-1 py-2.5"
+              >
+                <FiDownload size={14} />
+                Resume
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

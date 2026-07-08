@@ -11,11 +11,11 @@ const navLinks = [
 
 export default function Footer() {
   return (
-    <footer className="relative z-2" style={{ background: "var(--surf)", borderTop: "1px solid rgba(0,0,0,.06)" }}>
+    <footer className="relative z-2" style={{ background: "var(--surf)", borderTop: "1px solid var(--line)" }}>
       <div className="max-w-7xl mx-auto px-3 sm:px-5 py-12 flex flex-col sm:flex-row sm:items-start justify-between gap-10">
         <div>
           <span className="mono text-sm font-bold">
-            <span style={{ color: "#a3a39c" }}>&lt;</span>
+            <span style={{ color: "var(--placeholder)" }}>&lt;</span>
             <span style={{ color: "var(--tx)" }}>rifat</span>
             <span style={{ color: "var(--em)" }}>/&gt;</span>
           </span>
@@ -39,13 +39,13 @@ export default function Footer() {
           <div>
             <p className="mono text-xs mb-4" style={{ color: "var(--em)" }}>connect</p>
             <div className="flex gap-3">
-              <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="soc" aria-label="GitHub">
+              <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="soc" aria-label="GitHub" data-magnetic="">
                 <FiGithub size={16} />
               </a>
-              <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="soc" aria-label="LinkedIn">
+              <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="soc" aria-label="LinkedIn" data-magnetic="">
                 <FiLinkedin size={16} />
               </a>
-              <a href={`mailto:${socialLinks.email}`} className="soc" aria-label="Email">
+              <a href={`mailto:${socialLinks.email}`} className="soc" aria-label="Email" data-magnetic="">
                 <FiMail size={16} />
               </a>
             </div>

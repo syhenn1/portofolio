@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FiEye, FiGithub } from "react-icons/fi";
+import { FiEye } from "react-icons/fi";
 import { socialLinks } from "@/lib/data";
 import { basePath } from "@/lib/basePath";
 import CvModal from "@/components/CvModal";
+import LearnMoreButton from "@/components/LearnMoreButton";
 
 const cvUrl = `${basePath}/assets/CV_Mochamad-Rifat-Syahman-Hambali.pdf`;
 
@@ -43,15 +44,9 @@ export default function About() {
           </p>
 
           <div className="flex flex-wrap gap-3 mt-2">
-            <a
-              href={socialLinks.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-ghost text-sm py-2.5 px-5"
-            >
-              <FiGithub size={16} />
+            <LearnMoreButton href={socialLinks.github} target="_blank" rel="noopener noreferrer">
               GitHub
-            </a>
+            </LearnMoreButton>
             <button
               onClick={() => setCvOpen(true)}
               className="btn-em text-sm py-2.5 px-5"

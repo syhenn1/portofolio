@@ -6,6 +6,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FiArrowRight } from "react-icons/fi";
 import { basePath } from "@/lib/basePath";
 import { useMediaQuery } from "@/lib/useMediaQuery";
+import { setIntroEntered } from "@/lib/introState";
+import Waves from "@/components/Waves";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const Lanyard = dynamic(() => import("@/components/Lanyard"), { ssr: false });
 
@@ -30,9 +33,11 @@ export default function IntroGate({ children }: { children: React.ReactNode }) {
       html.style.overflow = "";
       document.body.style.overflow = "";
     }
+    setIntroEntered(entered);
     return () => {
       html.style.overflow = "";
       document.body.style.overflow = "";
+      setIntroEntered(true);
     };
   }, [entered]);
 
@@ -49,22 +54,24 @@ export default function IntroGate({ children }: { children: React.ReactNode }) {
           <motion.div
             key="intro-gate"
             className="fixed inset-0 z-[300] overflow-hidden"
-            style={{ background: "#f7f7f4" }}
+            style={{ background: "var(--bg)" }}
             exit={{ opacity: 0, scale: 1.06 }}
             transition={{ duration: 0.65, ease: [0.76, 0, 0.24, 1] }}
           >
+            <Waves className="absolute inset-0 z-0 pointer-events-none" pointerSize={0} />
+
             {/* Schematic grid texture */}
             <div
               className="absolute inset-0 pointer-events-none"
               style={{
                 backgroundImage:
-                  "repeating-linear-gradient(0deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 44px), repeating-linear-gradient(90deg, rgba(0,0,0,0.04) 0px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 44px)",
+                  "repeating-linear-gradient(0deg, color-mix(in srgb, var(--tx) 4%, transparent) 0px, color-mix(in srgb, var(--tx) 4%, transparent) 1px, transparent 1px, transparent 44px), repeating-linear-gradient(90deg, color-mix(in srgb, var(--tx) 4%, transparent) 0px, color-mix(in srgb, var(--tx) 4%, transparent) 1px, transparent 1px, transparent 44px)",
               }}
             />
             {/* Faint radial fade so grid dims toward edges */}
             <div
               className="absolute inset-0 pointer-events-none"
-              style={{ background: "radial-gradient(ellipse at 50% 45%, transparent 0%, #f7f7f4 85%)" }}
+              style={{ background: "radial-gradient(ellipse at 50% 45%, transparent 0%, var(--bg) 85%)" }}
             />
 
             {/* Hazard stripes — top & bottom edge */}
@@ -76,7 +83,7 @@ export default function IntroGate({ children }: { children: React.ReactNode }) {
               const size = 22;
               const base: React.CSSProperties = {
                 position: "absolute", width: size, height: size,
-                borderColor: "rgba(255,106,0,0.6)", margin: 20,
+                borderColor: "color-mix(in srgb, var(--em) 60%, transparent)", margin: 20,
               };
               const styleMap: Record<string, React.CSSProperties> = {
                 tl: { ...base, top: 0, left: 0, borderTop: "2px solid", borderLeft: "2px solid" },
@@ -87,13 +94,26 @@ export default function IntroGate({ children }: { children: React.ReactNode }) {
               return <div key={pos} style={styleMap[pos]} />;
             })}
 
+            {/* Theme switch — pick STD (light) or AMD (black/red dark mode)
+                before ever seeing the lit site underneath; choice persists
+                site-wide via localStorage. */}
+            <motion.div
+              className="absolute z-20"
+              style={{ top: 54, right: 20 }}
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <ThemeToggle />
+            </motion.div>
+
             {/* Faint RS watermark, right side */}
             <div
               className="absolute pointer-events-none select-none hidden md:block"
               style={{
                 right: "6%", top: "50%", transform: "translateY(-50%)",
                 fontSize: "34vw", fontWeight: 900,
-                color: "rgba(0,0,0,0.035)",
+                color: "color-mix(in srgb, var(--tx) 3.5%, transparent)",
                 fontFamily: "var(--font-mono)",
                 letterSpacing: "-0.06em", lineHeight: 1,
               }}
@@ -107,7 +127,7 @@ export default function IntroGate({ children }: { children: React.ReactNode }) {
               style={{
                 right: "10%", top: "50%", translateX: "0%", translateY: "-50%",
                 width: 560, height: 560, borderRadius: "50%",
-                background: "radial-gradient(circle, rgba(255,106,0,.14) 0%, transparent 70%)",
+                background: "radial-gradient(circle, color-mix(in srgb, var(--em) 14%, transparent) 0%, transparent 70%)",
                 filter: "blur(60px)",
               }}
               animate={{ opacity: [0.5, 1, 0.5], scale: [1, 1.12, 1] }}
@@ -137,6 +157,7 @@ export default function IntroGate({ children }: { children: React.ReactNode }) {
                   position={[0, 1.0, 20]}
                   fov={13}
                   lanyardWidth={0.9}
+                  anchorX={0}
                 />
               )}
             </div>
@@ -147,7 +168,7 @@ export default function IntroGate({ children }: { children: React.ReactNode }) {
             <div className="relative z-10 h-full w-full flex flex-col justify-end px-6 sm:px-12 lg:px-20 pb-16 sm:pb-20 pointer-events-none">
               <motion.div
                 className="mono flex items-center gap-2 mb-6"
-                style={{ fontSize: 11, color: "rgba(0,0,0,0.4)", letterSpacing: "0.15em" }}
+                style={{ fontSize: 11, color: "color-mix(in srgb, var(--tx) 40%, transparent)", letterSpacing: "0.15em" }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
@@ -209,7 +230,7 @@ export default function IntroGate({ children }: { children: React.ReactNode }) {
                     <FiArrowRight size={16} />
                   </motion.span>
                 </motion.button>
-                <div className="mono mt-3" style={{ fontSize: 10, color: "rgba(0,0,0,0.35)", letterSpacing: "0.1em" }}>
+                <div className="mono mt-3" style={{ fontSize: 10, color: "color-mix(in srgb, var(--tx) 35%, transparent)", letterSpacing: "0.1em" }}>
                   {booting ? "LAUNCHING…" : "PRESS TO CONTINUE"}
                 </div>
               </motion.div>
@@ -229,13 +250,13 @@ export default function IntroGate({ children }: { children: React.ReactNode }) {
                   className="flex items-center gap-8 justify-between"
                   style={{
                     padding: "9px 0",
-                    borderTop: i === 0 ? "1px solid rgba(0,0,0,0.1)" : "none",
-                    borderBottom: "1px solid rgba(0,0,0,0.1)",
+                    borderTop: i === 0 ? "1px solid var(--line)" : "none",
+                    borderBottom: "1px solid var(--line)",
                     width: 220,
                   }}
                 >
-                  <span style={{ color: "rgba(0,0,0,0.4)" }}>{s.k}</span>
-                  <span style={{ color: s.k === "STATUS" ? "var(--em)" : "#1a1a1a" }}>{s.v}</span>
+                  <span style={{ color: "color-mix(in srgb, var(--tx) 40%, transparent)" }}>{s.k}</span>
+                  <span style={{ color: s.k === "STATUS" ? "var(--em)" : "var(--tx)" }}>{s.v}</span>
                 </div>
               ))}
             </motion.div>
@@ -254,7 +275,7 @@ export default function IntroGate({ children }: { children: React.ReactNode }) {
                 >
                   <motion.div
                     className="absolute inset-0"
-                    style={{ background: "radial-gradient(circle at 50% 55%, rgba(255,106,0,0.4) 0%, transparent 65%)" }}
+                    style={{ background: "radial-gradient(circle at 50% 55%, color-mix(in srgb, var(--em) 40%, transparent) 0%, transparent 65%)" }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: [0, 1, 0] }}
                     transition={{ duration: 0.55, ease: "easeInOut" }}
@@ -264,7 +285,7 @@ export default function IntroGate({ children }: { children: React.ReactNode }) {
                     style={{
                       height: 2,
                       background: "linear-gradient(90deg, transparent, var(--em), transparent)",
-                      boxShadow: "0 0 24px 4px rgba(255,106,0,0.55)",
+                      boxShadow: "0 0 24px 4px color-mix(in srgb, var(--em) 55%, transparent)",
                     }}
                     initial={{ top: "-2%" }}
                     animate={{ top: "102%" }}

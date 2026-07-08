@@ -10,6 +10,7 @@ export default function TiltButton({
   children,
   className,
   style,
+  magnetic,
 }: {
   href: string;
   target?: string;
@@ -17,6 +18,7 @@ export default function TiltButton({
   children: ReactNode;
   className?: string;
   style?: React.CSSProperties;
+  magnetic?: boolean;
 }) {
   const x = useMotionValue(0.5);
   const y = useMotionValue(0.5);
@@ -46,6 +48,7 @@ export default function TiltButton({
       href={href}
       target={target}
       rel={rel}
+      data-magnetic={magnetic ? "" : undefined}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
       whileHover={{ scale: 1.08, y: -3 }}

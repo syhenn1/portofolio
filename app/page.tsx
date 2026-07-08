@@ -1,6 +1,5 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import HeroLanyard from "@/components/HeroLanyard";
 import Stats from "@/components/Stats";
 import Projects from "@/components/Projects";
 import About from "@/components/About";
@@ -19,7 +18,6 @@ export default function Home() {
       <main>
         <div className="relative">
           <Hero />
-          <HeroLanyard />
         </div>
         <About />
         <div className="divline relative z-2" />

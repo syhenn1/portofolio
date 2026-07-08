@@ -4,11 +4,7 @@ import { useRef, useLayoutEffect, useState } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence, type MotionValue } from "framer-motion";
 import { FiChevronDown } from "react-icons/fi";
-import { timelineData } from "@/lib/data";
-
-// Scroll distance dedicated to each entry — higher = slower pace, more
-// scrolling required to move from one node to the next.
-const VH_PER_ENTRY = 180;
+import { timelineData, SCROLL_VH_PER_ITEM } from "@/lib/data";
 
 // Every node's position, on-screen size, and opacity all come from this one
 // constant plus the live scroll progress — there's exactly one formula, so
@@ -43,7 +39,7 @@ function TimelineImageRow({
               aspectRatio: `${img.width} / ${img.height}`,
               flex: `0 1 ${height * ratio}px`,
               minWidth: 0,
-              border: "1px solid rgba(0,0,0,0.1)",
+              border: "1px solid var(--line)",
             }}
           >
             <Image src={img.src} alt="" fill style={{ objectFit: "contain" }} sizes="420px" />
@@ -60,7 +56,7 @@ function Corner({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) {
     position: "absolute",
     width: size,
     height: size,
-    borderColor: "rgba(255,106,0,0.5)",
+    borderColor: "color-mix(in srgb, var(--em) 50%, transparent)",
   };
   const map: Record<string, React.CSSProperties> = {
     tl: { ...base, top: 0, left: 0, borderTop: "2px solid", borderLeft: "2px solid" },
@@ -166,6 +162,12 @@ export default function JourneyTimeline() {
   const N = timelineData.length;
   const denom = N - 1 || 1;
 
+  const [zoom, setZoom] = useState(1);
+  useLayoutEffect(() => {
+    const computedZoom = parseFloat(window.getComputedStyle(document.documentElement).zoom) || 1;
+    setZoom(computedZoom);
+  }, []);
+
   useLayoutEffect(() => {
     const measure = () => {
       if (!outerRef.current) return;
@@ -182,10 +184,13 @@ export default function JourneyTimeline() {
   const progress = useTransform(scrollY, (sy) => {
     const outerH = outerHRef.current;
     if (!outerH) return 0;
-    const vpH = window.innerHeight;
-    const maxScroll = outerH - vpH;
-    if (maxScroll <= 0) return 1;
-    return Math.max(0, Math.min((sy - outerTopRef.current) / maxScroll, 1));
+    const vpHCSS = window.innerHeight / zoom;
+    const maxScrollCSS = outerH - vpHCSS;
+    if (maxScrollCSS <= 0) return 1;
+    
+    const syCSS = sy / zoom;
+    const topCSS = outerTopRef.current / zoom;
+    return Math.max(0, Math.min((syCSS - topCSS) / maxScrollCSS, 1));
   });
 
   const hintOpacity = useTransform(progress, [0, 0.9, 1], [1, 1, 0]);
@@ -219,8 +224,8 @@ export default function JourneyTimeline() {
     <div className="max-w-7xl mx-auto">
 
     {/* ── Desktop: scroll-driven "focus" timeline ─────────────────────── */}
-    <div ref={outerRef} className="hidden md:block" style={{ height: `${(N + 1) * VH_PER_ENTRY}vh`, position: "relative" }}>
-      <div className="sticky flex flex-col" style={{ top: 0, height: "100vh" }}>
+    <div ref={outerRef} className="hidden md:block" style={{ height: `${((N + 0.5) * SCROLL_VH_PER_ITEM) / zoom}vh`, position: "relative" }}>
+      <div className="sticky flex flex-col" style={{ top: 0, height: `${100 / zoom}vh` }}>
         <Corner pos="tl" />
         <Corner pos="br" />
 
@@ -228,7 +233,7 @@ export default function JourneyTimeline() {
           <p className="mono text-sm" style={{ color: "var(--em)", letterSpacing: "0.1em" }}>
             {"// my_journey[]"}
           </p>
-          <p className="mono" style={{ fontSize: 12, color: "rgba(0,0,0,0.3)", letterSpacing: "0.1em" }}>
+          <p className="mono" style={{ fontSize: 12, color: "var(--placeholder)", letterSpacing: "0.1em" }}>
             {String(N).padStart(2, "0")} ENTRIES
           </p>
         </div>
@@ -245,7 +250,7 @@ export default function JourneyTimeline() {
           <motion.div
             style={{
               position: "absolute", left: "50%", top: "50%", height: remainingHeight, width: 2,
-              background: "rgba(0,0,0,0.12)", transform: "translateX(-50%)",
+              background: "var(--line)", transform: "translateX(-50%)",
             }}
           />
 
@@ -261,7 +266,7 @@ export default function JourneyTimeline() {
         {/* Scroll hint */}
         <motion.div
           className="flex items-center gap-1.5 mono self-end mt-3 shrink-0"
-          style={{ opacity: hintOpacity, color: "rgba(0,0,0,0.35)", fontSize: 10 }}
+          style={{ opacity: hintOpacity, color: "var(--muted)", fontSize: 10 }}
         >
           scroll to continue
           <motion.span
@@ -281,13 +286,13 @@ export default function JourneyTimeline() {
         <p className="mono text-sm" style={{ color: "var(--em)", letterSpacing: "0.1em" }}>
           {"// my_journey[]"}
         </p>
-        <p className="mono" style={{ fontSize: 11, color: "rgba(0,0,0,0.3)", letterSpacing: "0.1em" }}>
+        <p className="mono" style={{ fontSize: 11, color: "var(--placeholder)", letterSpacing: "0.1em" }}>
           {String(N).padStart(2, "0")} ENTRIES
         </p>
       </div>
 
       <div className="relative pl-7">
-        <div style={{ position: "absolute", left: 4, top: 6, bottom: 6, width: 2, background: "rgba(0,0,0,0.12)" }} />
+        <div style={{ position: "absolute", left: 4, top: 6, bottom: 6, width: 2, background: "var(--line)" }} />
         {timelineData.map((t, i) => {
           const images = "images" in t ? t.images : undefined;
           return (

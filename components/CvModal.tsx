@@ -40,6 +40,8 @@ export default function CvModal({ isOpen, onClose, pdfUrl }: CvModalProps) {
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose]);
 
+  const zoom = typeof window !== 'undefined' ? (parseFloat(window.getComputedStyle(document.documentElement).zoom) || 1) : 1;
+
   if (!mounted) return null;
 
   return createPortal(
@@ -63,10 +65,10 @@ export default function CvModal({ isOpen, onClose, pdfUrl }: CvModalProps) {
           <motion.div
             className="relative w-full flex flex-col overflow-hidden"
             style={{
-              maxWidth: 900,
-              maxHeight: "90vh",
+              maxWidth: `${800 / zoom}px`,
+              maxHeight: `${80 / zoom}vh`,
               background: "var(--surf)",
-              border: "1px solid rgba(255,106,0,0.25)",
+              border: "1px solid color-mix(in srgb, var(--em) 25%, transparent)",
               borderRadius: 4,
               boxShadow: "0 40px 80px rgba(0,0,0,0.6)",
             }}
@@ -78,7 +80,7 @@ export default function CvModal({ isOpen, onClose, pdfUrl }: CvModalProps) {
             {/* Header */}
             <div
               className="flex items-center justify-between px-5 py-3.5 shrink-0"
-              style={{ borderBottom: "1px solid rgba(0,0,0,0.08)" }}
+              style={{ borderBottom: "1px solid var(--line)" }}
             >
               <span className="mono text-sm font-semibold text-gray-700">
                 CV Preview
@@ -113,20 +115,20 @@ export default function CvModal({ isOpen, onClose, pdfUrl }: CvModalProps) {
 
             {/* PDF embed — desktop only, see isDesktop comment above */}
             {isDesktop ? (
-              <div className="flex-1 min-h-0" style={{ background: "#e5e5e2" }}>
+              <div className="flex-1 min-h-0" style={{ background: "var(--surf2)" }}>
                 <iframe
                   src={`${pdfUrl}#toolbar=0&navpanes=0`}
                   title="CV Preview"
                   className="w-full h-full border-0"
-                  style={{ minHeight: "70vh" }}
+                  style={{ minHeight: `${55 / zoom}vh` }}
                 />
               </div>
             ) : (
               <div
                 className="flex-1 min-h-0 flex flex-col items-center justify-center gap-4 text-center px-8 py-16"
-                style={{ background: "#e5e5e2" }}
+                style={{ background: "var(--surf2)" }}
               >
-                <FiFileText size={48} style={{ color: "rgba(0,0,0,0.25)" }} />
+                <FiFileText size={48} style={{ color: "color-mix(in srgb, var(--tx) 25%, transparent)" }} />
                 <p className="mono text-sm" style={{ color: "var(--muted)" }}>
                   Open the CV in your browser&apos;s own PDF viewer for the best experience on mobile.
                 </p>

@@ -1,18 +1,15 @@
 "use client";
 
 import { motion, useTransform, type MotionValue } from "framer-motion";
-import AtroposProjectCard from "@/components/AtroposProjectCard";
+import CometProjectCard from "@/components/CometProjectCard";
 import type { Project } from "@/lib/data";
 
 // One horizontal row, one constant vertical center (top: 50%, y: "-50%" on every
 // card below) — the waiting stack on the right, the active card sweeping
 // through the middle, and the finished pile on the left all sit on the exact
 // same line. Nothing ever drops below another; only x/scale/rotate change.
-const P_ARRIVE   = 0.4;  // sweep progress where the incoming card reaches center
+const P_ARRIVE   = 0.2;  // sweep progress where the incoming card reaches center (faster arrival)
 const P_HOLD_END = 0.62; // sweep progress where it starts leaving center for the pile
-
-const CARD_W = 360;
-const CARD_H = 480;
 
 const ENTER_LEFT     = 122; // % — offscreen right, where a card's sweep begins
 const CENTER_LEFT    = 68;  // % — the resting/interactive spot, clear of the info panel
@@ -37,22 +34,28 @@ interface Props {
   projects: Project[];
   activeIndex: number;
   sweep: MotionValue<number>;
+  zoom: number;
   // Pile cards are "old news" sitting behind the info panel — clicking one
   // scrolls the section back to bring that project into focus first, then
   // hands off to the case-study page, instead of jumping there cold.
   onSelectPast?: (index: number, href: string) => void;
 }
 
-export default function ProjectCardDeck({ projects, activeIndex, sweep, onSelectPast }: Props) {
+export default function ProjectCardDeck({ projects, activeIndex, sweep, zoom, onSelectPast }: Props) {
   const active = projects[activeIndex];
   const pile = projects.slice(0, activeIndex);
   const queue = projects.slice(activeIndex + 1, activeIndex + 1 + QUEUE_VISIBLE);
   const activeSlot = pileSlot(activeIndex);
 
+  // Scaled dimensions based on computed zoom to fit all viewports without cropping
+  const CARD_W = 360 / zoom;
+  const CARD_H = 480 / zoom;
+
   const left = useTransform(sweep, (s) => {
     if (s < P_ARRIVE) {
       const t = easeOutCubic(s / P_ARRIVE);
-      return `${ENTER_LEFT + (CENTER_LEFT - ENTER_LEFT) * t}%`;
+      const startLeft = activeIndex === 0 ? 98 : ENTER_LEFT; // start closer for the first card to avoid long blank scroll
+      return `${startLeft + (CENTER_LEFT - startLeft) * t}%`;
     }
     if (s < P_HOLD_END) return `${CENTER_LEFT}%`;
     const t = easeInCubic((s - P_HOLD_END) / (1 - P_HOLD_END));
@@ -84,7 +87,7 @@ export default function ProjectCardDeck({ projects, activeIndex, sweep, onSelect
             opacity: 0.6 - i * 0.15,
           }}
         >
-          <AtroposProjectCard project={p} interactive={false} />
+          <CometProjectCard project={p} interactive={false} />
         </div>
       ))}
 
@@ -104,7 +107,7 @@ export default function ProjectCardDeck({ projects, activeIndex, sweep, onSelect
               zIndex: slot.z,
             }}
           >
-            <AtroposProjectCard
+            <CometProjectCard
               project={p}
               href={`/projects/${p.slug}`}
               onNavigate={onSelectPast ? () => onSelectPast(i, `/projects/${p.slug}`) : undefined}
@@ -129,7 +132,7 @@ export default function ProjectCardDeck({ projects, activeIndex, sweep, onSelect
             zIndex: 20,
           }}
         >
-          <AtroposProjectCard project={active} href={`/projects/${active.slug}`} />
+          <CometProjectCard project={active} href={`/projects/${active.slug}`} />
         </motion.div>
       )}
     </div>
