@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { useIsClient } from "@/lib/useIsClient";
 
 interface Props {
   images: string[];
@@ -14,6 +16,12 @@ interface Props {
 }
 
 export default function ImageLightbox({ images, index, onClose, onPrev, onNext }: Props) {
+  // ProjectDetail's content wrapper is a positioned element with its own
+  // z-index, which makes it a stacking context — any fixed-position child
+  // (this lightbox) gets trapped inside it and compared at the wrapper's
+  // z-index everywhere else on the page. Portaling to <body> escapes that.
+  const mounted = useIsClient();
+
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = ""; };
@@ -29,10 +37,12 @@ export default function ImageLightbox({ images, index, onClose, onPrev, onNext }
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose, onPrev, onNext]);
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center"
+        className="fixed inset-0 z-200 flex items-center justify-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -102,6 +112,7 @@ export default function ImageLightbox({ images, index, onClose, onPrev, onNext }
           ))}
         </div>
       </motion.div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

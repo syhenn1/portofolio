@@ -192,7 +192,7 @@ const Key3D = memo(function Key3D({ def, pos, rowScale, onHover }: Key3DProps) {
       <RoundedBox
         args={[w3 - 0.06, switchH, KH3 - 0.06]}
         radius={0.02}
-        smoothness={2}
+        smoothness={1}
         position={[0, switchH / 2, 0]}
       >
         <meshStandardMaterial
@@ -202,25 +202,26 @@ const Key3D = memo(function Key3D({ def, pos, rowScale, onHover }: Key3DProps) {
         />
       </RoundedBox>
 
-      {/* ── Keycap: skirt + body compound shape (OEM-style profile) ── */}
+      {/* ── Keycap: skirt + body compound shape (OEM-style profile) — two
+          meshes per cap instead of three; the third (a raised inset disc
+          faking the concave "dish") was a per-key draw call for a detail
+          barely visible at this scale, and 65 of them added up. ── */}
       <group ref={capRef} position={[0, baseY, 0]}>
         {/* Bottom flange — slightly wider, sits over the switch housing */}
         <RoundedBox
           args={[w3 - 0.04, capSkirtH, KH3 - 0.04]}
           radius={0.035}
-          smoothness={2}
+          smoothness={1}
           position={[0, -(capH / 2 - capSkirtH / 2), 0]}
         >
           <meshPhysicalMaterial color={capColor} roughness={0.62} metalness={0.05} clearcoat={0.25} clearcoatRoughness={0.4} />
         </RoundedBox>
 
-        {/* Main key surface — narrower than skirt, tapers inward. A slightly
-            smaller, raised inset disc fakes the concave "dish" every real
-            keycap has, instead of a flat sculpted-nothing top. */}
+        {/* Main key surface — narrower than skirt, tapers inward */}
         <RoundedBox
           args={[w3 - 0.08, capBodyH, KH3 - 0.08]}
           radius={CAP_RAD}
-          smoothness={3}
+          smoothness={2}
           position={[0, capSkirtH / 2, 0]}
         >
           <meshPhysicalMaterial
@@ -231,22 +232,6 @@ const Key3D = memo(function Key3D({ def, pos, rowScale, onHover }: Key3DProps) {
             metalness={0.08}
             clearcoat={0.35}
             clearcoatRoughness={0.3}
-          />
-        </RoundedBox>
-        <RoundedBox
-          args={[w3 - 0.16, capBodyH * 0.5, KH3 - 0.18]}
-          radius={CAP_RAD * 0.8}
-          smoothness={2}
-          position={[0, capBodyH / 2 - 0.006, 0]}
-        >
-          <meshPhysicalMaterial
-            color={capColor}
-            roughness={0.38}
-            metalness={0.06}
-            clearcoat={0.4}
-            clearcoatRoughness={0.25}
-            transparent
-            opacity={0.65}
           />
         </RoundedBox>
 
@@ -447,6 +432,7 @@ export default function MechanicalKeyboard3D({ onHover, introRotY }: Props) {
       <Canvas
         camera={{ position: [0, 7, 13], fov: 62 }}
         gl={{ alpha: true, antialias: true }}
+        dpr={[1, 1.5]}
         style={{ background: "transparent", width: "100%", height: "100%", pointerEvents: "auto" }}
         onCreated={({ camera }) => camera.lookAt(0, 0.3, -0.5)}
       >

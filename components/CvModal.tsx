@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiDownload, FiX, FiExternalLink } from "react-icons/fi";
+import { FiDownload, FiX, FiExternalLink, FiFileText } from "react-icons/fi";
+import { useIsClient } from "@/lib/useIsClient";
+import { useMediaQuery } from "@/lib/useMediaQuery";
 
 interface CvModalProps {
   isOpen: boolean;
@@ -11,6 +14,17 @@ interface CvModalProps {
 }
 
 export default function CvModal({ isOpen, onClose, pdfUrl }: CvModalProps) {
+  // About's own section is a positioned element with its own z-index, which
+  // makes it a stacking context — any fixed-position child (this modal) gets
+  // trapped inside it and compared at the SECTION's z-index everywhere else
+  // on the page, no matter how high the modal's own z-index reads. Portaling
+  // straight to <body> escapes that trap entirely.
+  const mounted = useIsClient();
+  // Embedding a PDF in an <iframe> is a known freeze/crash risk in mobile
+  // Safari's WebKit PDF renderer — skip the embed there and hand off to the
+  // browser's own PDF viewer instead, which is what mobile users expect anyway.
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -26,11 +40,13 @@ export default function CvModal({ isOpen, onClose, pdfUrl }: CvModalProps) {
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose]);
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8"
+          className="fixed inset-0 z-200 flex items-center justify-center p-4 sm:p-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -95,18 +111,35 @@ export default function CvModal({ isOpen, onClose, pdfUrl }: CvModalProps) {
               </div>
             </div>
 
-            {/* PDF embed */}
-            <div className="flex-1 min-h-0" style={{ background: "#e5e5e2" }}>
-              <iframe
-                src={`${pdfUrl}#toolbar=0&navpanes=0`}
-                title="CV Preview"
-                className="w-full h-full border-0"
-                style={{ minHeight: "70vh" }}
-              />
-            </div>
+            {/* PDF embed — desktop only, see isDesktop comment above */}
+            {isDesktop ? (
+              <div className="flex-1 min-h-0" style={{ background: "#e5e5e2" }}>
+                <iframe
+                  src={`${pdfUrl}#toolbar=0&navpanes=0`}
+                  title="CV Preview"
+                  className="w-full h-full border-0"
+                  style={{ minHeight: "70vh" }}
+                />
+              </div>
+            ) : (
+              <div
+                className="flex-1 min-h-0 flex flex-col items-center justify-center gap-4 text-center px-8 py-16"
+                style={{ background: "#e5e5e2" }}
+              >
+                <FiFileText size={48} style={{ color: "rgba(0,0,0,0.25)" }} />
+                <p className="mono text-sm" style={{ color: "var(--muted)" }}>
+                  Open the CV in your browser&apos;s own PDF viewer for the best experience on mobile.
+                </p>
+                <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="btn-em">
+                  <FiExternalLink size={16} />
+                  Open CV
+                </a>
+              </div>
+            )}
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

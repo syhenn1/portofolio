@@ -15,10 +15,12 @@ export default function HeroLanyard() {
   // is what was crashing Chrome on phones.
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const ref = useRef<HTMLDivElement>(null);
-  // Also unmount once the user has scrolled well past the hero — Projects
-  // mounts its own Lanyard further down the page, and running two physics
-  // worlds at once is exactly the "blow past the WebGL budget" scenario.
-  const inView = useInView(ref, "600px 0px 600px 0px");
+  // Also unmount once the user has scrolled well past the hero — this and
+  // Skills' own MechanicalKeyboard3D both spin up a WebGL context, and
+  // giving either one a needlessly generous margin just widens the window
+  // where a lagging scroll leaves two heavy contexts alive at once (we've
+  // seen the browser respond to that with an outright "Context Lost").
+  const inView = useInView(ref, "200px 0px 200px 0px");
 
   return (
     <div
