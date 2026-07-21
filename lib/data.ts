@@ -33,11 +33,6 @@ import { FiFolder, FiCode, FiBookOpen } from "react-icons/fi";
 import type { IconType } from "react-icons";
 import { basePath } from "@/lib/basePath";
 
-// Shared scroll pacing for every scroll-jacked "one item per screenful"
-// section (JourneyTimeline, Projects) — same constant so their per-item
-// scroll speed always matches; tune once here, not separately per section.
-export const SCROLL_VH_PER_ITEM = 140;
-
 export const statsData = [
   { n: "5+", label: "Projects Built", Icon: FiFolder },
   { n: "5+", label: "Languages", Icon: FiCode },
@@ -86,37 +81,11 @@ export const timelineData = [
     images: [{ src: `${basePath}/images/kemendik-team.jpg`, width: 900, height: 506 }],
   },
   {
-    year: "Oct 2025 – Dec 2025",
-    color: "#f59e0b",
-    title: "Academic Division Staff — EXPECTIK",
-    desc: "Organized games and missions for incoming students during EXPECTIK, the ICT Department's orientation event required for graduation.",
-    images: [{ src: `${basePath}/images/expectik-pres.png`, width: 645, height: 842 }],
-  },
-  {
-    year: "Dec 2025",
-    color: "#10b981",
-    title: "Project-Based Learning — Dinas Kesehatan Depok",
-    desc: "Led end-to-end development of Delisa's midwife modules as Fullstack Developer & System Analyst — architecting the healthcare data schema and building the Next.js/TypeScript dashboard from Figma designs.",
-    images: [
-      { src: `${basePath}/images/delisa-landing.png`, width: 1919, height: 1079 },
-      { src: `${basePath}/images/delisa-team.png`, width: 800, height: 800 },
-    ],
-  },
-  {
-    year: "Jun 2026",
-    color: "#06b6d4",
-    title: "Project-Based Learning — PT Nusa Tekno Global",
-    desc: "Led KIRA from market validation to system architecture — a dual-engine FastAPI + Express backend feeding a Next.js/TypeScript dashboard that visualizes RUL predictions and asset-risk metrics.",
-    images: [
-      { src: `${basePath}/images/kira-landing.png`, width: 1280, height: 726 },
-      { src: `${basePath}/images/kira-team.jpg`, width: 900, height: 506 },
-    ],
-  },
-  {
     year: "Now",
     color: "#14140f",
     title: "Open to Opportunities",
     desc: "Always learning, building, and ready to contribute to innovative projects.",
+    images: [{ src: `${basePath}/images/rifatHoodie.jpg`, width: 2062, height: 3664 }],
   },
 ];
 

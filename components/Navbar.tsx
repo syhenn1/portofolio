@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiDownload, FiMenu, FiX, FiHome } from "react-icons/fi";
 import { basePath } from "@/lib/basePath";
 import { getLenisInstance } from "@/lib/lenis";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const navLinks = [
   { href: "#about", label: "About" },
@@ -59,9 +60,8 @@ export default function Navbar() {
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, [open]);
 
-  // Scrolls to the top of the already-entered page instead of a real navigation —
-  // a plain href reload would remount IntroGate with entered=false and bring the
-  // pre-Start splash back.
+  // Scrolls to the top instead of a real navigation, so it's a smooth glide
+  // rather than an abrupt native jump/reload.
   const handleHomeClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setOpen(false);
@@ -155,6 +155,10 @@ export default function Navbar() {
                 <FiDownload size={14} />
                 Resume
               </a>
+
+              <div className="pt-2 mt-1 flex justify-center" style={{ borderTop: "1px solid var(--line)" }}>
+                <ThemeToggle className="mt-2" />
+              </div>
             </div>
           </motion.div>
         )}

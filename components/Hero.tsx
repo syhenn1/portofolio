@@ -1,11 +1,14 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { basePath } from "@/lib/basePath";
+import AsciiImageHover from "@/components/AsciiImageHover";
 import MobileHeroCard from "@/components/MobileHeroCard";
 import { MorphingHeroText } from "@/components/MorphingHeroText";
 import VariableFontText from "@/components/VariableFontText";
-import Waves from "@/components/Waves";
+import { ScrollVelocityContainer, ScrollVelocityRow } from "@/components/ui/scroll-based-velocity";
+import { FloatingPaths } from "@/components/ui/background-paths";
 import {
   SiReact,
   SiNextdotjs,
@@ -24,8 +27,7 @@ import {
   SiDart,
   SiSqlite,
 } from "react-icons/si";
-import { FiGithub, FiLinkedin, FiMail, FiArrowRight } from "react-icons/fi";
-import TiltButton from "@/components/TiltButton";
+import { FiGithub, FiLinkedin, FiMail } from "react-icons/fi";
 import LearnMoreButton from "@/components/LearnMoreButton";
 import Typewriter from "@/components/Typewriter";
 import { socialLinks } from "@/lib/data";
@@ -74,15 +76,16 @@ const heroSocials = [
   { href: `mailto:${socialLinks.email}`, Icon: FiMail, label: "Email" },
 ];
 
-const MARQUEE_TEXT = "FULLSTACK DEVELOPER · PROJECT MANAGER · FULLSTACK DEVELOPER · PROJECT MANAGER · FULLSTACK DEVELOPER · PROJECT MANAGER · FULLSTACK DEVELOPER · PROJECT MANAGER · FULLSTACK DEVELOPER · PROJECT MANAGER ·";
+const MARQUEE_TEXT = "FULLSTACK DEVELOPER · PROJECT MANAGER · ";
+
+const BIO_HOVER =
+  "Turning ideas into working software — clean code, thoughtful architecture, and a habit of shipping things people actually use.";
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
   const { scrollY } = useScroll();
-  const textX1 = useTransform(scrollY, [0, 600], [0, -800]);
-  const textX2 = useTransform(scrollY, [0, 600], [-200, 600]);
-  const textX3 = useTransform(scrollY, [0, 600], [100, -700]);
   const darkenOpacity = useTransform(scrollY, [0, 700], [0, 0.72]);
+  const [nameHovered, setNameHovered] = useState(false);
 
   return (
     <section
@@ -91,35 +94,22 @@ export default function Hero() {
       className="relative min-h-screen flex items-end lg:items-start overflow-hidden pt-24 lg:pt-[10vh]"
       style={{ background: "linear-gradient(160deg, var(--bg) 0%, var(--surf) 50%, var(--bg) 100%)" }}
     >
-      <Waves className="absolute inset-0 z-0 pointer-events-none" pointerSize={0} />
-
-      {/* Lighting: main orange spotlight top-right */}
+      {/* Slowly drifting background line paths — desktop only, anchored to
+          the top-right corner and fading out toward the top-left, so it
+          reads as emerging from that corner instead of spanning the whole
+          section or competing with the text lower down. */}
       <div
-        className="absolute pointer-events-none z-0"
+        className="absolute inset-x-0 top-0 z-0 pointer-events-none hidden md:block"
         style={{
-          width: 900, height: 900, top: -300, right: -150,
-          background: "radial-gradient(circle, color-mix(in srgb, var(--em) 16%, transparent) 0%, color-mix(in srgb, var(--em) 6%, transparent) 40%, transparent 70%)",
-          filter: "blur(80px)",
+          height: "62vh",
+          transform: "scaleX(-1)",
+          WebkitMaskImage: "linear-gradient(225deg, black 0%, black 40%, transparent 78%)",
+          maskImage: "linear-gradient(225deg, black 0%, black 40%, transparent 78%)",
         }}
-      />
-      {/* Lighting: white rim light left */}
-      <div
-        className="absolute pointer-events-none z-0"
-        style={{
-          width: 600, height: 600, bottom: -100, left: -80,
-          background: "radial-gradient(circle, rgba(255,255,255,.06) 0%, transparent 70%)",
-          filter: "blur(90px)",
-        }}
-      />
-      {/* Lighting: neutral fill — center */}
-      <div
-        className="absolute pointer-events-none z-0"
-        style={{
-          width: 500, height: 500, top: "35%", left: "20%",
-          background: "radial-gradient(circle, rgba(255,255,255,.03) 0%, transparent 70%)",
-          filter: "blur(120px)",
-        }}
-      />
+      >
+        <FloatingPaths position={1} />
+        <FloatingPaths position={-1} />
+      </div>
 
       {/* Scroll-reactive fade overlay — hero blends into the page background as it scrolls away */}
       <motion.div
@@ -127,19 +117,24 @@ export default function Hero() {
         style={{ zIndex: 15, background: "var(--bg)", opacity: darkenOpacity }}
       />
 
-      {/* Animated glow blobs */}
-      <motion.div
-        className="absolute rounded-full pointer-events-none z-0"
-        style={{
-          width: 550, height: 550, top: -180, right: 100,
-          background: "radial-gradient(circle, color-mix(in srgb, var(--em) 9%, transparent), transparent 70%)",
-          filter: "blur(100px)",
-        }}
-        animate={{ x: [0, 40, 0], y: [0, 28, 0] }}
-        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-      />
+      {/* Portrait cutout, grounded to the bottom-right — sits behind the
+          floating icons/content but above the background paths/wordmark so
+          it reads as part of the scene, not a competing focal point. The
+          bottom-edge fade later in this section softens its base into the
+          next section instead of ending on a hard clip. Pointer events are
+          re-enabled just for this box (unlike its pointer-events-none
+          siblings) so the ASCII-dissolve hover effect can trigger; it sits
+          at a low z-index, so any interactive element stacked above it
+          (buttons, icons) still wins hit-testing where they overlap. */}
+      <div className="absolute bottom-0 hidden lg:block select-none" style={{ zIndex: 1, right: "18%" }}>
+        <AsciiImageHover
+          src={`${basePath}/images/ripatSikma.png`}
+          alt="Rifat Syahman"
+          style={{ height: "clamp(420px, 82vh, 780px)", aspectRatio: "1750 / 2249" }}
+        />
+      </div>
 
-      {/* Premium RS watermark, right side (placeholder replacing the lanyard after start) */}
+      {/* Faint wordmark, right side (placeholder replacing the lanyard after start) */}
       <div
         className="absolute pointer-events-none select-none hidden lg:block z-0"
         style={{
@@ -149,23 +144,12 @@ export default function Hero() {
           fontSize: "25vw",
           fontWeight: 900,
           color: "color-mix(in srgb, var(--tx) 1.8%, transparent)",
-          fontFamily: "var(--font-mono)",
           letterSpacing: "-0.06em",
           lineHeight: 1,
         }}
       >
         RS
       </div>
-      <motion.div
-        className="absolute rounded-full pointer-events-none z-0"
-        style={{
-          width: 380, height: 380, bottom: 0, left: 0,
-          background: "radial-gradient(circle, rgba(255,255,255,.05), transparent 70%)",
-          filter: "blur(100px)",
-        }}
-        animate={{ x: [0, -22, 0], y: [0, -22, 0] }}
-        transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-      />
 
       {/* Floating tech icons */}
       {techIcons.map((tech, i) => {
@@ -199,26 +183,6 @@ export default function Hero() {
         );
       })}
 
-      {/* Lanyard placeholder — actual canvas rendered outside hero to avoid overflow clip */}
-
-      {/* Status floating badge */}
-      <motion.div
-        className="absolute z-10 hidden md:flex items-center gap-2 glass rounded-sm px-4 py-2.5"
-        style={{ left: "8%", bottom: "13%", borderColor: "color-mix(in srgb, var(--em) 30%, transparent)", clipPath: "var(--cut)" }}
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: [0, -7, 0] }}
-        transition={{
-          opacity: { duration: 0.7, delay: 1.5 },
-          y: { duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1.5, repeatDelay: 1.2 },
-        }}
-      >
-        <div className="relative w-2.5 h-2.5 shrink-0">
-          <div className="absolute inset-0 rounded-full pg" style={{ background: "var(--em)" }} />
-          <div className="relative w-full h-full rounded-full z-10" style={{ background: "var(--em)" }} />
-        </div>
-        <span className="mono text-xs font-semibold" style={{ color: "var(--em)" }}>open_to_work = true</span>
-      </motion.div>
-
       {/* Text content — pointer-events-none so it doesn't block the draggable
           lanyard canvas behind it; re-enabled on the actual interactive rows */}
       <div className="relative z-30 w-full max-w-7xl mx-auto px-3 sm:px-5 pb-24 sm:pb-28 lg:pb-0 lg:px-8 pointer-events-none">
@@ -244,36 +208,63 @@ export default function Hero() {
           <span style={{ color: "var(--muted)" }}> = {"{"}</span>
         </motion.div>
 
-        <motion.h1
-          className="font-black leading-none mb-3 pointer-events-auto"
-          style={{ fontSize: "clamp(3rem, 9vw, 6.5rem)" }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-        >
-          <MorphingHeroText text={"Rifat\nSyahman"} hoverText={"Software\nDeveloper"} />
-        </motion.h1>
+        <MorphingHeroText
+          className="pointer-events-auto"
+          onHoverChange={setNameHovered}
+          front={
+            <>
+              <motion.h1
+                className="font-black leading-none mb-3"
+                style={{ fontSize: "clamp(3rem, 9vw, 6.5rem)" }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.1 }}
+              >
+                <span className="whitespace-pre-line">{"Rifat\nSyahman"}</span>
+              </motion.h1>
 
-        <motion.div
-          className="flex items-center gap-2 mb-4 mono text-sm"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.25 }}
-        >
-          <span style={{ color: "var(--muted)" }}>role:</span>
-          <Typewriter />
-        </motion.div>
+              <motion.div
+                className="flex items-center gap-2 mb-4 mono text-sm"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.25 }}
+              >
+                <span style={{ color: "var(--muted)" }}>role:</span>
+                <Typewriter />
+              </motion.div>
 
-        <motion.p
-          className="text-gray-600 mb-8 leading-relaxed max-w-sm text-sm sm:text-base"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.35 }}
-        >
-          D4 Informatics Engineering student at PNJ. I love building things
-          that are <span style={{ color: "var(--em)" }} className="font-semibold">useful</span> —
-          from web and mobile to data analysis.
-        </motion.p>
+              <motion.div
+                className="mb-8 max-w-sm"
+                style={{ minHeight: "3.5em", color: nameHovered ? "var(--tx)" : "var(--muted)", transition: "color 0.5s ease" }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.35 }}
+              >
+                <p className="leading-relaxed text-sm sm:text-base">
+                  D4 Informatics Engineering student at PNJ. I love building things
+                  that are <span style={{ color: "var(--em)" }} className="font-semibold">useful</span> —
+                  from web and mobile to data analysis.
+                </p>
+              </motion.div>
+            </>
+          }
+          back={
+            <>
+              <div className="font-black leading-none mb-3" style={{ fontSize: "clamp(3rem, 9vw, 6.5rem)" }}>
+                <span className="whitespace-pre-line">{"Software\nDeveloper"}</span>
+              </div>
+
+              <div className="flex items-center gap-2 mb-4 mono text-sm" style={{ visibility: "hidden" }}>
+                <span>role:</span>
+                <span>placeholder</span>
+              </div>
+
+              <div className="mb-8 max-w-sm" style={{ minHeight: "3.5em" }}>
+                <p className="leading-relaxed text-sm sm:text-base">{BIO_HOVER}</p>
+              </div>
+            </>
+          }
+        />
 
         <motion.div
           className="flex flex-wrap gap-3 mb-7 pointer-events-auto"
@@ -281,33 +272,48 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.45 }}
         >
-          <TiltButton href="#projects" className="btn-em" magnetic>
-            View Projects
-            <FiArrowRight size={16} />
-          </TiltButton>
           <LearnMoreButton href="#contact">Get In Touch</LearnMoreButton>
         </motion.div>
 
-        <motion.div
-          className="flex gap-2.5 pointer-events-auto"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.55 }}
-        >
-          {heroSocials.map(({ href, Icon, label }) => (
-            <a
-              key={label}
-              href={href}
-              target={label !== "Email" ? "_blank" : undefined}
-              rel="noopener noreferrer"
-              className="soc"
-              aria-label={label}
-              data-magnetic=""
-            >
-              <Icon size={16} />
-            </a>
-          ))}
-        </motion.div>
+        <div className="flex flex-wrap items-center gap-4 pointer-events-auto">
+          <motion.div
+            className="flex gap-2.5"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.55 }}
+          >
+            {heroSocials.map(({ href, Icon, label }) => (
+              <a
+                key={label}
+                href={href}
+                target={label !== "Email" ? "_blank" : undefined}
+                rel="noopener noreferrer"
+                className="soc"
+                aria-label={label}
+                data-magnetic=""
+              >
+                <Icon size={16} />
+              </a>
+            ))}
+          </motion.div>
+
+          {/* Status badge — lives in the flow beside the social icons so it
+              can never drift over the CTA/social row on shorter viewports
+              the way a section-percentage absolute position could. */}
+          <motion.div
+            className="hidden md:flex items-center gap-2 glass rounded-full px-4 py-2.5"
+            style={{ borderColor: "color-mix(in srgb, var(--em) 30%, transparent)" }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.65 }}
+          >
+            <div className="relative w-2.5 h-2.5 shrink-0">
+              <div className="absolute inset-0 rounded-full pg" style={{ background: "var(--em)" }} />
+              <div className="relative w-full h-full rounded-full z-10" style={{ background: "var(--em)" }} />
+            </div>
+            <span className="mono text-xs font-semibold" style={{ color: "var(--em)" }}>open_to_work = true</span>
+          </motion.div>
+        </div>
 
         <motion.div
           className="mono text-xs mt-5"
@@ -322,50 +328,50 @@ export default function Hero() {
         <MobileHeroCard />
       </div>
 
-      {/* Scroll-reactive marquee — 3 rows */}
-      <div className="absolute left-0 right-0 z-2 pointer-events-none select-none overflow-hidden" style={{ bottom: 80 }}>
-        <motion.div style={{ x: textX1 }} className="whitespace-nowrap leading-none">
-          <span
-            style={{
-              fontSize: "clamp(2.2rem, 5.5vw, 4.5rem)",
-              fontWeight: 900,
-              color: "transparent",
-              WebkitTextStroke: "1.5px color-mix(in srgb, var(--em) 35%, transparent)",
-              letterSpacing: "0.06em",
-              display: "block",
-            }}
-          >
-            {MARQUEE_TEXT}
-          </span>
-        </motion.div>
-        <motion.div style={{ x: textX2 }} className="whitespace-nowrap leading-none">
-          <span
-            style={{
-              fontSize: "clamp(2.2rem, 5.5vw, 4.5rem)",
-              fontWeight: 900,
-              color: "transparent",
-              WebkitTextStroke: "1.5px color-mix(in srgb, var(--em) 25%, transparent)",
-              letterSpacing: "0.06em",
-              display: "block",
-            }}
-          >
-            {MARQUEE_TEXT}
-          </span>
-        </motion.div>
-        <motion.div style={{ x: textX3 }} className="whitespace-nowrap leading-none">
-          <span
-            style={{
-              fontSize: "clamp(2.2rem, 5.5vw, 4.5rem)",
-              fontWeight: 900,
-              color: "transparent",
-              WebkitTextStroke: "1.5px color-mix(in srgb, var(--em) 15%, transparent)",
-              letterSpacing: "0.06em",
-              display: "block",
-            }}
-          >
-            {MARQUEE_TEXT}
-          </span>
-        </motion.div>
+      {/* Always-on marquee — vertical strip along the hero's right edge, 2
+          columns drifting opposite directions, independent of scroll. Each
+          column keeps the row's own horizontal drift logic (width-based)
+          untouched; rotating the already-centered box only affects paint,
+          not layout, so centering stays correct. */}
+      <div className="hidden lg:flex absolute right-4 xl:right-8 top-0 bottom-0 z-2 items-center gap-4 pointer-events-none select-none">
+        <div className="flex items-center justify-center" style={{ width: 56, height: "100%" }}>
+          <div style={{ width: "62vh", transform: "rotate(-90deg)" }}>
+            <ScrollVelocityContainer className="leading-none">
+              <ScrollVelocityRow
+                baseVelocity={12}
+                direction={1}
+                style={{
+                  fontSize: "clamp(1.8rem, 2.8vw, 3rem)",
+                  fontWeight: 900,
+                  color: "transparent",
+                  WebkitTextStroke: "1.5px color-mix(in srgb, var(--em) 35%, transparent)",
+                  letterSpacing: "0.06em",
+                }}
+              >
+                {MARQUEE_TEXT}
+              </ScrollVelocityRow>
+            </ScrollVelocityContainer>
+          </div>
+        </div>
+        <div className="flex items-center justify-center" style={{ width: 56, height: "100%" }}>
+          <div style={{ width: "62vh", transform: "rotate(-90deg)" }}>
+            <ScrollVelocityContainer className="leading-none">
+              <ScrollVelocityRow
+                baseVelocity={12}
+                direction={-1}
+                style={{
+                  fontSize: "clamp(1.8rem, 2.8vw, 3rem)",
+                  fontWeight: 900,
+                  color: "transparent",
+                  WebkitTextStroke: "1.5px color-mix(in srgb, var(--em) 20%, transparent)",
+                  letterSpacing: "0.06em",
+                }}
+              >
+                {MARQUEE_TEXT}
+              </ScrollVelocityRow>
+            </ScrollVelocityContainer>
+          </div>
+        </div>
       </div>
 
       {/* Bottom edge fade into next section */}

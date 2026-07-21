@@ -1,12 +1,43 @@
 @import "tailwindcss";
 
+/* Black & white theme — the default. No color accents, just grayscale. */
 :root {
+  --bg: #fafafa;
+  --surf: #f0f0ee;
+  --surf2: #e4e4e0;
+  --em: #141414;
+  --em2: #141414;
+  --em-ink: #fafafa;
+  --tx: #111111;
+  --muted: #6b6b6b;
+  --line: rgba(0, 0, 0, 0.12);
+  --overlay: rgba(0, 0, 0, 0.04);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-shadow: rgba(0, 0, 0, 0.06);
+  --input-bg: #ffffff;
+  --placeholder: #a3a3a3;
+  --text-soft: #333333;
+  --gtx-1: #1a1a1a;
+  --gtx-2: #000000;
+  --gtx-3: #545454;
+  /* Tech-category colors stay vivid even in B/W — they're information (which
+     category a key belongs to), not decorative chrome, so desaturating them
+     just makes the skills keyboard unreadable. */
+  --kb-lang: #10b981;
+  --kb-framework: #06b6d4;
+  --kb-database: #f59e0b;
+  --kb-tool: #a78bfa;
+  --kb-ide: #f97316;
+}
+
+/* STD theme — the original orange/light look */
+:root[data-theme="light"] {
   --bg: #f7f7f4;
   --surf: #ececea;
   --surf2: #e2e2de;
   --em: #ff6a00;
   --em2: #14140f;
-  --em-glow: color-mix(in srgb, var(--em) 35%, transparent);
+  --em-ink: #0a0a0a;
   --tx: #14140f;
   --muted: #6b6b66;
   --line: rgba(0, 0, 0, 0.1);
@@ -24,7 +55,6 @@
   --kb-database: #f59e0b;
   --kb-tool: #a78bfa;
   --kb-ide: #f97316;
-  --cut: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
 }
 
 /* AMD theme — black/red dark mode, toggled from the intro screen */
@@ -34,6 +64,7 @@
   --surf2: #202020;
   --em: #ff2f2f;
   --em2: #f5f5f2;
+  --em-ink: #0a0a0a;
   --tx: #f2f2ee;
   --muted: #9a9a94;
   --line: rgba(255, 255, 255, 0.12);
@@ -74,6 +105,16 @@ body {
   overflow-x: clip;
 }
 
+/* Text is not selectable/copyable site-wide — form fields stay usable */
+* {
+  -webkit-user-select: none;
+  user-select: none;
+}
+input,
+textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
 
 ::-webkit-scrollbar {
   display: none;
@@ -95,7 +136,7 @@ body {
   background: var(--glass-bg);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border: 1px solid color-mix(in srgb, var(--em) 22%, transparent);
+  border: 1px solid var(--line);
   box-shadow: 0 8px 30px var(--glass-shadow);
 }
 
@@ -109,40 +150,19 @@ body {
 }
 
 .slabel {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
   font-size: 12px;
-  font-weight: 700;
-  color: var(--em);
-  letter-spacing: 0.1em;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.slabel::before {
-  content: "//";
-  color: var(--placeholder);
-}
 
 .divline {
   height: 1px;
-  background: linear-gradient(to right, transparent, color-mix(in srgb, var(--em) 32%, transparent), transparent);
-}
-
-/* Hazard accent strip - thin black/orange diagonal stripe, used sparingly as a graphic accent */
-.hazard {
-  height: 4px;
-  background-image: repeating-linear-gradient(
-    -45deg,
-    var(--em) 0px,
-    var(--em) 8px,
-    #0a0a0a 8px,
-    #0a0a0a 16px
-  );
-  animation: hazard-march 3.5s linear infinite;
-}
-@keyframes hazard-march {
-  to { background-position: 45.25px 0; }
+  background: var(--line);
 }
 
 /* Buttons */
@@ -151,22 +171,20 @@ body {
   align-items: center;
   gap: 8px;
   background: var(--em);
-  color: #0a0a0a;
-  font-weight: 800;
+  color: var(--em-ink);
+  font-weight: 700;
   font-size: 14px;
   letter-spacing: 0.02em;
   padding: 12px 24px;
-  border-radius: 3px;
-  clip-path: var(--cut);
+  border-radius: 4px;
   border: none;
   cursor: pointer;
   text-decoration: none;
-  transition: all 0.3s;
+  transition: all 0.25s;
 }
 .btn-em:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px var(--em-glow);
-  background: #ff7d1a;
+  filter: brightness(1.1);
 }
 
 /* Social icon button */
@@ -213,7 +231,7 @@ body {
   display: inline-block;
 }
 .tech-chip:hover {
-  color: #0a0a0a !important;
+  color: var(--em-ink) !important;
   background: var(--em) !important;
   border-color: transparent !important;
 }
@@ -222,8 +240,7 @@ body {
 .stat-card {
   background: var(--surf);
   border: 1px solid var(--line);
-  border-radius: 2px;
-  clip-path: var(--cut);
+  border-radius: 6px;
   padding: 20px 24px;
   text-align: center;
   transition: all 0.3s;
@@ -239,19 +256,20 @@ body {
   gap: 4px;
   font-size: 11px;
   font-weight: 500;
-  color: #a83e00;
+  color: var(--em);
   background: color-mix(in srgb, var(--em) 8%, transparent);
   border: 1px solid color-mix(in srgb, var(--em) 25%, transparent);
   padding: 2px 8px;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 /* Bento skill card */
 .bcard {
-  background: var(--surf);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
   border: 1px solid var(--line);
-  border-radius: 2px;
-  clip-path: var(--cut);
+  border-radius: 18px;
   padding: 24px;
   transition: all 0.3s;
 }
@@ -267,15 +285,13 @@ body {
 }
 .sicon:hover .sibg {
   border-color: color-mix(in srgb, var(--em) 50%, transparent) !important;
-  box-shadow: 0 6px 20px color-mix(in srgb, var(--em) 20%, transparent);
 }
 
 /* Contact */
 .cl {
   background: var(--surf);
   border: 1px solid var(--line);
-  border-radius: 2px;
-  clip-path: var(--cut);
+  border-radius: 6px;
   padding: 18px 20px;
   display: flex;
   align-items: center;
@@ -316,9 +332,8 @@ body {
   width: 42px;
   height: 42px;
   background: var(--surf);
-  border: 1px solid color-mix(in srgb, var(--em) 35%, transparent);
-  border-radius: 2px;
-  clip-path: var(--cut);
+  border: 1px solid var(--line);
+  border-radius: 6px;
   color: var(--em);
   display: flex;
   align-items: center;
@@ -360,18 +375,13 @@ body {
   width: 100%;
 }
 
-/* Status pulse */
+/* Status pulse — a plain expanding ring + fade, no blur/glow bloom */
 @keyframes pulse-g {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--em) 55%, transparent);
-  }
-  50% {
-    box-shadow: 0 0 0 5px color-mix(in srgb, var(--em) 0%, transparent);
-  }
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.2); opacity: 0; }
 }
 .pg {
-  animation: pulse-g 2.2s ease infinite;
+  animation: pulse-g 2.2s ease-out infinite;
 }
 
 /* Typewriter cursor */
@@ -390,21 +400,12 @@ body {
   }
 }
 
-/* Code decoration */
-.code-deco {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
-  font-size: 12px;
-  line-height: 1.7;
-  white-space: nowrap;
-}
-
 /* ===== Bento project card ===== */
 .proj-card {
   position: relative;
   display: flex;
   flex-direction: column;
-  border-radius: 2px;
-  clip-path: var(--cut);
+  border-radius: 8px;
   overflow: hidden;
   background: var(--surf);
   border: 1px solid var(--line);
@@ -423,7 +424,7 @@ body {
   transform: translate(3px, -3px);
   opacity: 1;
   background: var(--em);
-  color: #0a0a0a;
+  color: var(--em-ink);
 }
 .proj-img {
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
@@ -442,108 +443,16 @@ body {
   backdrop-filter: blur(6px);
 }
 
-/* ===== Comet project card (scroll-driven deck in Projects) ===== */
-.comet-project-link {
-  display: block;
-  width: 100%;
-  height: 100%;
-  text-decoration: none;
-  cursor: pointer;
-}
-.comet-project {
-  width: 100%;
-  height: 100%;
-  border-radius: 6px;
-  clip-path: var(--cut);
-  border: 1px solid var(--line);
-  overflow: hidden;
-  background: #0a0a0a;
-  box-shadow: 0 32px 70px -20px rgba(0, 0, 0, 0.45);
-  transition: box-shadow 0.35s ease;
-}
-.comet-project:hover {
-  box-shadow: 0 40px 80px -16px rgba(0, 0, 0, 0.55);
-}
-.comet-project-media {
-  position: absolute;
-  inset: 0;
-}
-.comet-project-rim {
-  position: absolute;
-  inset: 0;
-  box-shadow: inset 0 0 0 2px var(--card-accent, var(--em));
-  background:
-    linear-gradient(to top, rgba(6, 6, 6, 0.88) 0%, rgba(6, 6, 6, 0.32) 42%, rgba(6, 6, 6, 0) 68%),
-    linear-gradient(to bottom, rgba(6, 6, 6, 0.55) 0%, rgba(6, 6, 6, 0) 20%);
-}
-.comet-project-year {
-  position: absolute;
-  top: 16px;
-  left: 20px;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.85);
-  letter-spacing: 0.08em;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
-}
-.comet-project-body {
-  position: absolute;
-  left: 22px;
-  right: 22px;
-  bottom: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.comet-project-badge {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--card-accent, var(--em));
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.comet-project-title {
-  font-size: 26px;
-  font-weight: 800;
-  color: #fff;
-  margin: 0;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-}
-.comet-project-arrow {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.18);
-  color: #fff;
-  backdrop-filter: blur(4px);
-  opacity: 0;
-  transform: translate(-3px, 3px);
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.comet-project:hover .comet-project-arrow {
-  opacity: 1;
-  transform: translate(0, 0);
-  background: var(--em);
-  color: #0a0a0a;
-}
-
 /* Pill badge */
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.05em;
   padding: 5px 12px;
-  border-radius: 2px;
+  border-radius: 999px;
   background: var(--overlay);
   border: 1px solid var(--line);
   color: var(--muted);
@@ -553,8 +462,7 @@ body {
 .meta-card {
   background: var(--surf);
   border: 1px solid var(--line);
-  border-radius: 2px;
-  clip-path: var(--cut);
+  border-radius: 8px;
   padding: 20px 22px;
 }
 .meta-row + .meta-row {
@@ -602,8 +510,7 @@ body {
 .nav-card {
   background: var(--surf);
   border: 1px solid var(--line);
-  border-radius: 2px;
-  clip-path: var(--cut);
+  border-radius: 8px;
   padding: 22px;
   text-decoration: none;
   display: flex;
@@ -620,9 +527,11 @@ body {
 .stat-bar {
   position: relative;
   z-index: 5;
-  background: var(--surf);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
   border: 1px solid var(--line);
-  border-radius: 2px;
+  border-radius: 18px;
 }
 
 /* ===== SHIMMER ANIMATION ===== */
@@ -748,18 +657,18 @@ body {
 /* ===== DESKTOP: emulate ~145% browser zoom ===== */
 @media (min-width: 1024px) {
   html {
-    zoom: 1.45;
+    zoom: 1.3;
   }
-  
+
   /* Scale down viewport height elements to prevent vertical stretching caused by browser zoom scaling */
   #hero {
-    min-height: calc(100vh / 1.45) !important;
+    min-height: calc(100vh / 1.3) !important;
   }
-  
+
   .h-screen,
   [style*="height: 100vh"],
   [style*="height:100vh"] {
-    height: calc(100vh / 1.45) !important;
+    height: calc(100vh / 1.3) !important;
   }
 }
 

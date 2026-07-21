@@ -23,7 +23,7 @@ function SkillPill({ skill, color, index }: {
       }}
       initial={{ opacity: 0, scale: 0.92 }}
       whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, margin: "-20px" }}
+      viewport={{ once: false, margin: "-20px" }}
       transition={{ delay: index * 0.02, duration: 0.25, ease: "easeOut" }}
     >
       {Icon ? (
@@ -123,7 +123,7 @@ export default function Skills() {
     <section id="skills" className="relative z-2">
 
       {/* heading */}
-      <div className="max-w-7xl mx-auto pt-14 px-3 sm:px-5">
+      <div className="max-w-7xl mx-auto pt-24 sm:pt-32 px-3 sm:px-5">
         <motion.div
           className="mb-8 sm:mb-10"
           initial={{ opacity: 0, y: 24 }}
@@ -141,11 +141,11 @@ export default function Skills() {
 
       {/* decorative keyboard + hover info panel — desktop only */}
       <motion.div
-        className="hidden lg:flex relative max-w-7xl mx-auto px-3 sm:px-5 mb-16 items-center gap-8"
+        className="hidden lg:flex relative max-w-7xl mx-auto px-3 sm:px-5 mb-24 items-center gap-8"
         style={{ height: 640 }}
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
+        viewport={{ once: false, margin: "-80px" }}
         transition={{ duration: 0.6 }}
       >
         <TechInfoPanel tech={hoveredTech} />
@@ -155,7 +155,7 @@ export default function Skills() {
       </motion.div>
 
       {/* category pill/chip list — mobile only; desktop already has hover-a-key info panel */}
-      <div className="lg:hidden space-y-7 px-3 sm:px-5 pb-14 max-w-7xl mx-auto">
+      <div className="lg:hidden space-y-7 px-3 sm:px-5 pb-24 max-w-7xl mx-auto">
         {categories.map(([cat, items], i) => {
           const color = categoryColors[cat] || "#10b981";
           return (
@@ -163,7 +163,7 @@ export default function Skills() {
               key={cat}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-20px" }}
+              viewport={{ once: false, margin: "-20px" }}
               transition={{ duration: 0.45, delay: i * 0.06 }}
             >
               <div className="flex items-center gap-2 mb-3.5">

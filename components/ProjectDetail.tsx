@@ -92,7 +92,7 @@ export default function ProjectDetail({ project }: { project: Project }) {
               className="lg:col-span-2 space-y-10"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
+              viewport={{ once: false, margin: "-50px" }}
               transition={{ duration: 0.6 }}
             >
               <div>
@@ -120,7 +120,7 @@ export default function ProjectDetail({ project }: { project: Project }) {
               className="space-y-5"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
+              viewport={{ once: false, margin: "-50px" }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
               <div className="meta-card">
@@ -157,7 +157,7 @@ export default function ProjectDetail({ project }: { project: Project }) {
                 </div>
               </div>
 
-              <LearnMoreButton href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="w-full justify-center">
+              <LearnMoreButton href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="w-full">
                 View GitHub Profile
               </LearnMoreButton>
               <Link href="/#contact" className="btn-em w-full justify-center">
@@ -172,7 +172,7 @@ export default function ProjectDetail({ project }: { project: Project }) {
               className="mt-16"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
+              viewport={{ once: false, margin: "-50px" }}
               transition={{ duration: 0.6 }}
             >
               <div className="slabel mb-5">screenshots</div>

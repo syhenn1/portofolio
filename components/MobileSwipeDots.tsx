@@ -16,7 +16,7 @@ const SECTIONS = [
 export default function MobileSwipeDots() {
   const [active, setActive] = useState("hero");
   const { theme } = useTheme();
-  const activeColor = theme === "amd" ? "#ff2f2f" : "#ff6a00";
+  const activeColor = theme === "amd" ? "#ff2f2f" : theme === "light" ? "#ff6a00" : "#141414";
   const inactiveColor = theme === "amd" ? "rgba(255,255,255,0.18)" : "rgba(0,0,0,0.18)";
 
   useEffect(() => {

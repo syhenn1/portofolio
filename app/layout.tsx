@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import PageTransition from "@/components/PageTransition";
-import WaveBackground from "@/components/WaveBackground";
 import ScrollProgress from "@/components/ScrollProgress";
 import BackToTop from "@/components/BackToTop";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import { MagneticCursor } from "@/components/MagneticCursor";
+import DisableCopy from "@/components/DisableCopy";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -35,13 +35,13 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "(function(){try{if(localStorage.getItem('theme')==='amd'){document.documentElement.setAttribute('data-theme','amd');}}catch(e){}})();",
+              "(function(){try{var t=localStorage.getItem('theme');if(t==='amd'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();",
           }}
         />
+        <DisableCopy />
         <MagneticCursor cursorSize={22} magneticFactor={0.35} lerpAmount={0.55}>
           {/* Fixed-position elements live outside PageTransition to avoid being
               trapped inside the motion.div containing block (CSS transform caveat) */}
-          <WaveBackground />
           <ScrollProgress />
           <BackToTop />
           <SmoothScrollProvider>

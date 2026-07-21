@@ -2,19 +2,21 @@
 
 // Adapted from "morphing-cursor" (21st.dev/@jatin-yadav05) — its real mechanic
 // is a hover-triggered circular reveal that follows the cursor, swapping in an
-// inverse-colored replacement text wherever the circle currently covers. Used
-// here so hovering "Rifat Syahman" reveals "Software Developer".
+// inverse-colored replacement layer wherever the circle currently covers. Used
+// here so hovering the "Rifat Syahman" name and the bio below it reveals
+// "Software Developer" / the longer bio blurb through the same black circle.
 import type React from "react";
 import { useRef, useState, useCallback, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 interface MorphingHeroTextProps {
-  text: string;
-  hoverText: string;
+  front: React.ReactNode;
+  back: React.ReactNode;
   className?: string;
+  onHoverChange?: (hovered: boolean) => void;
 }
 
-export function MorphingHeroText({ text, hoverText, className }: MorphingHeroTextProps) {
+export function MorphingHeroText({ front, back, className, onHoverChange }: MorphingHeroTextProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const circleRef = useRef<HTMLDivElement>(null);
   const innerTextRef = useRef<HTMLDivElement>(null);
@@ -26,17 +28,20 @@ export function MorphingHeroText({ text, hoverText, className }: MorphingHeroTex
   const animationFrameRef = useRef<number>(undefined);
 
   useEffect(() => {
-    const updateSize = () => {
-      if (containerRef.current) {
-        setContainerSize({
-          width: containerRef.current.offsetWidth,
-          height: containerRef.current.offsetHeight,
-        });
-      }
-    };
-    updateSize();
-    window.addEventListener("resize", updateSize);
-    return () => window.removeEventListener("resize", updateSize);
+    const el = containerRef.current;
+    if (!el) return;
+    // A ResizeObserver (not just a window-resize listener) matters here: the
+    // back layer is sized off this container, and content below can reflow
+    // after mount (e.g. web fonts swapping in and rewrapping the bio
+    // paragraph onto an extra line) without the window itself ever resizing.
+    // Missing that growth leaves the back layer shorter than the front,
+    // effectively cropping the hover text out of the circle reveal.
+    const observer = new ResizeObserver(([entry]) => {
+      const { inlineSize: width, blockSize: height } = entry.borderBoxSize?.[0] ?? { inlineSize: el.offsetWidth, blockSize: el.offsetHeight };
+      setContainerSize({ width, height });
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -78,9 +83,13 @@ export function MorphingHeroText({ text, hoverText, className }: MorphingHeroTex
     mousePos.current = { x, y };
     currentPos.current = { x, y };
     setIsHovered(true);
-  }, []);
+    onHoverChange?.(true);
+  }, [onHoverChange]);
 
-  const handleMouseLeave = useCallback(() => setIsHovered(false), []);
+  const handleMouseLeave = useCallback(() => {
+    setIsHovered(false);
+    onHoverChange?.(false);
+  }, [onHoverChange]);
 
   return (
     <div
@@ -90,13 +99,13 @@ export function MorphingHeroText({ text, hoverText, className }: MorphingHeroTex
       onMouseLeave={handleMouseLeave}
       className={cn("relative inline-block select-none", className)}
     >
-      <span className="whitespace-pre-line">{text}</span>
+      {front}
 
       <div
         ref={circleRef}
         className="absolute top-0 left-0 pointer-events-none rounded-full overflow-hidden"
         style={{
-          background: "var(--em2)",
+          background: "var(--em)",
           width: isHovered ? 220 : 0,
           height: isHovered ? 220 : 0,
           transition: "width 0.5s cubic-bezier(0.33, 1, 0.68, 1), height 0.5s cubic-bezier(0.33, 1, 0.68, 1)",
@@ -105,18 +114,17 @@ export function MorphingHeroText({ text, hoverText, className }: MorphingHeroTex
       >
         <div
           ref={innerTextRef}
-          className="absolute flex items-center justify-center"
+          className="absolute"
           style={{
             width: containerSize.width,
             height: containerSize.height,
             top: "50%",
             left: "50%",
+            color: "var(--em-ink)",
             willChange: "transform",
           }}
         >
-          <span className="whitespace-pre-line" style={{ color: "var(--em)" }}>
-            {hoverText}
-          </span>
+          {back}
         </div>
       </div>
     </div>

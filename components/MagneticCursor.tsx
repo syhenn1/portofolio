@@ -52,7 +52,8 @@ export const MagneticCursor: FC<MagneticCursorProps> = ({
   maxScaleY = 0.3,
 }) => {
   const { theme } = useTheme();
-  const resolvedCursorColor = cursorColor ?? (theme === "amd" ? "#ff3b3b" : "#ff6a00");
+  const resolvedCursorColor =
+    cursorColor ?? (theme === "amd" ? "#ff3b3b" : theme === "light" ? "#ff6a00" : "#141414");
   const cursorRef = useRef<HTMLDivElement>(null);
   const cursorStateRef = useRef<CursorState | null>(null);
   const [isTouchDevice, setIsTouchDevice] = useState(false);

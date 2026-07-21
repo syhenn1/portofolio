@@ -8,28 +8,26 @@ import Skills from "@/components/Skills";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import MobileSwipeDots from "@/components/MobileSwipeDots";
-import IntroGate from "@/components/IntroGate";
+import LiquidBubbles from "@/components/LiquidBubbles";
 
 export default function Home() {
   return (
-    <IntroGate>
+    <>
       <Navbar />
       <MobileSwipeDots />
       <main>
+        <Hero />
         <div className="relative">
-          <Hero />
+          <LiquidBubbles />
+          <About />
+          <Stats />
         </div>
-        <About />
-        <div className="divline relative z-2" />
-        <Stats />
         <JourneyTimeline />
         <Projects />
-        <div className="divline relative z-2" />
         <Skills />
-        <div className="divline relative z-2" />
         <Contact />
       </main>
       <Footer />
-    </IntroGate>
+    </>
   );
 }

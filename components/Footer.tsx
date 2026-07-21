@@ -9,54 +9,69 @@ const navLinks = [
   { href: "#contact", label: "Contact" },
 ];
 
+const socials = [
+  { href: socialLinks.github, Icon: FiGithub, label: "GitHub" },
+  { href: socialLinks.linkedin, Icon: FiLinkedin, label: "LinkedIn" },
+  { href: `mailto:${socialLinks.email}`, Icon: FiMail, label: "Email" },
+];
+
 export default function Footer() {
   return (
     <footer className="relative z-2" style={{ background: "var(--surf)", borderTop: "1px solid var(--line)" }}>
-      <div className="max-w-7xl mx-auto px-3 sm:px-5 py-12 flex flex-col sm:flex-row sm:items-start justify-between gap-10">
-        <div>
-          <span className="mono text-sm font-bold">
-            <span style={{ color: "var(--placeholder)" }}>&lt;</span>
-            <span style={{ color: "var(--tx)" }}>rifat</span>
-            <span style={{ color: "var(--em)" }}>/&gt;</span>
-          </span>
-          <p className="text-sm text-gray-600 mt-3 max-w-xs leading-relaxed">
-            Software Developer from Jakarta — building web, mobile, and data products with genuine care.
+      <div className="max-w-7xl mx-auto px-3 sm:px-5 pt-14 sm:pt-20">
+        <div
+          className="flex flex-col sm:flex-row sm:items-end justify-between gap-10 pb-10"
+          style={{ borderBottom: "1px solid var(--line)" }}
+        >
+          <p className="text-sm max-w-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+            Software Developer from Jakarta — building web, mobile, and data
+            products with genuine care.
           </p>
-        </div>
 
-        <div className="flex flex-col sm:flex-row gap-10 sm:gap-16">
-          <div>
-            <p className="mono text-xs mb-4" style={{ color: "var(--em)" }}>navigate</p>
-            <div className="flex flex-col gap-2.5">
-              {navLinks.map((link) => (
-                <a key={link.href} href={`${basePath}/${link.href}`} className="nav-link text-sm w-fit">
-                  {link.label}
-                </a>
-              ))}
+          <div className="flex gap-12 sm:gap-16">
+            <div>
+              <p className="text-xs uppercase tracking-wide mb-3" style={{ color: "var(--muted)" }}>
+                Navigate
+              </p>
+              <div className="flex flex-col gap-2.5">
+                {navLinks.map((link) => (
+                  <a key={link.href} href={`${basePath}/${link.href}`} className="nav-link text-sm w-fit">
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-wide mb-3" style={{ color: "var(--muted)" }}>
+                Connect
+              </p>
+              <div className="flex gap-3">
+                {socials.map(({ href, Icon, label }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target={label !== "Email" ? "_blank" : undefined}
+                    rel="noopener noreferrer"
+                    className="soc"
+                    aria-label={label}
+                    data-magnetic=""
+                  >
+                    <Icon size={16} />
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
-
-          <div>
-            <p className="mono text-xs mb-4" style={{ color: "var(--em)" }}>connect</p>
-            <div className="flex gap-3">
-              <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="soc" aria-label="GitHub" data-magnetic="">
-                <FiGithub size={16} />
-              </a>
-              <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="soc" aria-label="LinkedIn" data-magnetic="">
-                <FiLinkedin size={16} />
-              </a>
-              <a href={`mailto:${socialLinks.email}`} className="soc" aria-label="Email" data-magnetic="">
-                <FiMail size={16} />
-              </a>
-            </div>
-          </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-3 sm:px-5 py-5">
-        <p className="text-xs text-center sm:text-left" style={{ color: "var(--muted)" }}>
-          &copy; 2025 Mochamad Rifat Syahman Hambali. All rights reserved.
-        </p>
+        <div
+          className="flex flex-col sm:flex-row items-center justify-between gap-3 py-6 text-xs"
+          style={{ color: "var(--muted)" }}
+        >
+          <p>&copy; 2025 Mochamad Rifat Syahman Hambali. All rights reserved.</p>
+          <p>Designed &amp; built from scratch.</p>
+        </div>
       </div>
     </footer>
   );

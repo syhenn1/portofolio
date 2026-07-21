@@ -1,79 +1,84 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useTheme } from "@/lib/theme";
+import { useTheme, type Theme } from "@/lib/theme";
 
-// HUD-styled STD/AMD switch — lives on the intro screen so the theme is
-// picked before the user ever sees the lit (or unlit) site underneath.
+const OPTIONS: { value: Theme; label: string; dot: string; glow: string }[] = [
+  { value: "bw", label: "B/W", dot: "#8a8a86", glow: "rgba(138,138,134,0.55)" },
+  { value: "light", label: "STD", dot: "#ff6a00", glow: "rgba(255,106,0,0.6)" },
+  { value: "amd", label: "AMD", dot: "#ff2f2f", glow: "rgba(255,47,47,0.7)" },
+];
+
+// HUD-styled 3-way theme switch — lives on the intro screen so the theme is
+// picked before the user ever sees the lit site underneath.
 export default function ThemeToggle({ className = "" }: { className?: string }) {
-  const { theme, toggleTheme } = useTheme();
-  const isAmd = theme === "amd";
+  const { theme, setTheme } = useTheme();
+  const activeIndex = OPTIONS.findIndex((o) => o.value === theme);
 
   return (
-    <button
-      type="button"
-      onClick={toggleTheme}
-      aria-label={`Switch to ${isAmd ? "standard" : "AMD"} theme`}
-      aria-pressed={isAmd}
-      className={`mono pointer-events-auto inline-flex items-center gap-2 ${className}`}
+    <div
+      className={`mono pointer-events-auto relative inline-flex items-center ${className}`}
       style={{
-        padding: "6px 8px",
+        padding: 3,
         border: "1px solid color-mix(in srgb, var(--em) 35%, transparent)",
         background: "var(--overlay)",
         borderRadius: 3,
-        cursor: "pointer",
       }}
     >
-      <span
+      <motion.div
+        className="absolute"
         style={{
-          fontSize: 10,
-          letterSpacing: "0.08em",
-          color: isAmd ? "color-mix(in srgb, var(--tx) 35%, transparent)" : "#ff6a00",
-          fontWeight: 700,
-          transition: "color 0.25s",
+          top: 3,
+          bottom: 3,
+          width: `calc((100% - 6px) / 3)`,
+          borderRadius: 2,
+          background: "var(--glass-bg)",
+          boxShadow: `0 0 10px ${OPTIONS[Math.max(activeIndex, 0)].glow}`,
         }}
-      >
-        STD
-      </span>
-
-      <span
-        style={{
-          position: "relative",
-          width: 34,
-          height: 18,
-          borderRadius: 999,
-          background: isAmd ? "rgba(255,0,0,0.18)" : "rgba(255,106,0,0.18)",
-          border: `1px solid ${isAmd ? "#ff2f2f" : "#ff6a00"}`,
-          transition: "background 0.25s, border-color 0.25s",
-        }}
-      >
-        <motion.span
-          animate={{ x: isAmd ? 17 : 1 }}
-          transition={{ type: "spring", stiffness: 500, damping: 32 }}
-          style={{
-            position: "absolute",
-            top: 1,
-            left: 0,
-            width: 14,
-            height: 14,
-            borderRadius: "50%",
-            background: isAmd ? "#ff2f2f" : "#ff6a00",
-            boxShadow: isAmd ? "0 0 8px rgba(255,47,47,0.7)" : "0 0 8px rgba(255,106,0,0.6)",
-          }}
-        />
-      </span>
-
-      <span
-        style={{
-          fontSize: 10,
-          letterSpacing: "0.08em",
-          color: isAmd ? "#ff2f2f" : "color-mix(in srgb, var(--tx) 35%, transparent)",
-          fontWeight: 700,
-          transition: "color 0.25s",
-        }}
-      >
-        AMD
-      </span>
-    </button>
+        animate={{ left: `calc(3px + ((100% - 6px) / 3) * ${Math.max(activeIndex, 0)})` }}
+        transition={{ type: "spring", stiffness: 500, damping: 34 }}
+      />
+      {OPTIONS.map((opt) => {
+        const isActive = opt.value === theme;
+        return (
+          <button
+            key={opt.value}
+            type="button"
+            onClick={() => setTheme(opt.value)}
+            aria-label={`Switch to ${opt.label} theme`}
+            aria-pressed={isActive}
+            className="relative z-10 flex items-center gap-1.5"
+            style={{
+              padding: "5px 10px",
+              cursor: "pointer",
+              background: "transparent",
+              border: "none",
+            }}
+          >
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: opt.dot,
+                boxShadow: isActive ? `0 0 6px ${opt.glow}` : "none",
+                transition: "box-shadow 0.25s",
+              }}
+            />
+            <span
+              style={{
+                fontSize: 10,
+                letterSpacing: "0.08em",
+                fontWeight: 700,
+                color: isActive ? opt.dot : "color-mix(in srgb, var(--tx) 35%, transparent)",
+                transition: "color 0.25s",
+              }}
+            >
+              {opt.label}
+            </span>
+          </button>
+        );
+      })}
+    </div>
   );
 }

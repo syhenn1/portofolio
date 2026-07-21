@@ -14,7 +14,7 @@ export default function About() {
   const [cvOpen, setCvOpen] = useState(false);
 
   return (
-    <section id="about" className="relative z-2 py-14 px-3 sm:px-5">
+    <section id="about" className="relative z-2 py-24 sm:py-32 px-3 sm:px-5">
       <div className="max-w-7xl mx-auto">
         <motion.div
           className="mb-12"
@@ -38,9 +38,10 @@ export default function About() {
           transition={{ duration: 0.6, delay: 0.05 }}
         >
           <p className="text-gray-600 leading-relaxed mb-8 text-sm sm:text-base">
-            Experienced as a <span className="font-semibold" style={{ color: "var(--tx)" }}>team lead</span> on various projects.
-            Skilled with Dart, PHP, Python, Laravel, and Flutter. Also enthusiastic about{" "}
-            <span style={{ color: "#06b6d4" }} className="font-semibold">data analytics</span>.
+            Experienced as a <span className="font-semibold" style={{ color: "var(--tx)" }}>team lead</span> on various software projects.
+            Skilled with TypeScript, Next.js, Python, Laravel, and Flutter, with a strong focus on{" "}
+            <span style={{ color: "#06b6d4" }} className="font-semibold">software development</span> and{" "}
+            <span style={{ color: "#06b6d4" }} className="font-semibold">data analysis</span>.
           </p>
 
           <div className="flex flex-wrap gap-3 mt-2">
