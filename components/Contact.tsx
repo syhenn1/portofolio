@@ -2,8 +2,9 @@
 
 import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
-import { FiGithub, FiLinkedin, FiMail, FiSend } from "react-icons/fi";
+import { FiGithub, FiLinkedin, FiInstagram, FiMail, FiSend } from "react-icons/fi";
 import { socialLinks } from "@/lib/data";
+import { MorphingHeroText } from "@/components/MorphingHeroText";
 
 type Status = "idle" | "sending" | "success" | "error";
 
@@ -37,7 +38,7 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="relative z-3 py-24 sm:py-32 px-3 sm:px-5">
+    <section id="contact" className="relative z-3 pt-8 sm:pt-10 md:pt-32 pb-24 sm:pb-32 px-3 sm:px-5">
       <div className="max-w-7xl mx-auto">
         <motion.div
           className="text-center mb-14"
@@ -47,10 +48,22 @@ export default function Contact() {
           transition={{ duration: 0.6 }}
         >
           <div className="slabel mb-3 justify-center">contact</div>
-          <h2 className="text-3xl sm:text-5xl font-black">
-            Let&apos;s <span className="gtx">Connect</span>
-          </h2>
-          <p className="text-gray-600 mt-2 text-sm">Got an exciting project or just want to chat? Don&apos;t hesitate to reach out!</p>
+          <MorphingHeroText
+            front={
+              <>
+                <h2 className="text-3xl sm:text-5xl font-black">
+                  Let&apos;s <span className="gtx">Connect</span>
+                </h2>
+                <p className="text-gray-600 mt-2 text-sm">Got an exciting project or just want to chat? Don&apos;t hesitate to reach out!</p>
+              </>
+            }
+            back={
+              <div className="text-center">
+                <h2 className="text-3xl sm:text-5xl font-black">Say Hi! :D</h2>
+                <p className="mt-2 text-sm">I don&apos;t bite, I promise!</p>
+              </div>
+            }
+          />
         </motion.div>
 
         <motion.div
@@ -107,12 +120,28 @@ export default function Contact() {
                 </p>
               </div>
             </a>
+            <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="cl">
+              <div
+                style={{
+                  width: 42, height: 42, background: "rgba(225,48,108,.1)", borderRadius: 12,
+                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                }}
+              >
+                <FiInstagram size={20} style={{ color: "#E1306C" }} />
+              </div>
+              <div>
+                <p className="mono text-xs mb-0.5" style={{ color: "#E1306C" }}>instagram</p>
+                <p className="text-sm text-gray-700 font-medium">
+                  {socialLinks.instagram.replace("https://", "").replace(/\/$/, "")}
+                </p>
+              </div>
+            </a>
           </div>
 
           <div className="md:col-span-3">
             <div className="bcard" style={{ borderColor: "rgba(16,185,129,.14)" }}>
               <p className="mono text-xs mb-5" style={{ color: "var(--em)" }}>
-                // send_message()
+                {"// send_message()"}
               </p>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <input type="checkbox" name="botcheck" style={{ display: "none" }} />

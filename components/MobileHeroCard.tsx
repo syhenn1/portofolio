@@ -32,7 +32,7 @@ export default function MobileHeroCard() {
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
         >
           <Image
-            src={`${basePath}/images/ripat.png`}
+            src={`${basePath}/images/ripatSikma.png`}
             alt="Rifat Syahman"
             fill
             className="object-cover"

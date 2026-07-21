@@ -84,7 +84,7 @@ export default function GitHubCalendar({ username }: { username: string }) {
   const step = cellSize + cellGap;
 
   return (
-    <div className="overflow-hidden">
+    <div>
       <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
         <div className="flex items-center gap-3">
           <FiGithub size={18} style={{ color: "var(--em2)" }} />
@@ -103,6 +103,7 @@ export default function GitHubCalendar({ username }: { username: string }) {
           href={`https://github.com/${username}`}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
           className="mono text-xs font-medium"
           style={{ color: "var(--muted)" }}
         >

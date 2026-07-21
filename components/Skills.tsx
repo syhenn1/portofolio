@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { skills, categoryColors, type Skill } from "@/lib/data";
 import DecoKeyboard, { type TechKey } from "@/components/DecoKeyboard";
+import { MorphingHeroText } from "@/components/MorphingHeroText";
 
 // ─── Skill pill (used on both mobile and desktop) ─────────────────────────────
 function SkillPill({ skill, color, index }: {
@@ -123,7 +124,7 @@ export default function Skills() {
     <section id="skills" className="relative z-2">
 
       {/* heading */}
-      <div className="max-w-7xl mx-auto pt-24 sm:pt-32 px-3 sm:px-5">
+      <div className="max-w-7xl mx-auto pt-8 sm:pt-10 md:pt-32 px-3 sm:px-5">
         <motion.div
           className="mb-8 sm:mb-10"
           initial={{ opacity: 0, y: 24 }}
@@ -132,10 +133,22 @@ export default function Skills() {
           transition={{ duration: 0.6 }}
         >
           <div className="slabel mb-3">tech stack</div>
-          <h2 className="text-3xl sm:text-5xl font-black">
-            Tools & <span className="gtx">Technology</span>
-          </h2>
-          <p className="text-gray-600 mt-2 text-sm">The tools I use to build products.</p>
+          <MorphingHeroText
+            front={
+              <>
+                <h2 className="text-3xl sm:text-5xl font-black">
+                  Tools & <span className="gtx">Technology</span>
+                </h2>
+                <p className="text-gray-600 mt-2 text-sm">The tools I use to build products.</p>
+              </>
+            }
+            back={
+              <>
+                <h2 className="text-3xl sm:text-5xl font-black">My Toolbox! :D</h2>
+                <p className="mt-2 text-sm">Yes, I actually use all of these.</p>
+              </>
+            }
+          />
         </motion.div>
       </div>
 

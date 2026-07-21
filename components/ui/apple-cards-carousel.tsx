@@ -4,8 +4,11 @@
 // instead of opening a modal, and the track is drag-to-scroll (mouse) plus
 // native touch-swipe, so there's no on-screen prev/next button competing
 // with the fixed "back to top" button for the same corner of the screen.
-import React, { createContext, useContext, useRef, useState, type ReactNode } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
+
+// Auto-slide speed, in pixels per second.
+const AUTO_SLIDE_SPEED = 50;
 
 export type CardType = {
   src?: string;
@@ -51,6 +54,30 @@ export const Carousel = ({ items }: { items: ReactNode[] }) => {
     if (track?.hasPointerCapture(e.pointerId)) track.releasePointerCapture(e.pointerId);
   };
 
+  // Slow, continuous auto-scroll toward the end, looping back to the start.
+  // Pauses only while the user is actively dragging the track.
+  useEffect(() => {
+    let rafId: number;
+    let last = performance.now();
+
+    const tick = (now: number) => {
+      const dt = now - last;
+      last = now;
+      const track = trackRef.current;
+      if (track && !dragState.current.isDown) {
+        const max = track.scrollWidth - track.clientWidth;
+        if (max > 0) {
+          const next = track.scrollLeft + (AUTO_SLIDE_SPEED * dt) / 1000;
+          track.scrollLeft = next >= max ? 0 : next;
+        }
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
   return (
     <DragContext.Provider value={dragState}>
       <div
@@ -62,7 +89,7 @@ export const Carousel = ({ items }: { items: ReactNode[] }) => {
         onPointerLeave={endDrag}
         style={{ touchAction: "pan-y" }}
       >
-        <div className="mx-auto flex max-w-6xl flex-row justify-start gap-5 pl-4">
+        <div className="flex flex-row justify-start gap-5">
           {items.map((item, index) => (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -70,7 +97,8 @@ export const Carousel = ({ items }: { items: ReactNode[] }) => {
               viewport={{ once: false }}
               transition={{ duration: 0.5, delay: 0.1 * index, ease: "easeOut" }}
               key={"card" + index}
-              className="shrink-0 rounded-3xl last:pr-[5%] md:last:pr-[28%]"
+              className="shrink-0 rounded-3xl select-none last:pr-[5%] md:last:pr-[28%]"
+              style={{ touchAction: "pan-y", WebkitUserSelect: "none", WebkitTouchCallout: "none" }}
             >
               {item}
             </motion.div>
@@ -112,7 +140,13 @@ export const Card = ({ card }: { card: CardType }) => {
           </div>
           {card.src && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={card.src} alt="" className="absolute inset-0 z-10 h-full w-full object-cover" />
+            <img
+              src={card.src}
+              alt=""
+              draggable={false}
+              className="absolute inset-0 z-10 h-full w-full object-cover"
+              style={{ WebkitUserDrag: "none", touchAction: "pan-y" } as React.CSSProperties}
+            />
           )}
           <span
             className="absolute bottom-4 right-4 z-40 rounded-full px-2.5 py-1 text-[10px] font-semibold text-white/90"

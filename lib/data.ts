@@ -46,13 +46,23 @@ export const roles = [
   "Data Analyst",
 ];
 
-export const timelineData = [
+export type TimelineEntry = {
+  year: string;
+  color: string;
+  title: string;
+  desc: string;
+  images?: { src: string; width: number; height: number }[];
+  skills?: string[];
+};
+
+export const timelineData: TimelineEntry[] = [
   {
     year: "Sep 2023",
     color: "#8a8a86",
     title: "Politeknik Negeri Jakarta",
     desc: "Started the D4 Applied Bachelor's in Informatics Engineering (GPA 3.87/4.00), diving into web programming, databases, and AI coursework.",
     images: [{ src: `${basePath}/images/pnj-early.jpeg`, width: 900, height: 1600 }],
+    skills: ["Continuous Learning", "Adaptability"],
   },
   {
     year: "Jun 2024 – Nov 2024",
@@ -60,6 +70,7 @@ export const timelineData = [
     title: "Project Team Lead & Software Developer — Computer Student Club",
     desc: "Led a dev team building the club's business website with Next.js, keeping Git/GitHub workflows smooth and deployment-conflict-free — while growing through weekly club sessions.",
     images: [{ src: `${basePath}/images/csc-team.jpg`, width: 600, height: 800 }],
+    skills: ["Leadership", "Team Coordination", "Communication"],
   },
   {
     year: "2025",
@@ -72,6 +83,7 @@ export const timelineData = [
       { src: `${basePath}/images/sniv-page2.png`, width: 900, height: 506 },
       { src: `${basePath}/images/sniv-page3.png`, width: 900, height: 506 },
     ],
+    skills: ["Problem Solving", "Cross-functional Collaboration", "Ownership"],
   },
   {
     year: "Sep 2025 – Jun 2026",
@@ -79,6 +91,15 @@ export const timelineData = [
     title: "Data Verifier — Kementerian Pendidikan Dasar dan Menengah",
     desc: "Verified delivery and technical specs of assets — interactive panels, laptops, routers — for hardware compliance and inventory accuracy, and liaised with schools on connectivity feedback and reporting.",
     images: [{ src: `${basePath}/images/kemendik-team.jpg`, width: 900, height: 506 }],
+    skills: ["Attention to Detail", "Stakeholder Communication", "Reporting"],
+  },
+  {
+    year: "Oct 2025 – Dec 2025",
+    color: "#22c55e",
+    title: "Academic Staff — Expectik",
+    desc: "Served as academic staff for Expectik, the department's freshman orientation program, supporting the academic side of the event for incoming students.",
+    images: [{ src: `${basePath}/images/expectik-pres.png`, width: 645, height: 842 }],
+    skills: ["Leadership", "Public Speaking", "Teamwork", "Event Coordination"],
   },
   {
     year: "Now",
@@ -386,5 +407,6 @@ export const getAdjacentProjects = (slug: string) => {
 export const socialLinks = {
   github: "https://github.com/syhenn1",
   linkedin: "https://linkedin.com/in/rifatsyahman/",
+  instagram: "https://instagram.com/rifatsyhmn",
   email: "rifatsyahman@gmail.com",
 };

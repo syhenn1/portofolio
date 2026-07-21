@@ -3,12 +3,13 @@
 import { motion } from "framer-motion";
 import { statsData, socialLinks } from "@/lib/data";
 import GitHubCalendar from "@/components/GitHubCalendar";
+import { MorphingHeroText } from "@/components/MorphingHeroText";
 
 const ghUser = socialLinks.github.split("/").pop()!;
 
 export default function Stats() {
   return (
-    <section id="stats" className="relative z-10 px-3 sm:px-5 md:-mt-12 pb-24 sm:pb-32">
+    <section id="stats" className="relative z-10 px-3 sm:px-5 pb-24 sm:pb-32">
       <div className="max-w-7xl mx-auto flex flex-col items-center gap-4">
         {/* Stats (left) + Trophies (right) in one container */}
         <motion.div
@@ -41,17 +42,32 @@ export default function Stats() {
           </div>
         </motion.div>
 
-        {/* GitHub Contributions — wide bar below */}
+        {/* GitHub Contributions — wide bar below. Same cursor-follow circle
+            reveal as the section headings, but the trigger area is the
+            whole card, not just a line of text. */}
         <motion.div
-          className="stat-bar overflow-hidden w-full"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, margin: "-50px" }}
           transition={{ duration: 0.6, delay: 0.1 }}
+          className="w-full"
         >
-          <div className="px-4 py-3">
-            <GitHubCalendar username={ghUser} />
-          </div>
+          <MorphingHeroText
+            className="stat-bar block w-full cursor-pointer overflow-hidden"
+            onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
+            front={
+              <div className="px-4 py-3">
+                <GitHubCalendar username={ghUser} />
+              </div>
+            }
+            back={
+              <div className="flex h-full w-full items-center justify-center text-center px-6">
+                <span className="font-black" style={{ fontSize: "clamp(1.5rem, 4vw, 2.5rem)" }}>
+                  Visit my github to see more!
+                </span>
+              </div>
+            }
+          />
         </motion.div>
       </div>
     </section>

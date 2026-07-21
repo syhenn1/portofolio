@@ -1,4 +1,4 @@
-import { FiGithub, FiLinkedin, FiMail } from "react-icons/fi";
+import { FiGithub, FiLinkedin, FiInstagram, FiMail } from "react-icons/fi";
 import { socialLinks } from "@/lib/data";
 import { basePath } from "@/lib/basePath";
 
@@ -12,6 +12,7 @@ const navLinks = [
 const socials = [
   { href: socialLinks.github, Icon: FiGithub, label: "GitHub" },
   { href: socialLinks.linkedin, Icon: FiLinkedin, label: "LinkedIn" },
+  { href: socialLinks.instagram, Icon: FiInstagram, label: "Instagram" },
   { href: `mailto:${socialLinks.email}`, Icon: FiMail, label: "Email" },
 ];
 
@@ -20,13 +21,18 @@ export default function Footer() {
     <footer className="relative z-2" style={{ background: "var(--surf)", borderTop: "1px solid var(--line)" }}>
       <div className="max-w-7xl mx-auto px-3 sm:px-5 pt-14 sm:pt-20">
         <div
-          className="flex flex-col sm:flex-row sm:items-end justify-between gap-10 pb-10"
+          className="flex flex-col sm:flex-row sm:items-start justify-between gap-10 pb-10"
           style={{ borderBottom: "1px solid var(--line)" }}
         >
-          <p className="text-sm max-w-sm leading-relaxed" style={{ color: "var(--muted)" }}>
-            Software Developer from Jakarta — building web, mobile, and data
-            products with genuine care.
-          </p>
+          <div className="max-w-sm">
+            <p className="font-black text-lg mb-2" style={{ color: "var(--tx)" }}>
+              Rifat Syahman
+            </p>
+            <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>
+              Software Developer from Jakarta — building web, mobile, and data
+              products with genuine care.
+            </p>
+          </div>
 
           <div className="flex gap-12 sm:gap-16">
             <div>

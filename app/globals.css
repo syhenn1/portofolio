@@ -539,6 +539,15 @@ body {
   to { background-position: 200% center; }
 }
 
+/* ===== MARQUEE (PortfolioGallery mobile row) ===== */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-100% - var(--gap))); }
+}
+.animate-marquee {
+  animation: marquee var(--duration, 40s) linear infinite;
+}
+
 /* ===== MOBILE: SWIPE / SNAP NAVIGATION ===== */
 @media (max-width: 767px) {
   html {
@@ -548,13 +557,13 @@ body {
 
   section[id] {
     scroll-snap-align: start;
-    min-height: 100dvh;
   }
 
   #hero {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    min-height: 100dvh;
   }
 
   /* Stats: remove hero-overlap offset, add navbar clearance */
@@ -580,7 +589,9 @@ body {
     display: block;
   }
 
-  /* Horizontal snap carousel for projects / skills */
+  /* Horizontal snap carousel for projects / skills — items snap centered,
+     with equal peek on both sides so the active card doesn't hug the left
+     edge. */
   .snap-carousel {
     display: flex;
     overflow-x: auto;
@@ -588,18 +599,19 @@ body {
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     gap: 1rem;
-    padding-bottom: 1rem;
+    padding-bottom: 1.5rem;
     margin-left: -0.75rem;
     margin-right: -0.75rem;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+    padding-left: 10vw;
+    padding-right: 10vw;
+    scroll-padding-inline: 10vw;
   }
   .snap-carousel::-webkit-scrollbar {
     display: none;
   }
   .snap-carousel-item {
-    flex: 0 0 82vw;
-    scroll-snap-align: start;
+    flex: 0 0 80vw;
+    scroll-snap-align: center;
   }
 }
 

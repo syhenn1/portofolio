@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FiEye } from "react-icons/fi";
-import { socialLinks } from "@/lib/data";
 import { basePath } from "@/lib/basePath";
 import CvModal from "@/components/CvModal";
 import LearnMoreButton from "@/components/LearnMoreButton";
+import { MorphingHeroText } from "@/components/MorphingHeroText";
 
 const cvUrl = `${basePath}/assets/CV_Mochamad-Rifat-Syahman-Hambali.pdf`;
 
@@ -14,7 +13,7 @@ export default function About() {
   const [cvOpen, setCvOpen] = useState(false);
 
   return (
-    <section id="about" className="relative z-2 py-24 sm:py-32 px-3 sm:px-5">
+    <section id="about" className="relative z-2 pt-8 sm:pt-10 md:pt-32 pb-4 sm:pb-6 px-3 sm:px-5">
       <div className="max-w-7xl mx-auto">
         <motion.div
           className="mb-12"
@@ -24,14 +23,19 @@ export default function About() {
           transition={{ duration: 0.6 }}
         >
           <div className="slabel mb-3">about me</div>
-          <h2 className="text-3xl sm:text-5xl font-black">
-            Get to <span className="gtx">Know Me</span>
-          </h2>
+          <MorphingHeroText
+            front={
+              <h2 className="text-3xl sm:text-5xl font-black">
+                Get to <span className="gtx">Know Me</span>
+              </h2>
+            }
+            back={<h2 className="text-3xl sm:text-5xl font-black">Hi There! :)</h2>}
+          />
         </motion.div>
 
         {/* Bio */}
         <motion.div
-          className="bcard flex flex-col justify-center mb-5"
+          className="bcard flex flex-col justify-center"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, margin: "-50px" }}
@@ -45,16 +49,7 @@ export default function About() {
           </p>
 
           <div className="flex flex-wrap gap-3 mt-2">
-            <LearnMoreButton href={socialLinks.github} target="_blank" rel="noopener noreferrer">
-              GitHub
-            </LearnMoreButton>
-            <button
-              onClick={() => setCvOpen(true)}
-              className="btn-em text-sm py-2.5 px-5"
-            >
-              <FiEye size={16} />
-              View CV
-            </button>
+            <LearnMoreButton onClick={() => setCvOpen(true)}>View CV</LearnMoreButton>
           </div>
         </motion.div>
       </div>
